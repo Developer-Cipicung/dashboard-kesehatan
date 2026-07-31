@@ -97,7 +97,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
           'LILA (cm)': item.lingkar_lengan_atas || '-',
           'Lingkar Perut (cm)': item.lingkar_perut || '-',
           'Anak Ke-': item.jumlah_anak || '-',
-          'Kadar Hb': item.kadar_hemoglobin || '-',
+          'Kadar Hb': (item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) ? item.kadar_hemoglobin : '-',
           'Berat Janin': item.berat_janin || '-',
           'Rokok': item.terpapar_rokok ? 'Ya' : 'Tidak',
           'KIE': item.kie ? 'Ya' : 'Tidak',

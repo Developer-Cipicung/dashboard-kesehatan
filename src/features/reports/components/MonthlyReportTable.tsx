@@ -231,7 +231,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
 
         let san = 'Normal';
         let sanc = 'green' as 'green' | 'orange' | 'red';
-        if (item.kadar_hemoglobin) {
+        if (item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) {
           const hb = Number(item.kadar_hemoglobin);
           if (hb < 8) { san = 'Anemia Berat'; sanc = 'red'; }
           else if (hb < 11) { san = 'Anemia Ringan'; sanc = 'orange'; }
@@ -257,7 +257,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell>{renderBadge(skek, skekc)}</TableCell>
             <TableCell>{item.lingkar_perut || '-'}</TableCell>
             <TableCell>{item.jumlah_anak || '-'}</TableCell>
-            <TableCell>{item.kadar_hemoglobin || '-'}</TableCell>
+            <TableCell>{(item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) ? item.kadar_hemoglobin : '-'}</TableCell>
             <TableCell>{renderBadge(san, sanc)}</TableCell>
             <TableCell>{item.berat_janin || '-'}</TableCell>
             <TableCell>{item.terpapar_rokok ? 'Ya' : 'Tidak'}</TableCell>

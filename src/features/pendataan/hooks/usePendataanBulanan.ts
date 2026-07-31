@@ -58,3 +58,19 @@ export function useSubmitPendataan() {
     },
   })
 }
+
+export function useBatalkanPendataan() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => pendataanBulananService.unsubmit(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pendataan'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      toast.success('Verifikasi dibatalkan. Status kembali ke Draft.')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Gagal membatalkan verifikasi.')
+    },
+  })
+}

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { isBalitaByBirthDate, isBadutaByBirthDate } from '@/utils/age'
 
 import { useAuthStore } from '@/stores/authStore'
-import { useGetPendataanStatus, useGetPendataanSummary, useSubmitPendataan } from '../hooks/usePendataanBulanan'
+import { useGetPendataanStatus, useGetPendataanSummary, useSubmitPendataan, useBatalkanPendataan } from '../hooks/usePendataanBulanan'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { ErrorState } from '@/components/feedback/ErrorState'
 import { Button } from '@/components/ui/button'
@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { CheckCircle2, Lock } from 'lucide-react'
+import { CheckCircle2, Lock, XCircle } from 'lucide-react'
 import { formatDateTimeWib } from '@/utils/dateTime'
 
 type SummaryCategory = 'baduta' | 'balita' | 'bumil' | 'pasca_persalinan' | 'lansia' | 'warga_baru'
@@ -48,6 +48,7 @@ export function VerifikasiPendataanPage() {
   const { data: statusData, isLoading: isLoadingStatus } = useGetPendataanStatus(currentMonth, currentYear, selectedPosyanduId || undefined)
   const { data: summaryData, isLoading: isLoadingSummary, error, refetch } = useGetPendataanSummary(currentMonth, currentYear, selectedPosyanduId || undefined)
   const { mutate: submitPendataan, isPending: isSubmitting } = useSubmitPendataan()
+  const { mutate: batalkanPendataan, isPending: isBataling } = useBatalkanPendataan()
 
   const [tanggalPelaksanaan, setTanggalPelaksanaan] = useState(new Date().toISOString().split('T')[0])
 
@@ -200,6 +201,18 @@ export function VerifikasiPendataanPage() {
           <p className="text-emerald-600 max-w-md">
             Data posyandu untuk bulan ini telah berhasil dikunci dan direkapitulasi. Anda dapat melihat laporannya di menu Laporan.
           </p>
+          <button
+            className="mt-2 flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium border border-red-200 bg-red-50 hover:bg-red-100 rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
+            disabled={isBataling}
+            onClick={() => {
+              if (window.confirm('Batalkan verifikasi pendataan ini? Status akan kembali ke Draft dan data bisa diubah kembali.')) {
+                if (statusData?.id) batalkanPendataan(statusData.id)
+              }
+            }}
+          >
+            <XCircle className="w-4 h-4" />
+            {isBataling ? 'Membatalkan...' : 'Batalkan Verifikasi'}
+          </button>
         </div>
       ) : (
         <div className="bg-white border rounded-xl p-6 shadow-sm">

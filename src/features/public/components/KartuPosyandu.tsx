@@ -143,7 +143,7 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
               const isTidakAda = p.riwayat_penyakit.toLowerCase() === 'tidak ada' || p.riwayat_penyakit === '-';
               finalStatus.push({ text: `Riwayat Penyakit: ${p.riwayat_penyakit}`, type: isTidakAda ? 'success' : 'danger' });
             }
-            if (p.kadar_hemoglobin) {
+            if (p.kadar_hemoglobin && parseFloat(p.kadar_hemoglobin) > 0) {
                const hb = parseFloat(p.kadar_hemoglobin);
                if (hb < 11) finalStatus.push({ text: `Risiko Anemia (${hb})`, type: 'danger' });
                else finalStatus.push({ text: `Hb Normal (${hb})`, type: 'success' });

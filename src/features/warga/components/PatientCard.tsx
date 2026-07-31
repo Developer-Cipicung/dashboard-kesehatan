@@ -164,7 +164,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                 <div className="flex flex-col">
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Kadar Hb</span>
                   <div className="flex items-center gap-1">
-                    <span className="text-sm font-semibold text-slate-800">{latestBumil.kadar_hemoglobin || '-'}</span>
+                    <span className="text-sm font-semibold text-slate-800">{(latestBumil.kadar_hemoglobin && parseFloat(latestBumil.kadar_hemoglobin) > 0) ? latestBumil.kadar_hemoglobin : '-'}</span>
                     {latestBumil.kadar_hemoglobin && parseFloat(latestBumil.kadar_hemoglobin) > 0 && parseFloat(latestBumil.kadar_hemoglobin) < 11 && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded border font-bold bg-red-100 text-red-600 border-red-200">Risiko Anemia</span>
                     )}

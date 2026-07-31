@@ -111,7 +111,7 @@ export function exportWargaToPdf(wargaList: Warga[], filename: string = 'Laporan
             item.lingkar_lengan_atas || '-',
             item.lingkar_perut || '-',
             item.jumlah_anak || '-',
-            item.kadar_hemoglobin || '-',
+            (item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) ? item.kadar_hemoglobin : '-',
             item.berat_janin || '-',
             item.terpapar_rokok ? 'Y' : 'T',
             item.kie ? 'Y' : 'T',

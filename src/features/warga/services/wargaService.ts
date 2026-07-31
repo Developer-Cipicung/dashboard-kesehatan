@@ -84,6 +84,7 @@ export interface AddWargaPayload {
   nama_ayah?: string
   nama_ibu?: string
   ibu_id?: string
+  jumlah_anak?: number
   hpht?: string
   htp?: string
   posyandu_id?: string

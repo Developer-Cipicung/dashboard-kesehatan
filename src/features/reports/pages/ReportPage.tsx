@@ -158,7 +158,8 @@ export function ReportPage() {
           if (subFilters.trimester === '3' && mgg <= 27) passed = false
         }
         if (subFilters.anemia) {
-          const hb = item.kadar_hemoglobin ? Number(item.kadar_hemoglobin) : 999
+          const hbRaw = item.kadar_hemoglobin ? Number(item.kadar_hemoglobin) : 0
+          const hb = (hbRaw > 0) ? hbRaw : 999
           if (subFilters.anemia === 'normal' && hb < 11) passed = false
           if (subFilters.anemia === 'ringan' && (hb >= 11 || hb < 8))
             passed = false

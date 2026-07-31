@@ -65,7 +65,7 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
         else kek.normal++;
       }
 
-      if (item.kadar_hemoglobin) {
+      if (item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) {
         const val = Number(item.kadar_hemoglobin);
         if (val < 8) hb.berat++;
         else if (val < 11) hb.ringan++;

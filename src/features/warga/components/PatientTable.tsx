@@ -554,7 +554,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
               lastJmlAnak = latestBumil.jumlah_anak?.toString() || ''
               lastRiwPen = latestBumil.riwayat_penyakit || ''
               lastTinggiFundus = latestBumil.tinggi_fundus?.toString() || ''
-              lastKadarHb = latestBumil.kadar_hemoglobin?.toString() || ''
+              lastKadarHb = (latestBumil.kadar_hemoglobin && Number(latestBumil.kadar_hemoglobin) > 0) ? latestBumil.kadar_hemoglobin.toString() : ''
               lastBeratJanin = latestBumil.berat_janin?.toString() || ''
               lastRokok = latestBumil.terpapar_rokok ?? undefined
               lastKie = latestBumil.kie ?? undefined
@@ -772,7 +772,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       </td>
                       <td className="px-3 py-3">
                         {(() => {
-                          const val = row.kadar_hemoglobin || lastKadarHb;
+                          const val = (row.kadar_hemoglobin && Number(row.kadar_hemoglobin) > 0) ? row.kadar_hemoglobin : lastKadarHb;
                           const isRisk = parseFloat(val) > 0 && parseFloat(val) < 11;
                           if (!isRisk) return <Cell type="number" value={row.kadar_hemoglobin} onChange={(v) => set(warga.id, 'kadar_hemoglobin', v)} placeholder={lastKadarHb || "-"} width="w-[60px]" disabled={true} max={30} min={0} />;
                           return (

@@ -23,8 +23,8 @@ import { toast } from 'sonner'
 import { calculateAgeInMonths } from '@/utils/age'
 
 const formSchema = z.object({
-  nik: z.string().min(16, 'NIK harus 16 digit').max(16, 'NIK harus 16 digit'),
-  nomor: z.string().min(1, 'Nomor Telepon wajib diisi'),
+  nik: z.string().min(1, 'NIK wajib diisi (isi "-" jika tidak diketahui)'),
+  nomor: z.string().min(1, 'Nomor Telepon wajib diisi (isi "-" jika tidak diketahui)'),
   nama: z.string().min(1, 'Nama wajib diisi'),
   tanggal_lahir: z.string().min(1, 'Tanggal lahir wajib diisi'),
   tempat_lahir: z.string().min(1, 'Tempat lahir wajib diisi'),
@@ -36,6 +36,7 @@ const formSchema = z.object({
   alamat: z.string().optional(),
   tempat_persalinan: z.string().optional(),
   penggunaan_kontrasepsi: z.string().optional(),
+  jumlah_anak: z.string().optional(),
   hpht: z.string().optional(),
   ibu_id: z.string().optional(),
 }).superRefine((data, ctx) => {
@@ -68,6 +69,7 @@ interface PatientFormConfig {
   showHpht?: boolean
   showDelivery?: boolean
   showContraception?: boolean
+  showAnakKe?: boolean
 }
 
 const patientFormConfig: Record<PatientCategory, PatientFormConfig> = {
@@ -93,6 +95,7 @@ const patientFormConfig: Record<PatientCategory, PatientFormConfig> = {
     lockGender: true,
     showHpht: true,
     showContraception: true,
+    showAnakKe: true,
   },
   pasca_persalinan: {
     categoryLabel: 'Ibu Pasca Persalinan',
@@ -101,7 +104,6 @@ const patientFormConfig: Record<PatientCategory, PatientFormConfig> = {
     genderDefault: 'P',
     lockGender: true,
     showDelivery: true,
-    showContraception: true,
   },
   lansia: {
     categoryLabel: 'Lansia',
@@ -143,6 +145,7 @@ const getDefaultValues = (category: PatientCategory | ''): z.infer<typeof formSc
     alamat: '',
     tempat_persalinan: '',
     penggunaan_kontrasepsi: '',
+    jumlah_anak: '',
     hpht: '',
     ibu_id: 'none',
   }
@@ -237,14 +240,19 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
       if (isIbuIbu) {
         payload.jenis_kelamin = 'P'
       }
+      
+      const submitPayload: any = { ...payload }
+      if (submitPayload.jumlah_anak) {
+        submitPayload.jumlah_anak = parseInt(submitPayload.jumlah_anak, 10)
+      }
 
-      ;(Object.keys(payload) as Array<keyof PatientSubmitPayload>).forEach((key) => {
-        if (payload[key] === '') {
-          delete payload[key]
+      ;(Object.keys(submitPayload)).forEach((key) => {
+        if (submitPayload[key] === '') {
+          delete submitPayload[key]
         }
       })
 
-      const created = await addWarga(payload as AddWargaPayload)
+      const created = await addWarga(submitPayload as AddWargaPayload)
       if (values.kategori === 'pasca_persalinan' && values.tanggal_persalinan && created?.id) {
         try {
           const initialPascaRecord: InitialPascaRecord = {
@@ -304,24 +312,13 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                       <FormItem className="space-y-1.5">
                         <div className="flex items-center justify-between">
                           <FormLabel className="text-sm leading-snug sm:text-[15px]">
-                            NIK <span className="text-red-500">*</span>
+                            NIK
                           </FormLabel>
-                          <button
-                            type="button"
-                            className="text-[10px] text-primary hover:underline font-semibold"
-                            onClick={() => {
-                              // Generate 16 digit temporary NIK: 9999 + 12 digit timestamp/random
-                              const tempNik = '9999' + Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
-                              methods.setValue('nik', tempNik);
-                              toast.success('NIK Sementara dibuat', { description: `Gunakan NIK ${tempNik} untuk cek kartu nantinya.` });
-                            }}
-                          >
-                            Tidak bawa KTP?
-                          </button>
+                          <span className="text-[10px] text-slate-500 font-medium">Isi "-" jika tidak membawa KK/KTP</span>
                         </div>
                         <FormControl>
                           <Input
-                            placeholder="Masukkan 16 digit NIK"
+                            placeholder="16 digit NIK atau '-' jika tidak diketahui"
                             type="text"
                             className="h-9 px-3 text-sm sm:h-10 sm:text-base"
                             {...field}
@@ -341,8 +338,8 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                   <FormField
                     control={methods.control}
                     name="nomor"
-                    label={<>{currentConfig?.phoneLabel || 'Nomor Telepon'} <span className="text-red-500">*</span></>}
-                    placeholder="Contoh: 08123456789"
+                    label={<>{currentConfig?.phoneLabel || 'Nomor Telepon'}</>}
+                    placeholder={`Contoh: 08123456789 atau "-" jika tidak diketahui`}
                     type="text"
                   />
                   {!isIbuIbu && (
@@ -484,8 +481,17 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                         control={methods.control}
                         name="penggunaan_kontrasepsi"
                         label="Penggunaan Kontrasepsi"
-                        placeholder="Contoh: Pil / IUD"
+                        placeholder="Contoh: Pil / IUD / Tidak Pakai"
                         type="text"
+                      />
+                    )}
+                    {currentConfig?.showAnakKe && (
+                      <FormField
+                        control={methods.control}
+                        name="jumlah_anak"
+                        label="Anak Ke"
+                        placeholder="Contoh: 2 (kehamilan ke-berapa)"
+                        type="number"
                       />
                     )}
                     <div className="sm:col-span-2">

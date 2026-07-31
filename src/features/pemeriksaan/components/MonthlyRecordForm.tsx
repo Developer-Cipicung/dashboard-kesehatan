@@ -288,7 +288,6 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
           fasilitasi_bantuan_sosial: values.fasilitasi_bantuan_sosial ?? undefined,
           nama_ibu: values.nama_ibu || undefined,
           nama_ayah: values.nama_ayah || undefined,
-          penggunaan_kontrasepsi: values.penggunaan_kontrasepsi || undefined,
         }
       } else if (isBumil) {
         payload = {
@@ -301,7 +300,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
           usia_kehamilan_minggu: parseNum(values.usia_kehamilan_minggu, true),
           jumlah_anak: parseNum(values.jumlah_anak, true),
           riwayat_penyakit: values.riwayat_penyakit || undefined,
-          kadar_hemoglobin: parseNum(values.kadar_hemoglobin),
+          kadar_hemoglobin: (() => { const v = parseNum(values.kadar_hemoglobin); return (v && v > 0) ? v : undefined; })(),
           berat_janin: parseNum(values.berat_janin),
           terpapar_rokok: values.terpapar_rokok ?? undefined,
           kie: values.kie ?? undefined,
@@ -408,23 +407,10 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
             {/* Balita / Baduta */}
             {isBalita && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label="Penggunaan Kontrasepsi">
-                  <select {...register('penggunaan_kontrasepsi')} className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:h-10 sm:text-base">
-                    <option value="">Pilih KB...</option>
-                    <option value="Pil">Pil</option>
-                    <option value="Suntik">Suntik</option>
-                    <option value="IUD">IUD</option>
-                    <option value="Implan">Implan</option>
-                    <option value="Kondom">Kondom</option>
-                    <option value="MOW">MOW</option>
-                    <option value="MOP">MOP</option>
-                    <option value="Tidak Pakai">Tidak Pakai</option>
-                  </select>
-                </Field>
                 <Field label="Berat Badan Anak (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 8.5" /></Field>
                 <Field label="Tinggi/Panjang Badan Anak (cm)" required><Input register={register} name="tb" type="number" placeholder="Contoh: 72" /></Field>
                 <Field label="Lingkar Kepala (cm)" required><Input register={register} name="lingkar_kepala" type="number" placeholder="Contoh: 45" /></Field>
-                <Field label="Lingkar Lengan Atas (cm)" required><Input register={register} name="lingkar_lengan_atas" type="number" placeholder="Contoh: 15" /></Field>
+                <Field label="Lingkar Lengan Atas / LILA (cm)" required><Input register={register} name="lingkar_lengan_atas" type="number" placeholder="Contoh: 15" /></Field>
                 <Field label="Kondisi Bayi"><Input register={register} name="kondisi" placeholder="Contoh: Sehat" /></Field>
                 <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2 sm:mt-6">
                   <input type="checkbox" id="asi_eksklusif" {...register('asi_eksklusif')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
@@ -509,13 +495,12 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
             {/* Ibu Hamil */}
             {isBumil && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label="Usia Kandungan (Minggu)" required>
+                <Field label="Usia Kandungan (Minggu)">
                   <Input register={register} name="usia_kehamilan_minggu" type="number" placeholder="Contoh: 28" max={45} min={0} />
                   {watch('usia_kehamilan_minggu') > 42 && (
                     <p className="text-[10px] text-red-500 font-bold mt-1 leading-tight">⚠️ Lewat Waktu (Normal 37-42 mgg)</p>
                   )}
                 </Field>
-                <Field label="Anak Ke"><Input register={register} name="jumlah_anak" type="number" placeholder="Contoh: 1" max={20} min={0} /></Field>
                 <Field label="Berat Badan (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 60.5" max={200} min={0} /></Field>
                 <Field label="Tinggi Badan (cm)" required><Input register={register} name="tb" type="number" placeholder="Contoh: 155" max={250} min={0} /></Field>
                 <Field label="IMT">
@@ -547,7 +532,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
                   )}
                 </Field>
                 <Field label="Riwayat Penyakit"><Input register={register} name="riwayat_penyakit" placeholder="Contoh: Tidak ada" /></Field>
-                <Field label="Kadar HB" required>
+                <Field label="Kadar HB">
                   <Input register={register} name="kadar_hemoglobin" type="number" placeholder="Contoh: 12" max={30} min={0} />
                   {watch('kadar_hemoglobin') > 0 && watch('kadar_hemoglobin') < 11 && (
                     <p className="text-[10px] text-red-500 font-bold mt-1 leading-tight">⚠️ Risiko Anemia</p>

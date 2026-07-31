@@ -194,7 +194,7 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
                 {isBumil && (
                   <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
                     {record.jumlah_anak !== undefined && record.jumlah_anak !== null && <div className="text-xs"><span className="text-muted-foreground">Anak Ke-:</span> {record.jumlah_anak}</div>}
-                    {record.kadar_hemoglobin !== undefined && record.kadar_hemoglobin !== null && (
+                    {record.kadar_hemoglobin !== undefined && record.kadar_hemoglobin !== null && Number(record.kadar_hemoglobin) > 0 && (
                       <div className="flex items-center gap-1.5 text-xs">
                         <span className="text-muted-foreground w-16">Hb:</span>
                         <span>{record.kadar_hemoglobin}</span>
@@ -367,7 +367,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">
                   {(() => {
                     const val = record.kadar_hemoglobin;
-                    if (!val) return '-';
+                    if (!val || Number(val) <= 0) return '-';
                     const isRisk = parseFloat(val) > 0 && parseFloat(val) < 11;
                     if (!isRisk) return val;
                     return (

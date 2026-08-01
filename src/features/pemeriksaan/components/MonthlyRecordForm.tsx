@@ -27,7 +27,7 @@ interface OptionalImunisasiValues {
   tanggal_kunjungan?: string
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
       <label className="text-sm font-medium leading-snug text-slate-700 sm:text-[15px]">

@@ -214,8 +214,12 @@ export function VerifikasiPendataanPage() {
           </p>
           <AlertDialog>
             <AlertDialogTrigger
-              className="mt-2 flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium border border-red-200 bg-red-50 hover:bg-red-100 rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
-              disabled={isBataling}
+              render={
+                <button
+                  className="mt-2 flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium border border-red-200 bg-red-50 hover:bg-red-100 rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
+                  disabled={isBataling}
+                />
+              }
             >
               <XCircle className="w-4 h-4" />
               {isBataling ? 'Membatalkan...' : 'Batalkan Verifikasi'}

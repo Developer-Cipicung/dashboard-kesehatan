@@ -2,12 +2,9 @@ import { useState } from 'react'
 import { Plus, Printer, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Warga } from '../services/wargaService'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { useUpdateWarga } from '../hooks/useWarga'
-import { toast } from 'sonner'
+import { TandaiBersalinDialog } from './TandaiBersalinDialog'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
-import { pemeriksaanService } from '../services/pemeriksaanService'
-import { calculateBMI, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from './PatientTable'
+import { calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from './PatientTable'
 
 interface PatientCardProps {
   data: Warga
@@ -49,11 +46,7 @@ export function classifyZScore(bb_u: number | null, tb_u: number | null, bb_tb: 
 
 export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardProps) {
   const [showConfirm, setShowConfirm] = useState(false)
-  const [tanggalPersalinan, setTanggalPersalinan] = useState(new Date().toISOString().split('T')[0])
-  const [tempatPersalinan, setTempatPersalinan] = useState('')
   const [addRecordWargaId, setAddRecordWargaId] = useState<string | null>(null)
-  
-  const { mutateAsync: updateWarga } = useUpdateWarga()
 
   const isBumil = kategori === 'bumil'
 
@@ -150,15 +143,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Berat & Tinggi</span>
                   <span className="text-sm font-semibold text-slate-800">{latestBumil.bb || '-'} kg / {latestBumil.tb || '-'} cm</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">IMT</span>
-                  {(() => {
-                    const bmiData = calculateBMI(latestBumil.bb?.toString(), latestBumil.tb?.toString());
-                    return bmiData ? (
-                      <span className={`text-sm font-semibold ${bmiData.color.split(' ')[0]}`}>{bmiData.value} ({bmiData.status})</span>
-                    ) : <span className="text-sm font-semibold text-slate-800">-</span>;
-                  })()}
-                </div>
+
               </div>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 <div className="flex flex-col">
@@ -190,15 +175,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Berat & Tinggi</span>
                   <span className="text-sm font-semibold text-slate-800">{latestPasca.bb || '-'} kg / {latestPasca.tb || latestBumil?.tb || '-'} cm</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">IMT</span>
-                  {(() => {
-                    const bmiData = calculateBMI(latestPasca.bb?.toString(), (latestPasca.tb || latestBumil?.tb)?.toString());
-                    return bmiData ? (
-                      <span className={`text-sm font-semibold ${bmiData.color.split(' ')[0]}`}>{bmiData.value} ({bmiData.status})</span>
-                    ) : <span className="text-sm font-semibold text-slate-800">-</span>;
-                  })()}
-                </div>
+
               </div>
             </div>
           )}
@@ -210,15 +187,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Berat & Tinggi</span>
                   <span className="text-sm font-semibold text-slate-800">{latestLansia.bb || '-'} kg / {latestLansia.tb || '-'} cm</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">IMT</span>
-                  {(() => {
-                    const bmiData = calculateBMI(latestLansia.bb?.toString(), latestLansia.tb?.toString());
-                    return bmiData ? (
-                      <span className={`text-sm font-semibold ${bmiData.color.split(' ')[0]}`}>{bmiData.value} ({bmiData.status})</span>
-                    ) : <span className="text-sm font-semibold text-slate-800">-</span>;
-                  })()}
-                </div>
+
               </div>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 <div className="flex flex-col">
@@ -317,81 +286,12 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
         </div>
       </div>
 
-      <Dialog open={showConfirm} onOpenChange={(open) => {
-        if (!open) {
-          setShowConfirm(false)
-          setTempatPersalinan('')
-        }
-      }}>
-        <DialogContent className="max-w-[420px] sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Tandai Telah Bersalin</DialogTitle>
-            <DialogDescription>
-              Tandai ibu ini telah bersalin? Masukkan tanggal dan tempat persalinan untuk memindahkan data pasien ke Pasca Persalinan.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 py-2 sm:space-y-4 sm:py-4">
-            <div className="space-y-2">
-              <label htmlFor="tanggal_persalinan" className="text-sm font-medium leading-none">
-                Tanggal Persalinan <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="tanggal_persalinan"
-                type="date"
-                value={tanggalPersalinan}
-                onChange={(e) => setTanggalPersalinan(e.target.value)}
-                className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="tempat_persalinan" className="text-sm font-medium leading-none">
-                Tempat Persalinan <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="tempat_persalinan"
-                type="text"
-                value={tempatPersalinan}
-                onChange={(e) => setTempatPersalinan(e.target.value)}
-                placeholder="Contoh: RSUD / Bidan"
-                className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
-              />
-            </div>
-          </div>
-          <DialogFooter className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
-            <Button variant="outline" className="w-full sm:w-auto" onClick={() => {
-              setShowConfirm(false)
-              setTempatPersalinan('')
-            }}>
-              Batal
-            </Button>
-            <Button 
-              className="w-full sm:w-auto"
-              onClick={async () => {
-                if (!tanggalPersalinan || !tempatPersalinan) return;
-                try {
-                  await updateWarga({ id: data.id, payload: { status_kehamilan: 'PASCA_PERSALINAN', tempat_persalinan: tempatPersalinan } })
-                  await pemeriksaanService.createPasca({
-                    warga_id: data.id,
-                    tanggal_kunjungan: new Date().toISOString().split('T')[0],
-                    tanggal_persalinan: tanggalPersalinan,
-                    bb: latestBumil?.bb || 0,
-                    catatan: 'Data otomatis dari perubahan status Ibu Hamil ke Pasca Persalinan',
-                  })
-                  toast.success('Pasien berhasil ditandai telah bersalin')
-                  window.location.reload()
-                } catch (error) {
-                  toast.error('Gagal memproses data')
-                  console.error(error)
-                }
-                setShowConfirm(false)
-                setTempatPersalinan('')
-              }}
-            >
-              Simpan
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <TandaiBersalinDialog 
+        open={showConfirm} 
+        onOpenChange={(open) => setShowConfirm(open)} 
+        wargaId={data.id} 
+        wargaName={data.nama}
+      />
 
       <MonthlyRecordForm
         open={!!addRecordWargaId}

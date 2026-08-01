@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
-import { calculateIMT, classifyIMT, classifyTekananDarah } from '@/utils/kesehatan'
+import { classifyTekananDarah } from '@/utils/kesehatan'
 import { formatTimeWib } from '@/utils/dateTime'
 import type { ReportImmunisasi, ReportPemeriksaanItem } from '../types/reportPemeriksaan'
 
@@ -81,7 +81,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableHead>Usia Kehamilan (Minggu)</TableHead>
             <TableHead>Berat Badan (kg)</TableHead>
             <TableHead>Tinggi Badan (cm)</TableHead>
-            <TableHead>IMT</TableHead>
+
             <TableHead>LILA (cm)</TableHead>
             <TableHead>Status KEK</TableHead>
             <TableHead>Lingkar Perut (cm)</TableHead>
@@ -104,8 +104,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableHead>Tanggal Persalinan</TableHead>
             <TableHead>Tekanan Darah</TableHead>
             <TableHead>Status TD</TableHead>
-            <TableHead>IMT</TableHead>
-            <TableHead>Status IMT</TableHead>
+
             <TableHead>Kondisi Ibu</TableHead>
             <TableHead>Tinggi Bayi</TableHead>
             <TableHead>Berat Bayi</TableHead>
@@ -124,7 +123,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableHead>Umur (Tahun)</TableHead>
             <TableHead>Tinggi Badan (cm)</TableHead>
             <TableHead>Berat Badan (kg)</TableHead>
-            <TableHead>IMT</TableHead>
+
             <TableHead>Tekanan Darah</TableHead>
             <TableHead>Status TD</TableHead>
             <TableHead>Gula Darah (mg/dL)</TableHead>
@@ -247,12 +246,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell>{item.usia_kehamilan_minggu || '-'}</TableCell>
             <TableCell>{item.bb || '-'}</TableCell>
             <TableCell>{item.tb || '-'}</TableCell>
-            <TableCell>
-              {(() => {
-                const imt = calculateIMT(item.bb ? Number(item.bb) : null, item.tb ? Number(item.tb) : null);
-                return imt !== null ? `${imt.toFixed(1)} (${classifyIMT(imt)})` : '-';
-              })()}
-            </TableCell>
+
             <TableCell>{item.lingkar_lengan_atas || '-'}</TableCell>
             <TableCell>{renderBadge(skek, skekc)}</TableCell>
             <TableCell>{item.lingkar_perut || '-'}</TableCell>
@@ -272,11 +266,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         if (tdStatusP === 'Hipertensi') tdColorP = 'red';
         if (!item.tekanan_darah_sistolik) tdStatusP = '-';
 
-        let imtVal = calculateIMT(item.bb ? Number(item.bb) : null, item.tb ? Number(item.tb) : null);
-        let imtClass = imtVal ? classifyIMT(imtVal) : '-';
-        let imtColor = 'green' as 'green' | 'orange' | 'red';
-        if (imtClass === 'Kurus') imtColor = 'red';
-        if (imtClass === 'Gemuk' || imtClass === 'Obesitas') imtColor = 'orange';
+
 
         return (
           <>
@@ -287,8 +277,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell>{item.tanggal_persalinan ? new Date(item.tanggal_persalinan).toLocaleDateString('id-ID') : '-'}</TableCell>
             <TableCell>{(item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-'}</TableCell>
             <TableCell>{renderBadge(tdStatusP, tdColorP)}</TableCell>
-            <TableCell>{imtVal ? imtVal.toFixed(1) : '-'}</TableCell>
-            <TableCell>{renderBadge(imtClass, imtColor)}</TableCell>
+
             <TableCell>{item.kondisi_ibu || '-'}</TableCell>
             <TableCell>{item.tinggi_badan_bayi || '-'}</TableCell>
             <TableCell>{item.berat_badan_bayi || '-'}</TableCell>
@@ -334,12 +323,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell>{ageText}</TableCell>
             <TableCell>{item.tb || '-'}</TableCell>
             <TableCell>{item.bb || '-'}</TableCell>
-            <TableCell>
-              {(() => {
-                const imt = calculateIMT(item.bb ? Number(item.bb) : null, item.tb ? Number(item.tb) : null);
-                return imt !== null ? `${imt.toFixed(1)} (${classifyIMT(imt)})` : '-';
-              })()}
-            </TableCell>
+
             <TableCell>{(item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-'}</TableCell>
             <TableCell>{renderBadge(tdStatus, tdColor)}</TableCell>
             <TableCell>{item.gula_darah_sewaktu || '-'}</TableCell>

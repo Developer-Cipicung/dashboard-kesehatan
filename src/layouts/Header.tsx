@@ -12,7 +12,6 @@ export function Header() {
   const logout = useAuthStore((state) => state.logout)
   const user = useAuthStore((state) => state.user)
   const posyandu = useAuthStore((state) => state.posyandu)
-  const userRole = typeof user?.role === 'string' ? user.role : 'Kader'
   const userEmail = typeof user?.email === 'string' ? user.email : 'user@cipicung.com'
   
 
@@ -53,11 +52,8 @@ export function Header() {
           />
           <PopoverContent className="w-56" align="end">
             <div className="flex flex-col space-y-2 p-2">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none capitalize">{userRole}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  {userEmail}
-                </p>
+              <div className="flex flex-col space-y-1 gap-2">
+                <p className="text-sm font-medium leading-none capitalize">{userEmail.split("@")[0]}</p>
                 {posyandu && (
                   <p className="text-xs leading-none text-primary mt-1">
                     {posyandu.nama}

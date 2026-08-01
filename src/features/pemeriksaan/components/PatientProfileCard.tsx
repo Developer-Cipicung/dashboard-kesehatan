@@ -41,8 +41,8 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
         <CardHeader>
           <CardTitle className="text-xl flex items-center justify-between">
             <span>{warga.nama}</span>
-            <Button variant="outline" size="sm" className="h-8 px-3 text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 shadow-sm" onClick={() => setIsEditDialogOpen(true)}>
-              <Edit2 className="w-3.5 h-3.5 mr-1.5" />
+            <Button variant="outline" size="sm" className="h-6 p-2 text-[10px] font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 shadow-sm rounded-md" onClick={() => setIsEditDialogOpen(true)}>
+              <Edit2 className="w-3 h-3 mr-1" />
               Edit Profil
             </Button>
           </CardTitle>

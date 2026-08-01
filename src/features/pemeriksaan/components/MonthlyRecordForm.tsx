@@ -8,7 +8,7 @@ import { Pemeriksaan, pemeriksaanService } from '../services/pemeriksaanService'
 import { useCreatePemeriksaan, useUpdatePemeriksaan } from '../hooks/usePemeriksaan'
 import { useGetWargaById } from '@/features/warga/hooks/useWarga'
 import { imunisasiService, VAKSIN_OPTIONS } from '@/features/warga/services/imunisasiService'
-import { calculateBMI, calculateTDStatus, calculateGdsStatus, calculateKolesterolStatus, calculateAsamUratStatus } from '@/features/warga/components/PatientTable'
+import { calculateTDStatus, calculateGdsStatus, calculateKolesterolStatus, calculateAsamUratStatus } from '@/features/warga/components/PatientTable'
 
 interface MonthlyRecordFormProps {
   open: boolean
@@ -27,12 +27,11 @@ interface OptionalImunisasiValues {
   tanggal_kunjungan?: string
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
       <label className="text-sm font-medium leading-snug text-slate-700 sm:text-[15px]">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       {children}
     </div>
@@ -389,7 +388,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Edit Pemeriksaan' : 'Tambah Riwayat Pemeriksaan'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Perbarui data hasil pemeriksaan.' : 'Tambahkan data hasil pemeriksaan baru.'}
+            {isEdit ? 'Perbarui data hasil pemeriksaan. Kosongkan kolom jika data tidak diisi.' : 'Tambahkan data hasil pemeriksaan baru. Kosongkan kolom jika data tidak diisi.'}
             {!isEdit && (previousRecord as any)?.tanggal_kunjungan && (
               <span className="mt-2 block rounded-md border border-amber-200 bg-amber-50 p-2 text-xs font-medium text-amber-700">
                 Terakhir diperiksa pada: {new Date((previousRecord as any).tanggal_kunjungan).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}. Beberapa data sebelumnya disalin secara otomatis.
@@ -400,17 +399,17 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 pt-1 sm:space-y-4 sm:pt-2">
-            <Field label="Tanggal Kunjungan" required>
+            <Field label="Tanggal Kunjungan">
               <Input register={register} name="tanggal_kunjungan" type="date" />
             </Field>
 
             {/* Balita / Baduta */}
             {isBalita && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label="Berat Badan Anak (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 8.5" /></Field>
-                <Field label="Tinggi/Panjang Badan Anak (cm)" required><Input register={register} name="tb" type="number" placeholder="Contoh: 72" /></Field>
-                <Field label="Lingkar Kepala (cm)" required><Input register={register} name="lingkar_kepala" type="number" placeholder="Contoh: 45" /></Field>
-                <Field label="Lingkar Lengan Atas / LILA (cm)" required><Input register={register} name="lingkar_lengan_atas" type="number" placeholder="Contoh: 15" /></Field>
+                <Field label="Berat Badan Anak (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 8.5" /></Field>
+                <Field label="Tinggi/Panjang Badan Anak (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 72" /></Field>
+                <Field label="Lingkar Kepala (cm)"><Input register={register} name="lingkar_kepala" type="number" placeholder="Contoh: 45" /></Field>
+                <Field label="Lingkar Lengan Atas / LILA (cm)"><Input register={register} name="lingkar_lengan_atas" type="number" placeholder="Contoh: 15" /></Field>
                 <Field label="Kondisi Bayi"><Input register={register} name="kondisi" placeholder="Contoh: Sehat" /></Field>
                 <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2 sm:mt-6">
                   <input type="checkbox" id="asi_eksklusif" {...register('asi_eksklusif')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
@@ -501,31 +500,12 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
                     <p className="text-[10px] text-red-500 font-bold mt-1 leading-tight">⚠️ Lewat Waktu (Normal 37-42 mgg)</p>
                   )}
                 </Field>
-                <Field label="Berat Badan (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 60.5" max={200} min={0} /></Field>
-                <Field label="Tinggi Badan (cm)" required><Input register={register} name="tb" type="number" placeholder="Contoh: 155" max={250} min={0} /></Field>
-                <Field label="IMT">
-                  {(() => {
-                    const bb = watch('bb')
-                    const tb = watch('tb')
-                    const bmi = calculateBMI(bb, tb)
-                    if (bmi) {
-                      return (
-                        <div className={`flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm font-bold sm:h-10 ${bmi.color}`}>
-                          <span>{bmi.value}</span>
-                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/50">{bmi.status}</span>
-                        </div>
-                      )
-                    }
-                    return (
-                      <div className="flex h-9 w-full items-center justify-center rounded-md border border-input bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 sm:h-10">
-                        -
-                      </div>
-                    )
-                  })()}
-                </Field>
-                <Field label="Lingkar Perut (cm)" required><Input register={register} name="lingkar_perut" type="number" placeholder="Contoh: 85" max={200} min={0} /></Field>
+                <Field label="Berat Badan (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 60.5" max={200} min={0} /></Field>
+                <Field label="Tinggi Badan (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 155" max={250} min={0} /></Field>
+
+                <Field label="Lingkar Perut (cm)"><Input register={register} name="lingkar_perut" type="number" placeholder="Contoh: 85" max={200} min={0} /></Field>
                 <Field label="Tinggi Fundus (cm)"><Input register={register} name="tinggi_fundus" type="number" placeholder="Contoh: 20" max={100} min={0} /></Field>
-                <Field label="LILA (cm)" required>
+                <Field label="LILA (cm)">
                   <Input register={register} name="lingkar_lengan_atas" type="number" placeholder="Contoh: 24" max={60} min={0} />
                   {watch('lingkar_lengan_atas') > 0 && watch('lingkar_lengan_atas') < 23.5 && (
                     <p className="text-[10px] text-red-500 font-bold mt-1 leading-tight">⚠️ Risiko KEK</p>
@@ -569,29 +549,10 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
             {/* Lansia */}
             {isLansia && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label="Berat Badan Lansia (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 58" /></Field>
-                <Field label="Tinggi Badan Lansia (cm)" required><Input register={register} name="tb" type="number" placeholder="Contoh: 160" /></Field>
-                <Field label="IMT">
-                  {(() => {
-                    const bb = watch('bb')
-                    const tb = watch('tb')
-                    const bmi = calculateBMI(bb, tb)
-                    if (bmi) {
-                      return (
-                        <div className={`flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm font-bold sm:h-10 ${bmi.color}`}>
-                          <span>{bmi.value}</span>
-                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/50">{bmi.status}</span>
-                        </div>
-                      )
-                    }
-                    return (
-                      <div className="flex h-9 w-full items-center justify-center rounded-md border border-input bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 sm:h-10">
-                        -
-                      </div>
-                    )
-                  })()}
-                </Field>
-                <Field label="Tekanan Darah (mmHg)" required>
+                <Field label="Berat Badan Lansia (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 58" /></Field>
+                <Field label="Tinggi Badan Lansia (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 160" /></Field>
+
+                <Field label="Tekanan Darah (mmHg)">
                   <div>
                     <TdInput name="td" />
                     {(() => {
@@ -657,29 +618,10 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
             {/* Pasca Persalinan */}
             {isPasca && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label="Tanggal Persalinan" required><Input register={register} name="tanggal_persalinan" type="date" /></Field>
+                <Field label="Tanggal Persalinan"><Input register={register} name="tanggal_persalinan" type="date" /></Field>
                 <Field label="Tinggi Badan Ibu (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 155" /></Field>
-                <Field label="Berat Badan Ibu (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 62" /></Field>
-                <Field label="IMT">
-                  {(() => {
-                    const bb = watch('bb')
-                    const tb = watch('tb')
-                    const bmi = calculateBMI(bb, tb)
-                    if (bmi) {
-                      return (
-                        <div className={`flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm font-bold sm:h-10 ${bmi.color}`}>
-                          <span>{bmi.value}</span>
-                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/50">{bmi.status}</span>
-                        </div>
-                      )
-                    }
-                    return (
-                      <div className="flex h-9 w-full items-center justify-center rounded-md border border-input bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 sm:h-10">
-                        -
-                      </div>
-                    )
-                  })()}
-                </Field>
+                <Field label="Berat Badan Ibu (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 62" /></Field>
+
                 <div className="sm:col-span-2">
                   <Field label="Kondisi Ibu"><Input register={register} name="kondisi_ibu" placeholder="Contoh: Baik, tidak ada keluhan" /></Field>
                 </div>

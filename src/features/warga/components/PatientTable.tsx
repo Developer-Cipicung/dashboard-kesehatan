@@ -1,17 +1,13 @@
 import { useState } from 'react'
 import { Warga } from '../services/wargaService'
-import { pemeriksaanService } from '../services/pemeriksaanService'
 import { ActivitySquare, Edit3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { TandaiBersalinDialog } from './TandaiBersalinDialog'
 import { ImunisasiCell } from './ImunisasiCell'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
 import { Plus } from 'lucide-react'
 import { classifyZScore } from './PatientCard'
-import { toast } from 'sonner'
-import { useUpdateWarga } from '../hooks/useWarga'
-
 interface PatientTableProps {
   data: Warga[]
   kategori: string
@@ -369,11 +365,8 @@ function Cell({
 }
 
 export function PatientTable({ data, kategori, onView }: PatientTableProps) {
-  const { mutateAsync: updateWarga } = useUpdateWarga()
   const [rows, setRows] = useState<Record<string, RowState>>({})
   const [confirmId, setConfirmId] = useState<string | null>(null)
-  const [tanggalPersalinan, setTanggalPersalinan] = useState(new Date().toISOString().split('T')[0])
-  const [tempatPersalinan, setTempatPersalinan] = useState('')
   const [addRecordWargaId, setAddRecordWargaId] = useState<string | null>(null)
 
   const getRow = (id: string): RowState => rows[id] ?? emptyRow()
@@ -397,18 +390,17 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
       <table className="w-full min-w-[1400px] text-sm text-left">
         <thead>
           <tr className="border-b border-slate-200">
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs w-[160px]">NIK</th>
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs w-[190px]">Nama</th>
-            <th colSpan={isBalita ? 12 : isBumil ? 23 : isPasca ? 16 : 10} className="px-4 py-3 border-l border-slate-100">
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-0 z-20 bg-white min-w-[160px] max-w-[160px] w-[160px]" rowSpan={2}>NIK</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-[160px] z-20 bg-white min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-200 shadow-[1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Nama</th>
+            <th colSpan={isBalita ? 12 : isBumil ? 23 : isPasca ? 16 : 10} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
               <div className="flex items-center text-primary font-bold text-xs uppercase tracking-wider">
                 <ActivitySquare className="w-4 h-4 mr-2" />
                 Record Pemeriksaan Terakhir
               </div>
             </th>
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-100 w-[180px]">Aksi</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-100 w-[180px] align-middle" rowSpan={2}>Aksi</th>
           </tr>
           <tr className="border-b-2 border-primary bg-primary/5">
-            <th colSpan={2}></th>
 
             <th className="px-3 py-3 font-semibold text-primary text-xs">Tgl Periksa</th>
             <th className="px-3 py-3 font-semibold text-primary text-xs">Usia</th>
@@ -439,7 +431,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Usia Kandungan (mgg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Ibu (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Ibu (kg)</th>
-                <th className="px-3 py-3 font-semibold text-primary text-xs text-center">IMT</th>
+
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Lingkar Perut (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi<br/>Fundus (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Riwayat<br/>Penyakit</th>
@@ -460,7 +452,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
               <>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Lansia (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Lansia (kg)</th>
-                <th className="px-3 py-3 font-semibold text-primary text-xs text-center">IMT</th>
+
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tekanan Darah (mmHg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Gula Darah Sewaktu (mg/dL)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Kolesterol (mg/dL)</th>
@@ -475,7 +467,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                 <th className="px-3 py-3 font-semibold text-primary text-xs min-w-[140px]">Tgl Persalinan</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Ibu (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Ibu (kg)</th>
-                <th className="px-3 py-3 font-semibold text-primary text-xs text-center">IMT</th>
+
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tekanan Darah (mmHg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Kondisi Ibu</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi<br/>Bayi (cm)</th>
@@ -490,8 +482,6 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
             {!isLansia && (
               <th className="px-3 py-3 font-semibold text-primary text-xs">Tgl Kunjungan<br/>Berikutnya</th>
             )}
-
-            <th className="border-l border-slate-100"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -606,10 +596,10 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
             // Provide disabled rendering explicitly for table
 
             return (
-              <tr key={warga.id} className="hover:bg-primary/5 transition-colors">
-                <td className="px-4 py-3 text-slate-500 font-mono text-xs">{warga.nik}</td>
-                <td className="px-4 py-3">
-                  <div className="font-semibold text-slate-800 text-sm">{warga.nama}</div>
+              <tr key={warga.id} className="hover:bg-primary/5 transition-colors group">
+                <td className="px-4 py-3 text-slate-500 font-mono text-xs sticky left-0 z-10 bg-white group-hover:bg-slate-50 min-w-[160px] max-w-[160px] w-[160px]">{warga.nik}</td>
+                <td className="px-4 py-3 sticky left-[160px] z-10 bg-white group-hover:bg-slate-50 min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-100 shadow-[1px_0_3px_rgba(0,0,0,0.03)]">
+                  <div className="font-semibold text-slate-800 text-sm truncate" title={warga.nama}>{warga.nama}</div>
                   <div className="text-xs text-slate-400 mt-0.5">{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</div>
                 </td>
 
@@ -677,33 +667,6 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                           disabled={true} 
                         />
                       </td>
-                      <td className="px-3 py-3">
-                        {lastZScores ? (
-                          <div className="flex flex-col gap-1.5">
-                            {lastZScores.kategori_bb_u && (
-                               <span className={`text-[10px] px-2 py-0.5 rounded-md w-max ${lastZScores.kategori_bb_u.includes('Kurang') || lastZScores.kategori_bb_u.includes('Lebih') ? 'bg-red-50 text-red-600 border border-red-200 font-bold' : 'bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold'}`}>
-                                 BB/U: {lastZScores.kategori_bb_u}
-                               </span>
-                            )}
-                            {lastZScores.kategori_tb_u && (
-                               <span className={`text-[10px] px-2 py-0.5 rounded-md w-max ${lastZScores.kategori_tb_u.includes('Pendek') || lastZScores.kategori_tb_u.includes('Tinggi') ? 'bg-red-50 text-red-600 border border-red-200 font-bold' : 'bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold'}`}>
-                                 TB/U: {lastZScores.kategori_tb_u}
-                               </span>
-                            )}
-                            {lastZScores.kategori_bb_tb && (
-                               <span className={`text-[10px] px-2 py-0.5 rounded-md w-max ${lastZScores.kategori_bb_tb.includes('Buruk') || lastZScores.kategori_bb_tb.includes('Kurang') || lastZScores.kategori_bb_tb.includes('Obesitas') ? 'bg-red-50 text-red-600 border border-red-200 font-bold' : lastZScores.kategori_bb_tb.includes('Risiko') ? 'bg-amber-50 text-amber-600 border border-amber-200 font-bold' : 'bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold'}`}>
-                                 BB/TB: {lastZScores.kategori_bb_tb}
-                               </span>
-                            )}
-                          </div>
-                        ) : '-'}
-                      </td>
-                    <td className="px-3 py-3">
-                      <Cell type="checkbox" value={lastAsiEksklusif as any} onChange={(v) => set(warga.id, 'asi_eksklusif', v)} width="w-full" disabled={true} />
-                    </td>
-                    <td className="px-3 py-3">
-                      <ImunisasiCell wargaId={warga.id} disabled={true} />
-                    </td>
                     <td className="px-3 py-3">
                       <Cell type="checkbox" value={lastBansos as any} onChange={(v) => set(warga.id, 'fasilitasi_bantuan_sosial', v)} width="w-full" disabled={true} />
                     </td>
@@ -748,19 +711,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.bb} onChange={(v) => set(warga.id, 'bb', v)} placeholder={lastBb || '-'} width="w-[70px]" disabled={true} max={200} min={0} />
                       </td>
-                    <td className="px-3 py-3">
-                      {(() => {
-                        const bmiData = calculateBMI(row.bb || lastBb, row.tfuTb || lastTfuTb);
-                        return bmiData ? (
-                          <div className={`text-[11px] font-bold px-1.5 py-1 rounded border text-center leading-tight whitespace-nowrap ${bmiData.color}`} title="Indeks Massa Tubuh">
-                            {bmiData.value}<br/>
-                            <span className="font-medium text-[9px] uppercase tracking-wider">{bmiData.status}</span>
-                          </div>
-                        ) : (
-                          <div className="text-xs text-slate-400 text-center">-</div>
-                        )
-                      })()}
-                    </td>
+
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.lingkar_perut} onChange={(v) => set(warga.id, 'lingkar_perut', v)} placeholder={lastLingkarPerut || '-'} width="w-[70px]" disabled={true} max={200} min={0} />
                       </td>
@@ -831,19 +782,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.bb} onChange={(v) => set(warga.id, 'bb', v)} placeholder={lastBb || '-'} width="w-[70px]" disabled={true} />
                       </td>
-                    <td className="px-3 py-3">
-                      {(() => {
-                        const bmiData = calculateBMI(row.bb || lastBb, row.tfuTb || lastTfuTb);
-                        return bmiData ? (
-                          <div className={`text-[11px] font-bold px-1.5 py-1 rounded border text-center leading-tight whitespace-nowrap ${bmiData.color}`} title="Indeks Massa Tubuh">
-                            {bmiData.value}<br/>
-                            <span className="font-medium text-[9px] uppercase tracking-wider">{bmiData.status}</span>
-                          </div>
-                        ) : (
-                          <div className="text-xs text-slate-400 text-center">-</div>
-                        )
-                      })()}
-                    </td>
+
                       <td className="px-3 py-3">
                         {(() => {
                           const val = row.td || lastTd;
@@ -916,19 +855,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.bb} onChange={(v) => set(warga.id, 'bb', v)} placeholder={lastBb || '-'} width="w-[70px]" disabled={true} max={200} min={0} />
                       </td>
-                      <td className="px-3 py-3">
-                        {(() => {
-                          const bmiData = calculateBMI(row.bb || lastBb, row.tfuTb || lastTfuTb);
-                          return bmiData ? (
-                            <div className={`text-[11px] font-bold px-1.5 py-1 rounded border text-center leading-tight whitespace-nowrap ${bmiData.color}`} title="Indeks Massa Tubuh">
-                              {bmiData.value}<br/>
-                              <span className="font-medium text-[9px] uppercase tracking-wider">{bmiData.status}</span>
-                            </div>
-                          ) : (
-                            <div className="text-xs text-slate-400 text-center">-</div>
-                          )
-                        })()}
-                      </td>
+
                       <td className="px-3 py-3">
                         {(() => {
                           const val = row.td || lastTd;
@@ -1014,81 +941,15 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
         </tbody>
       </table>
     </div>
-      <Dialog open={!!confirmId} onOpenChange={(open) => {
-        if (!open) {
-          setConfirmId(null)
-          setTempatPersalinan('')
-        }
-      }}>
-        <DialogContent className="max-w-[420px] sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Tandai Telah Bersalin</DialogTitle>
-            <DialogDescription>
-              Tandai ibu ini telah bersalin? Masukkan tanggal dan tempat persalinan untuk memindahkan data pasien ke Pasca Persalinan.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 py-2 sm:space-y-4 sm:py-4">
-            <div className="space-y-2">
-              <label htmlFor="tanggal_persalinan" className="text-sm font-medium leading-none">
-                Tanggal Persalinan <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="tanggal_persalinan"
-                type="date"
-                value={tanggalPersalinan}
-                onChange={(e) => setTanggalPersalinan(e.target.value)}
-                className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="tempat_persalinan" className="text-sm font-medium leading-none">
-                Tempat Persalinan <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="tempat_persalinan"
-                type="text"
-                value={tempatPersalinan}
-                onChange={(e) => setTempatPersalinan(e.target.value)}
-                placeholder="Contoh: RSUD / Bidan"
-                className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
-              />
-            </div>
-          </div>
-          <DialogFooter className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
-            <Button variant="outline" onClick={() => {
-              setConfirmId(null)
-              setTempatPersalinan('')
-            }}>
-              Batal
-            </Button>
-            <Button 
-              onClick={async () => {
-                if (!tanggalPersalinan || !tempatPersalinan || !confirmId) return;
-                try {
-                  await updateWarga({ id: confirmId, payload: { status_kehamilan: 'PASCA_PERSALINAN', tempat_persalinan: tempatPersalinan } })
-                  await pemeriksaanService.createPasca({
-                    warga_id: confirmId,
-                    tanggal_kunjungan: new Date().toISOString().split('T')[0],
-                    tanggal_persalinan: tanggalPersalinan,
-                    bb: data.find(x => x.id === confirmId)?.pemeriksaan_bumil?.[0]?.bb || 0,
-                    catatan: 'Data otomatis dari perubahan status Ibu Hamil ke Pasca Persalinan',
-                  })
-                  toast.success('Pasien berhasil ditandai telah bersalin')
-                  window.location.reload()
-                } catch (error) {
-                  toast.error('Gagal memproses data')
-                  console.error(error)
-                }
-                setConfirmId(null)
-                setTempatPersalinan('')
-              }}
-              disabled={!tanggalPersalinan || !tempatPersalinan}
-            >
-              Ya, Pindahkan
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <TandaiBersalinDialog 
+        open={!!confirmId} 
+        onOpenChange={(open) => {
+          if (!open) setConfirmId(null)
+        }} 
+        wargaId={confirmId} 
+        wargaName={confirmId ? data.find(x => x.id === confirmId)?.nama : undefined}
+      />
+
       
       <MonthlyRecordForm
         open={!!addRecordWargaId}

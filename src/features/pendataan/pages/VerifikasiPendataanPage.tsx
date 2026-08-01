@@ -18,6 +18,17 @@ import {
 } from '@/components/ui/table'
 import { CheckCircle2, Lock, XCircle } from 'lucide-react'
 import { formatDateTimeWib } from '@/utils/dateTime'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 type SummaryCategory = 'baduta' | 'balita' | 'bumil' | 'pasca_persalinan' | 'lansia' | 'warga_baru'
 
@@ -201,18 +212,38 @@ export function VerifikasiPendataanPage() {
           <p className="text-emerald-600 max-w-md">
             Data posyandu untuk bulan ini telah berhasil dikunci dan direkapitulasi. Anda dapat melihat laporannya di menu Laporan.
           </p>
-          <button
-            className="mt-2 flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium border border-red-200 bg-red-50 hover:bg-red-100 rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
-            disabled={isBataling}
-            onClick={() => {
-              if (window.confirm('Batalkan verifikasi pendataan ini? Status akan kembali ke Draft dan data bisa diubah kembali.')) {
-                if (statusData?.id) batalkanPendataan(statusData.id)
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={
+                <button
+                  className="mt-2 flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium border border-red-200 bg-red-50 hover:bg-red-100 rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
+                  disabled={isBataling}
+                />
               }
-            }}
-          >
-            <XCircle className="w-4 h-4" />
-            {isBataling ? 'Membatalkan...' : 'Batalkan Verifikasi'}
-          </button>
+            >
+              <XCircle className="w-4 h-4" />
+              {isBataling ? 'Membatalkan...' : 'Batalkan Verifikasi'}
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Batalkan Verifikasi?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Apakah Anda yakin ingin membatalkan verifikasi pendataan ini? Status akan kembali ke Draft dan data bisa diubah kembali.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Tutup</AlertDialogCancel>
+                <AlertDialogAction 
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={() => {
+                    if (statusData?.id) batalkanPendataan(statusData.id)
+                  }}
+                >
+                  Ya, Batalkan Verifikasi
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       ) : (
         <div className="bg-white border rounded-xl p-6 shadow-sm">

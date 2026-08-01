@@ -76,7 +76,7 @@ export const pendataanBulananService = {
     return response.data
   },
   unsubmit: async (id: string) => {
-    const response = await api.post<{ success: boolean; message: string }>(`/pendataan-bulanan/${id}/unsubmit`)
+    const response = await api.post<{ success: boolean; message: string }>(`/pendataan-bulanan/${id}/unverify`)
     return response.data
   },
 }

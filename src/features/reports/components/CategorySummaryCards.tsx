@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { calculateIMT, classifyIMT, classifyTekananDarah } from '@/utils/kesehatan';
+import { classifyTekananDarah } from '@/utils/kesehatan';
 
 interface CategorySummaryCardsProps {
   kategori: string;
@@ -96,19 +96,9 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
   }
 
   if (kategori === 'pasca_persalinan' || kategori === 'pasca-persalinan') {
-    let imtStats = { kurus: 0, normal: 0, gemuk_obesitas: 0 };
     let tdStats = { normal: 0, prahipertensi: 0, hipertensi: 0 };
     
-    data.forEach(item => {
-      const bb = item.bb ? Number(item.bb) : null;
-      const tb = item.tb ? Number(item.tb) : null;
-      const imt = calculateIMT(bb, tb);
-      const klasifikasiImt = classifyIMT(imt).toLowerCase();
-      if (klasifikasiImt === 'kurus') imtStats.kurus++;
-      if (klasifikasiImt === 'normal') imtStats.normal++;
-      if (klasifikasiImt === 'gemuk' || klasifikasiImt === 'obesitas') imtStats.gemuk_obesitas++;
-
-      const klasifikasiTd = classifyTekananDarah(item.tekanan_darah_sistolik, item.tekanan_darah_diastolik).toLowerCase();
+    data.forEach(item => {      const klasifikasiTd = classifyTekananDarah(item.tekanan_darah_sistolik, item.tekanan_darah_diastolik).toLowerCase();
       if (klasifikasiTd === 'hipotensi' || klasifikasiTd === 'normal') tdStats.normal++;
       if (klasifikasiTd === 'prahipertensi') tdStats.prahipertensi++;
       if (klasifikasiTd === 'hipertensi') tdStats.hipertensi++;
@@ -122,11 +112,6 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
           </div>
         </div>
         
-        {renderGroupedCard('Indeks Massa Tubuh (IMT)', [
-          { label: 'Normal', value: imtStats.normal, color: 'green' },
-          { label: 'Kurus', value: imtStats.kurus, color: 'red' },
-          { label: 'Gemuk/Obesitas', value: imtStats.gemuk_obesitas, color: 'orange' },
-        ])}
 
         {renderGroupedCard('Tekanan Darah', [
           { label: 'Normal', value: tdStats.normal, color: 'green' },

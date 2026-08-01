@@ -20,12 +20,12 @@ import { WargaCombobox } from './WargaCombobox'
 import { toast } from 'sonner'
 
 const getFormSchema = (isAnak: boolean) => z.object({
-  nik: z.string().min(16, 'NIK harus 16 digit').max(16, 'NIK harus 16 digit'),
-  nomor: z.string().min(1, 'Nomor Telepon wajib diisi'),
+  nik: z.string().max(16, 'NIK maksimal 16 digit').optional(),
+  nomor: z.string().optional(),
   nama: z.string().min(1, 'Nama wajib diisi'),
-  tanggal_lahir: z.string().min(1, 'Tanggal lahir wajib diisi'),
-  tempat_lahir: z.string().min(1, 'Tempat lahir wajib diisi'),
-  jenis_kelamin: z.enum(['L', 'P']),
+  tanggal_lahir: z.string().optional(),
+  tempat_lahir: z.string().optional(),
+  jenis_kelamin: z.enum(['L', 'P']).optional(),
   status_kehamilan: z.enum(['TIDAK_HAMIL', 'HAMIL', 'PASCA_PERSALINAN']).optional(),
   nama_ayah: z.string().optional(),
   nama_ibu: z.string().optional(),
@@ -34,14 +34,6 @@ const getFormSchema = (isAnak: boolean) => z.object({
   penggunaan_kontrasepsi: z.string().optional(),
   hpht: z.string().optional(),
   ibu_id: z.string().optional(),
-}).superRefine((data, ctx) => {
-  if (isAnak && (!data.nama_ayah || data.nama_ayah.trim() === '')) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'Nama Ayah wajib diisi',
-      path: ['nama_ayah'],
-    });
-  }
 })
 
 interface EditPatientDialogProps {
@@ -156,7 +148,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                   <FormField
                     control={methods.control}
                     name="nik"
-                    label={<>NIK <span className="text-red-500">*</span></>}
+                    label={<>NIK</>}
                     placeholder="Masukkan 16 digit NIK"
                     type="text"
                   />
@@ -170,7 +162,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                   <FormField
                     control={methods.control}
                     name="nomor"
-                    label={<>Nomor Telepon <span className="text-red-500">*</span></>}
+                    label={<>Nomor Telepon</>}
                     placeholder="Contoh: 08123456789"
                     type="text"
                   />
@@ -180,7 +172,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                       name="jenis_kelamin"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Jenis Kelamin <span className="text-red-500">*</span></FormLabel>
+                          <FormLabel>Jenis Kelamin</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger className="h-9 text-sm sm:h-10 sm:text-base">
@@ -203,7 +195,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                       name="status_kehamilan"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Status Kehamilan <span className="text-red-500">*</span></FormLabel>
+                          <FormLabel>Status Kehamilan</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger className="h-9 text-sm sm:h-10 sm:text-base">
@@ -233,14 +225,14 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                   <FormField
                     control={methods.control}
                     name="tempat_lahir"
-                    label={<>Tempat Lahir <span className="text-red-500">*</span></>}
+                    label={<>Tempat Lahir</>}
                     placeholder="Contoh: Jakarta"
                     type="text"
                   />
                   <FormField
                     control={methods.control}
                     name="tanggal_lahir"
-                    label={<>Tanggal Lahir <span className="text-red-500">*</span></>}
+                    label={<>Tanggal Lahir</>}
                     type="date"
                   />
                 </div>
@@ -268,7 +260,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                       <FormField
                         control={methods.control}
                         name="hpht"
-                        label={<>HPHT (Hari Pertama Haid Terakhir) <span className="text-red-500">*</span></>}
+                        label={<>HPHT (Hari Pertama Haid Terakhir)</>}
                         type="date"
                       />
                     )}
@@ -277,7 +269,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                         <FormField
                           control={methods.control}
                           name="nama_ayah"
-                          label={<>Nama Ayah <span className="text-red-500">*</span></>}
+                          label={<>Nama Ayah</>}
                           placeholder="Contoh: Budi"
                           type="text"
                         />
@@ -286,7 +278,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                           name="ibu_id"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Nama Ibu <span className="text-red-500">*</span></FormLabel>
+                              <FormLabel>Nama Ibu</FormLabel>
                               <WargaCombobox
                                 wargaList={ibuList}
                                 value={field.value || 'none'}

@@ -54,12 +54,7 @@ export function ReportFilters({ kategori, subFilters, setSubFilters }: ReportFil
   if (kategori === 'pasca_persalinan' || kategori === 'pasca-persalinan') {
     return (
       <div className="flex flex-wrap gap-4 mt-4 bg-slate-50 p-4 rounded-lg border">
-        {renderSelect('imt', 'Status IMT', [
-          { value: 'kurus', label: 'Kurus' },
-          { value: 'normal', label: 'Normal' },
-          { value: 'gemuk', label: 'Gemuk' },
-          { value: 'obesitas', label: 'Obesitas' },
-        ])}
+
         {renderSelect('tensi', 'Tekanan Darah', [
           { value: 'hipotensi', label: 'Hipotensi' },
           { value: 'normal', label: 'Normal' },
@@ -99,12 +94,7 @@ export function ReportFilters({ kategori, subFilters, setSubFilters }: ReportFil
   if (kategori === 'lansia') {
     return (
       <div className="flex flex-wrap gap-4 mt-4 bg-slate-50 p-4 rounded-lg border">
-        {renderSelect('imt', 'Status IMT', [
-          { value: 'kurus', label: 'Kurus' },
-          { value: 'normal', label: 'Normal' },
-          { value: 'gemuk', label: 'Gemuk' },
-          { value: 'obesitas', label: 'Obesitas' },
-        ])}
+
         {renderSelect('tensi', 'Tekanan Darah', [
           { value: 'hipotensi', label: 'Hipotensi' },
           { value: 'normal', label: 'Normal' },

@@ -19,9 +19,10 @@ import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { ErrorState } from '@/components/feedback/ErrorState'
 import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
 import {
-  calculateIMT,
-  classifyIMT,
   classifyTekananDarah,
+  calculateAsamUratStatus,
+  calculateKolesterolStatus,
+  calculateGdsStatus
 } from '@/utils/kesehatan'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -176,24 +177,12 @@ export function ReportPage() {
           if (subFilters.kie === 'ya' && !item.kie) passed = false
           if (subFilters.kie === 'tidak' && item.kie) passed = false
         }
-        if (subFilters.imt) {
-          const bb = item.bb ? Number(item.bb) : null
-          const tb = item.tb ? Number(item.tb) : null
-          const imt = calculateIMT(bb, tb)
-          const klass = classifyIMT(imt).toLowerCase()
-          if (klass !== subFilters.imt) passed = false
-        }
+
       }
 
       // Pasca / Lansia
       if (kategoriFilter.startsWith('pasca') || kategoriFilter === 'lansia') {
-        if (subFilters.imt) {
-          const bb = item.bb ? Number(item.bb) : null
-          const tb = item.tb ? Number(item.tb) : null
-          const imt = calculateIMT(bb, tb)
-          const klass = classifyIMT(imt).toLowerCase()
-          if (klass !== subFilters.imt) passed = false
-        }
+
         if (subFilters.tensi) {
           const tensi = classifyTekananDarah(
             item.tekanan_darah_sistolik,

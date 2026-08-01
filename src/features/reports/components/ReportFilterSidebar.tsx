@@ -63,23 +63,13 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
           { value: 'ya', label: 'Diberikan' },
           { value: 'tidak', label: 'Tidak Diberikan' },
         ])}
-        {renderSelect('imt', '5. Status IMT', [
-          { value: 'kurus', label: 'Kurus' },
-          { value: 'normal', label: 'Normal' },
-          { value: 'gemuk', label: 'Gemuk' },
-          { value: 'obesitas', label: 'Obesitas' },
-        ])}
+
       </>
     );
   } else if (kategori === 'pasca_persalinan' || kategori === 'pasca-persalinan') {
     filtersContent = (
       <>
-        {renderSelect('imt', '1. Status IMT', [
-          { value: 'kurus', label: 'Kurus' },
-          { value: 'normal', label: 'Normal' },
-          { value: 'gemuk', label: 'Gemuk' },
-          { value: 'obesitas', label: 'Obesitas' },
-        ])}
+
         {renderSelect('tensi', '2. Tekanan Darah', [
           { value: 'hipotensi', label: 'Hipotensi' },
           { value: 'normal', label: 'Normal' },
@@ -147,12 +137,7 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
           { value: 'normal', label: 'Normal' },
           { value: 'tinggi', label: 'Tinggi' },
         ])}
-        {renderSelect('imt', '3. IMT / Status Gizi', [
-          { value: 'kurus', label: 'Kurus' },
-          { value: 'normal', label: 'Normal' },
-          { value: 'gemuk', label: 'Gemuk' },
-          { value: 'obesitas', label: 'Obesitas' },
-        ])}
+
         {renderSelect('kolesterol', '4. Kolesterol', [
           { value: 'normal', label: 'Normal' },
           { value: 'tinggi', label: 'Tinggi' },

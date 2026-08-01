@@ -150,15 +150,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Berat & Tinggi</span>
                   <span className="text-sm font-semibold text-slate-800">{latestBumil.bb || '-'} kg / {latestBumil.tb || '-'} cm</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">IMT</span>
-                  {(() => {
-                    const bmiData = calculateBMI(latestBumil.bb?.toString(), latestBumil.tb?.toString());
-                    return bmiData ? (
-                      <span className={`text-sm font-semibold ${bmiData.color.split(' ')[0]}`}>{bmiData.value} ({bmiData.status})</span>
-                    ) : <span className="text-sm font-semibold text-slate-800">-</span>;
-                  })()}
-                </div>
+
               </div>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 <div className="flex flex-col">
@@ -190,15 +182,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Berat & Tinggi</span>
                   <span className="text-sm font-semibold text-slate-800">{latestPasca.bb || '-'} kg / {latestPasca.tb || latestBumil?.tb || '-'} cm</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">IMT</span>
-                  {(() => {
-                    const bmiData = calculateBMI(latestPasca.bb?.toString(), (latestPasca.tb || latestBumil?.tb)?.toString());
-                    return bmiData ? (
-                      <span className={`text-sm font-semibold ${bmiData.color.split(' ')[0]}`}>{bmiData.value} ({bmiData.status})</span>
-                    ) : <span className="text-sm font-semibold text-slate-800">-</span>;
-                  })()}
-                </div>
+
               </div>
             </div>
           )}
@@ -210,15 +194,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Berat & Tinggi</span>
                   <span className="text-sm font-semibold text-slate-800">{latestLansia.bb || '-'} kg / {latestLansia.tb || '-'} cm</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">IMT</span>
-                  {(() => {
-                    const bmiData = calculateBMI(latestLansia.bb?.toString(), latestLansia.tb?.toString());
-                    return bmiData ? (
-                      <span className={`text-sm font-semibold ${bmiData.color.split(' ')[0]}`}>{bmiData.value} ({bmiData.status})</span>
-                    ) : <span className="text-sm font-semibold text-slate-800">-</span>;
-                  })()}
-                </div>
+
               </div>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 <div className="flex flex-col">

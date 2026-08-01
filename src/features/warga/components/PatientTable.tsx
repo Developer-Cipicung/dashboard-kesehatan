@@ -438,7 +438,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Usia Kandungan (mgg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Ibu (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Ibu (kg)</th>
-                <th className="px-3 py-3 font-semibold text-primary text-xs text-center">IMT</th>
+
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Lingkar Perut (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi<br/>Fundus (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Riwayat<br/>Penyakit</th>
@@ -459,7 +459,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
               <>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Lansia (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Lansia (kg)</th>
-                <th className="px-3 py-3 font-semibold text-primary text-xs text-center">IMT</th>
+
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tekanan Darah (mmHg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Gula Darah Sewaktu (mg/dL)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Kolesterol (mg/dL)</th>
@@ -474,7 +474,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                 <th className="px-3 py-3 font-semibold text-primary text-xs min-w-[140px]">Tgl Persalinan</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Ibu (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Ibu (kg)</th>
-                <th className="px-3 py-3 font-semibold text-primary text-xs text-center">IMT</th>
+
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tekanan Darah (mmHg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Kondisi Ibu</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi<br/>Bayi (cm)</th>
@@ -718,19 +718,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.bb} onChange={(v) => set(warga.id, 'bb', v)} placeholder={lastBb || '-'} width="w-[70px]" disabled={true} max={200} min={0} />
                       </td>
-                    <td className="px-3 py-3">
-                      {(() => {
-                        const bmiData = calculateBMI(row.bb || lastBb, row.tfuTb || lastTfuTb);
-                        return bmiData ? (
-                          <div className={`text-[11px] font-bold px-1.5 py-1 rounded border text-center leading-tight whitespace-nowrap ${bmiData.color}`} title="Indeks Massa Tubuh">
-                            {bmiData.value}<br/>
-                            <span className="font-medium text-[9px] uppercase tracking-wider">{bmiData.status}</span>
-                          </div>
-                        ) : (
-                          <div className="text-xs text-slate-400 text-center">-</div>
-                        )
-                      })()}
-                    </td>
+
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.lingkar_perut} onChange={(v) => set(warga.id, 'lingkar_perut', v)} placeholder={lastLingkarPerut || '-'} width="w-[70px]" disabled={true} max={200} min={0} />
                       </td>
@@ -801,19 +789,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.bb} onChange={(v) => set(warga.id, 'bb', v)} placeholder={lastBb || '-'} width="w-[70px]" disabled={true} />
                       </td>
-                    <td className="px-3 py-3">
-                      {(() => {
-                        const bmiData = calculateBMI(row.bb || lastBb, row.tfuTb || lastTfuTb);
-                        return bmiData ? (
-                          <div className={`text-[11px] font-bold px-1.5 py-1 rounded border text-center leading-tight whitespace-nowrap ${bmiData.color}`} title="Indeks Massa Tubuh">
-                            {bmiData.value}<br/>
-                            <span className="font-medium text-[9px] uppercase tracking-wider">{bmiData.status}</span>
-                          </div>
-                        ) : (
-                          <div className="text-xs text-slate-400 text-center">-</div>
-                        )
-                      })()}
-                    </td>
+
                       <td className="px-3 py-3">
                         {(() => {
                           const val = row.td || lastTd;
@@ -886,19 +862,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.bb} onChange={(v) => set(warga.id, 'bb', v)} placeholder={lastBb || '-'} width="w-[70px]" disabled={true} max={200} min={0} />
                       </td>
-                      <td className="px-3 py-3">
-                        {(() => {
-                          const bmiData = calculateBMI(row.bb || lastBb, row.tfuTb || lastTfuTb);
-                          return bmiData ? (
-                            <div className={`text-[11px] font-bold px-1.5 py-1 rounded border text-center leading-tight whitespace-nowrap ${bmiData.color}`} title="Indeks Massa Tubuh">
-                              {bmiData.value}<br/>
-                              <span className="font-medium text-[9px] uppercase tracking-wider">{bmiData.status}</span>
-                            </div>
-                          ) : (
-                            <div className="text-xs text-slate-400 text-center">-</div>
-                          )
-                        })()}
-                      </td>
+
                       <td className="px-3 py-3">
                         {(() => {
                           const val = row.td || lastTd;

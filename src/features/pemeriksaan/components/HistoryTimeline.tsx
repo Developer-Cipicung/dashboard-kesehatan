@@ -110,16 +110,7 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
                       {bb !== undefined && bb !== null ? `${bb} kg` : '-'}
                       {(tb !== undefined && tb !== null) ? ` / ${tb} cm` : ''}
                     </span>
-                    {(isLansia || isPasca) && bb && tb && (
-                      <span className="ml-2">
-                        {(() => {
-                          const bmi = calculateBMI(bb, tb);
-                          return bmi ? (
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded border font-bold ${bmi.color}`}>{bmi.value} ({bmi.status})</span>
-                          ) : null;
-                        })()}
-                      </span>
-                    )}
+
                   </div>
                 </td>
                 
@@ -315,7 +306,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Usia Hamil</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">TB (cm)</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">BB (kg)</th>
-            <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap text-center">IMT</th>
+
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">L. Perut</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">T. Fundus</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Riw. Penyakit</th>
@@ -350,17 +341,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 </td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.tb ?? '-'}</td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.bb ?? '-'}</td>
-                <td className="px-3 py-3 text-slate-600 text-xs text-center">
-                  {(() => {
-                    const bmiData = calculateBMI(record.bb, record.tb);
-                    return bmiData ? (
-                      <div className={`text-[10px] font-bold px-1.5 py-1 rounded border text-center leading-tight whitespace-nowrap ${bmiData.color}`} title="Indeks Massa Tubuh">
-                        {bmiData.value}<br/>
-                        <span className="font-medium text-[8px] uppercase tracking-wider">{bmiData.status}</span>
-                      </div>
-                    ) : '-'
-                  })()}
-                </td>
+
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.lingkar_perut ?? '-'}</td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.tinggi_fundus ?? '-'}</td>
                 <td className="px-4 py-3 text-slate-600 text-xs max-w-[120px] truncate" title={record.riwayat_penyakit}>{record.riwayat_penyakit || '-'}</td>

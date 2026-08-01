@@ -23,12 +23,12 @@ import { toast } from 'sonner'
 import { calculateAgeInMonths } from '@/utils/age'
 
 const formSchema = z.object({
-  nik: z.string().min(1, 'NIK wajib diisi (isi "-" jika tidak diketahui)'),
-  nomor: z.string().min(1, 'Nomor Telepon wajib diisi (isi "-" jika tidak diketahui)'),
+  nik: z.string().optional(),
+  nomor: z.string().optional(),
   nama: z.string().min(1, 'Nama wajib diisi'),
-  tanggal_lahir: z.string().min(1, 'Tanggal lahir wajib diisi'),
-  tempat_lahir: z.string().min(1, 'Tempat lahir wajib diisi'),
-  jenis_kelamin: z.enum(['L', 'P']),
+  tanggal_lahir: z.string().optional(),
+  tempat_lahir: z.string().optional(),
+  jenis_kelamin: z.enum(['L', 'P']).optional(),
   kategori: z.string().min(1, 'Kategori wajib diisi'),
   nama_ayah: z.string().optional(),
   nama_ibu: z.string().optional(),
@@ -39,22 +39,6 @@ const formSchema = z.object({
   jumlah_anak: z.string().optional(),
   hpht: z.string().optional(),
   ibu_id: z.string().optional(),
-}).superRefine((data, ctx) => {
-  const isAnak = data.kategori === 'balita' || data.kategori === 'baduta';
-  if (isAnak && (!data.nama_ayah || data.nama_ayah.trim() === '')) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'Nama Ayah wajib diisi',
-      path: ['nama_ayah'],
-    });
-  }
-  if (isAnak && (!data.nama_ibu || data.nama_ibu.trim() === '')) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'Nama Ibu wajib diisi',
-      path: ['nama_ibu'],
-    });
-  }
 })
 
 type PatientCategory = 'balita' | 'baduta' | 'bumil' | 'pasca_persalinan' | 'lansia'
@@ -314,7 +298,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                           <FormLabel className="text-sm leading-snug sm:text-[15px]">
                             NIK
                           </FormLabel>
-                          <span className="text-[10px] text-slate-500 font-medium">Isi "-" jika tidak membawa KK/KTP</span>
+                          <span className="text-[10px] text-slate-500 font-medium">Kosongkan jika tidak membawa KK/KTP</span>
                         </div>
                         <FormControl>
                           <Input
@@ -348,7 +332,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                       name="jenis_kelamin"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Jenis Kelamin <span className="text-red-500">*</span></FormLabel>
+                          <FormLabel>Jenis Kelamin</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger className="h-9 text-sm sm:h-10 sm:text-base">
@@ -368,7 +352,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                   {isIbuIbu && (
                     <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
                       <span className="block text-sm font-medium leading-snug sm:text-[15px]">
-                        Jenis Kelamin <span className="text-red-500">*</span>
+                        Jenis Kelamin
                       </span>
                       <span className="mt-1 block text-sm font-semibold text-slate-700">Perempuan</span>
                     </div>
@@ -379,7 +363,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                       name="kategori"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Kategori <span className="text-red-500">*</span></FormLabel>
+                          <FormLabel>Kategori</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger className="h-9 text-sm sm:h-10 sm:text-base">
@@ -411,14 +395,14 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                   <FormField
                     control={methods.control}
                     name="tempat_lahir"
-                    label={<>Tempat Lahir <span className="text-red-500">*</span></>}
+                    label={<>Tempat Lahir</>}
                     placeholder="Contoh: Jakarta"
                     type="text"
                   />
                   <FormField
                     control={methods.control}
                     name="tanggal_lahir"
-                    label={<>Tanggal Lahir <span className="text-red-500">*</span></>}
+                    label={<>Tanggal Lahir</>}
                     type="date"
                   />
                 </div>
@@ -438,7 +422,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                         <FormField
                           control={methods.control}
                           name="tanggal_persalinan"
-                          label={<>Tanggal Persalinan <span className="text-red-500">*</span></>}
+                          label={<>Tanggal Persalinan</>}
                           type="date"
                         />
                         <FormField
@@ -454,7 +438,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                       <FormField
                         control={methods.control}
                         name="hpht"
-                        label={<>HPHT (Hari Pertama Haid Terakhir) <span className="text-red-500">*</span></>}
+                        label={<>HPHT (Hari Pertama Haid Terakhir)</>}
                         type="date"
                       />
                     )}
@@ -463,14 +447,14 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                         <FormField
                           control={methods.control}
                           name="nama_ayah"
-                          label={<>Nama Ayah <span className="text-red-500">*</span></>}
+                          label={<>Nama Ayah</>}
                           placeholder="Contoh: Budi"
                           type="text"
                         />
                         <FormField
                           control={methods.control}
                           name="nama_ibu"
-                          label={<>Nama Ibu <span className="text-red-500">*</span></>}
+                          label={<>Nama Ibu</>}
                           placeholder="Contoh: Siti"
                           type="text"
                         />

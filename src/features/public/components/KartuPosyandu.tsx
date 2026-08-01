@@ -78,14 +78,6 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
       return gizi.length > 0 ? gizi.join(', ') : 'Normal';
     };
 
-    const calculateIMT = (bb: any, tb: any) => {
-      if (!bb || !tb) return null;
-      const weight = parseFloat(bb);
-      const heightCm = parseFloat(tb);
-      if (heightCm <= 0 || weight <= 0) return null;
-      const heightM = heightCm / 100;
-      return (weight / (heightM * heightM)).toFixed(1);
-    };
 
     return (
       <div className="space-y-1 mt-2">
@@ -100,32 +92,26 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
               { label: 'TB', value: `${p.tb || '-'} cm` }
             ];
           } else if (type === 'bumil') {
-            const imt = calculateIMT(p.bb || p.berat_badan, p.tb);
             metrics = [
               { label: 'BB', value: `${p.bb || p.berat_badan || '-'} kg` },
               { label: 'TB', value: `${p.tb || '-'} cm` },
-              { label: 'IMT', value: `${imt || '-'}` },
               { label: 'LILA', value: `${p.lingkar_lengan_atas || '-'} cm` },
               { label: 'Usia', value: `${p.usia_kehamilan_minggu || '-'} mgg` },
               { label: 'L.Perut', value: `${p.lingkar_perut || '-'} cm` },
               { label: 'T.Fundus', value: `${p.tinggi_fundus || '-'} cm` }
             ];
           } else if (type === 'pasca') {
-            const imt = calculateIMT(p.berat_badan_ibu, p.tb);
             metrics = [
               { label: 'BB Ibu', value: `${p.berat_badan_ibu || '-'} kg` },
               { label: 'TB Ibu', value: `${p.tb || '-'} cm` },
-              { label: 'IMT Ibu', value: `${imt || '-'}` },
               { label: 'BB Bayi', value: `${p.berat_badan_bayi || '-'} kg` },
               { label: 'TB Bayi', value: `${p.tinggi_badan_bayi || '-'} cm` }
             ];
           } else if (type === 'lansia') {
-            const imt = calculateIMT(p.bb, p.tb);
             metrics = [
               { label: 'Tensi', value: `${p.tekanan_darah_sistolik || '-'}/${p.tekanan_darah_diastolik || '-'}` },
               { label: 'BB', value: `${p.bb || '-'} kg` },
               { label: 'TB', value: `${p.tb || '-'} cm` },
-              { label: 'IMT', value: `${imt || '-'}` },
               { label: 'L.Perut', value: `${p.lingkar_perut || '-'} cm` }
             ];
           }

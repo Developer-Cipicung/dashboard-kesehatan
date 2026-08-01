@@ -28,7 +28,7 @@ import { GlobalPatientSearch } from '../components/GlobalPatientSearch'
 export function DashboardPage() {
   const { data, isLoading, error, refetch } = useDashboardStats()
   const user = useAuthStore((state) => state.user)
-  const posyandu = useAuthStore((state) => state.posyandu)
+  // const posyandu = useAuthStore((state) => state.posyandu)
 
   const currentDate = new Intl.DateTimeFormat('id-ID', {
     weekday: 'long',

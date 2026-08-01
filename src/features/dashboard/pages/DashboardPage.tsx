@@ -14,29 +14,37 @@ import {
   Legend,
 } from 'recharts'
 import { Link } from 'react-router-dom'
-import { Baby, HeartPulse, PersonStanding, Activity, FileBarChart, ClipboardList, CheckSquare } from 'lucide-react'
+import {
+  Baby,
+  HeartPulse,
+  PersonStanding,
+  Activity,
+  FileBarChart,
+  ClipboardList,
+  CheckSquare,
+} from 'lucide-react'
 import { GlobalPatientSearch } from '../components/GlobalPatientSearch'
-
-
-
 
 export function DashboardPage() {
   const { data, isLoading, error, refetch } = useDashboardStats()
-  const user = useAuthStore(state => state.user)
-  const posyandu = useAuthStore(state => state.posyandu)
-  
+  const user = useAuthStore((state) => state.user)
+  const posyandu = useAuthStore((state) => state.posyandu)
+
   const currentDate = new Intl.DateTimeFormat('id-ID', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
   }).format(new Date())
 
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-4 gap-4">
-          <SkeletonCard /><SkeletonCard /><SkeletonCard /><SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
       </div>
     )
@@ -52,14 +60,12 @@ export function DashboardPage() {
     )
   }
 
-  const {
-    kategori_breakdown,
-    kunjungan_6_bulan,
-    pendataan
-  } = data
+  const { kategori_breakdown, kunjungan_6_bulan, pendataan } = data
 
   const userName = typeof user?.nama === 'string' ? user.nama : 'Petugas'
-  const isPendataanSelesai = pendataan && Object.values(pendataan).every((status) => status === 'selesai')
+  const isPendataanSelesai =
+    pendataan &&
+    Object.values(pendataan).every((status) => status === 'selesai')
   const navigationCards = [
     {
       label: 'Balita',
@@ -134,28 +140,38 @@ export function DashboardPage() {
           <h1 className="text-[28px] font-bold text-slate-800 leading-tight">
             Selamat Datang, {userName}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {currentDate} · {posyandu ? `Posyandu ${posyandu.nama}` : 'Pusat Pendataan Kesehatan Cipicung'}
-          </p>
+          <p className="text-sm text-slate-500 mt-1">{currentDate}</p>
         </div>
         {!isPendataanSelesai ? (
-          <Link to="/verifikasi-pendataan" className="bg-primary hover:bg-primary-dark text-white shadow-lg shadow-primary/30 rounded-xl px-6 py-4 flex items-center gap-3 transition-all duration-200">
+          <Link
+            to="/verifikasi-pendataan"
+            className="bg-primary hover:bg-primary-dark text-white shadow-lg shadow-primary/30 rounded-xl px-6 py-4 flex items-center gap-3 transition-all duration-200"
+          >
             <div className="bg-white/20 p-2 rounded-lg">
               <ClipboardList className="w-6 h-6 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-lg text-white">Selesai Pendataan Bulan Ini</span>
-              <span className="text-xs text-white/80">Kunci data & verifikasi riwayat</span>
+              <span className="font-bold text-lg text-white">
+                Selesai Pendataan Bulan Ini
+              </span>
+              <span className="text-xs text-white/80">
+                Kunci data & verifikasi riwayat
+              </span>
             </div>
           </Link>
         ) : (
-          <Link to="/verifikasi-pendataan" className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 rounded-xl px-6 py-4 flex items-center gap-3 transition-all duration-200">
+          <Link
+            to="/verifikasi-pendataan"
+            className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 rounded-xl px-6 py-4 flex items-center gap-3 transition-all duration-200"
+          >
             <div className="bg-white/20 p-2 rounded-lg">
               <ClipboardList className="w-6 h-6 text-white" />
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-lg">Pendataan Selesai</span>
-              <span className="text-xs text-white/80">Lihat rekapitulasi terkunci</span>
+              <span className="text-xs text-white/80">
+                Lihat rekapitulasi terkunci
+              </span>
             </div>
           </Link>
         )}
@@ -171,10 +187,14 @@ export function DashboardPage() {
             to={item.path}
             className={`group min-h-[138px] bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex flex-col items-center justify-center text-center hover:shadow-md ${item.hover} transition-all duration-200 sm:p-5`}
           >
-            <div className={`w-12 h-12 ${item.iconWrap} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}>
+            <div
+              className={`w-12 h-12 ${item.iconWrap} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
+            >
               <item.icon className="w-6 h-6" />
             </div>
-            <span className="font-semibold text-slate-700 mb-1 leading-tight">{item.label}</span>
+            <span className="font-semibold text-slate-700 mb-1 leading-tight">
+              {item.label}
+            </span>
             <span className="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full leading-tight">
               {item.subtitle}
             </span>
@@ -184,21 +204,64 @@ export function DashboardPage() {
 
       <div className="mb-8">
         <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] p-6">
-          <h3 className="text-sm font-bold text-slate-700 mb-6">Pemeriksaan 6 Bulan Terakhir</h3>
+          <h3 className="text-sm font-bold text-slate-700 mb-6">
+            Pemeriksaan 6 Bulan Terakhir
+          </h3>
           <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={kunjungan_6_bulan} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barSize={12}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} dy={10} />
-                <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} />
+              <BarChart
+                data={kunjungan_6_bulan}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                barSize={12}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#E2E8F0"
+                />
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#64748B', fontSize: 12 }}
+                  dy={10}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#64748B', fontSize: 12 }}
+                />
                 <Tooltip
                   cursor={{ fill: '#F1F5F9' }}
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 20px -2px rgba(0,0,0,0.1)' }}
+                  contentStyle={{
+                    borderRadius: '8px',
+                    border: 'none',
+                    boxShadow: '0 4px 20px -2px rgba(0,0,0,0.1)',
+                  }}
                 />
-                <Legend iconType="square" wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }} />
-                <Bar dataKey="ibu" name="Ibu-ibu" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="lansia" name="Lansia" fill="var(--color-primary-light)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="anak" name="Anak-anak" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
+                <Legend
+                  iconType="square"
+                  wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }}
+                />
+                <Bar
+                  dataKey="ibu"
+                  name="Ibu-ibu"
+                  fill="var(--color-primary)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="lansia"
+                  name="Lansia"
+                  fill="var(--color-primary-light)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="anak"
+                  name="Anak-anak"
+                  fill="var(--color-accent)"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

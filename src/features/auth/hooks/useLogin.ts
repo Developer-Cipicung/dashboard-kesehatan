@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { authService, LoginRequest } from '../services/authService'
 import { useAuthStore } from '@/stores/authStore'
+import { useLoginTransitionStore } from '@/stores/loginTransitionStore'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 export function useLogin() {
   const login = useAuthStore((state) => state.login)
+  const setShowWelcome = useLoginTransitionStore((s) => s.setShowWelcome)
   const navigate = useNavigate()
 
   return useMutation({
@@ -21,6 +23,7 @@ export function useLogin() {
         login(token, user)
       }
       toast.success('Login berhasil')
+      setShowWelcome(true)
       navigate('/', { replace: true })
     },
     onError: (_error) => {

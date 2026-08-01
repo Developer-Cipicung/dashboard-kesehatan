@@ -72,7 +72,7 @@ export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaName }:
         <div className="space-y-3 py-2 sm:space-y-4 sm:py-4">
           <div className="space-y-2">
             <label htmlFor="tanggal_persalinan" className="text-sm font-medium leading-none">
-              Tanggal Persalinan <span className="text-red-500">*</span>
+              Tanggal Persalinan
             </label>
             <input
               id="tanggal_persalinan"

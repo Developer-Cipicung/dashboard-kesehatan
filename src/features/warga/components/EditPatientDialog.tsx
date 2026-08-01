@@ -19,7 +19,7 @@ import { FormControl, FormItem, FormLabel, FormMessage, FormField as RHFFormFiel
 import { WargaCombobox } from './WargaCombobox'
 import { toast } from 'sonner'
 
-const getFormSchema = (isAnak: boolean) => z.object({
+const getFormSchema = () => z.object({
   nik: z.string().max(16, 'NIK maksimal 16 digit').optional(),
   nomor: z.string().optional(),
   nama: z.string().min(1, 'Nama wajib diisi'),
@@ -54,7 +54,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
   const isIbuIbu = currentKategori === 'bumil' || currentKategori === 'pasca_persalinan' || currentKategori === 'wus_pus'
 
   const methods = useForm<z.infer<ReturnType<typeof getFormSchema>>>({
-    resolver: zodResolver(getFormSchema(isAnak)),
+    resolver: zodResolver(getFormSchema()),
     defaultValues: {
       nik: warga.nik || '',
       nomor: warga.nomor || '',

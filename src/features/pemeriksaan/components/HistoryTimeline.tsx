@@ -1,7 +1,7 @@
 import { Pemeriksaan } from '../services/pemeriksaanService'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash2 } from 'lucide-react'
-import { calculateHplRange, calculateBMI, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus, calculateAge } from '../../warga/components/PatientTable'
+import { calculateHplRange, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus, calculateAge } from '../../warga/components/PatientTable'
 
 interface HistoryTimelineProps {
   history: Pemeriksaan[]
@@ -268,32 +268,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
     return `${start.toLocaleDateString('id-ID', formatOpts)} - ${end.toLocaleDateString('id-ID', { ...formatOpts, year: 'numeric' })}`
   }
 
-  const calculateBMI = (bbStr?: string, tbStr?: string) => {
-    if (!bbStr || !tbStr) return null;
-    const bb = parseFloat(bbStr);
-    const tb = parseFloat(tbStr);
-    if (bb > 0 && tb > 0) {
-      const tbMeters = tb / 100;
-      const bmi = bb / (tbMeters * tbMeters);
-      let status = '';
-      let color = '';
-      if (bmi < 18.5) {
-        status = 'Kurus';
-        color = 'text-amber-600 bg-amber-50 border-amber-200';
-      } else if (bmi < 25.0) {
-        status = 'Normal';
-        color = 'text-emerald-600 bg-emerald-50 border-emerald-200';
-      } else if (bmi <= 27.0) {
-        status = 'Gemuk';
-        color = 'text-amber-600 bg-amber-50 border-amber-200';
-      } else {
-        status = 'Obesitas';
-        color = 'text-red-600 bg-red-50 border-red-200';
-      }
-      return { value: bmi.toFixed(1), status, color };
-    }
-    return null;
-  }
+
 
   return (
     <div className="w-full overflow-x-auto bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100">

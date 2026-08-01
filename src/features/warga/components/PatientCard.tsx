@@ -3,10 +3,8 @@ import { Plus, Printer, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Warga } from '../services/wargaService'
 import { TandaiBersalinDialog } from './TandaiBersalinDialog'
-import { toast } from 'sonner'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
-import { pemeriksaanService } from '../services/pemeriksaanService'
-import { calculateBMI, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from './PatientTable'
+import { calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from './PatientTable'
 
 interface PatientCardProps {
   data: Warga

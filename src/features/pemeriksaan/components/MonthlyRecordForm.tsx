@@ -8,7 +8,7 @@ import { Pemeriksaan, pemeriksaanService } from '../services/pemeriksaanService'
 import { useCreatePemeriksaan, useUpdatePemeriksaan } from '../hooks/usePemeriksaan'
 import { useGetWargaById } from '@/features/warga/hooks/useWarga'
 import { imunisasiService, VAKSIN_OPTIONS } from '@/features/warga/services/imunisasiService'
-import { calculateBMI, calculateTDStatus, calculateGdsStatus, calculateKolesterolStatus, calculateAsamUratStatus } from '@/features/warga/components/PatientTable'
+import { calculateTDStatus, calculateGdsStatus, calculateKolesterolStatus, calculateAsamUratStatus } from '@/features/warga/components/PatientTable'
 
 interface MonthlyRecordFormProps {
   open: boolean
@@ -32,6 +32,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
     <div className="space-y-1">
       <label className="text-sm font-medium leading-snug text-slate-700 sm:text-[15px]">
         {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       {children}
     </div>

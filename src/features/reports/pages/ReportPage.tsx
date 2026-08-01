@@ -19,10 +19,7 @@ import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { ErrorState } from '@/components/feedback/ErrorState'
 import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
 import {
-  classifyTekananDarah,
-  calculateAsamUratStatus,
-  calculateKolesterolStatus,
-  calculateGdsStatus
+  classifyTekananDarah
 } from '@/utils/kesehatan'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

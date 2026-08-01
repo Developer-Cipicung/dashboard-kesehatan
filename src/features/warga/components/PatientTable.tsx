@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Warga } from '../services/wargaService'
-import { pemeriksaanService } from '../services/pemeriksaanService'
 import { ActivitySquare, Edit3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -9,9 +8,6 @@ import { ImunisasiCell } from './ImunisasiCell'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
 import { Plus } from 'lucide-react'
 import { classifyZScore } from './PatientCard'
-import { toast } from 'sonner'
-import { useUpdateWarga } from '../hooks/useWarga'
-
 interface PatientTableProps {
   data: Warga[]
   kategori: string
@@ -369,7 +365,6 @@ function Cell({
 }
 
 export function PatientTable({ data, kategori, onView }: PatientTableProps) {
-  const { mutateAsync: updateWarga } = useUpdateWarga()
   const [rows, setRows] = useState<Record<string, RowState>>({})
   const [confirmId, setConfirmId] = useState<string | null>(null)
   const [addRecordWargaId, setAddRecordWargaId] = useState<string | null>(null)

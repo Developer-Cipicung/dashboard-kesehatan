@@ -115,4 +115,8 @@ export const wargaService = {
     const response = await api.delete<{ success: boolean; message: string }>(`/warga/${id}`)
     return response.data
   },
+  tandaiBersalin: async (id: string, payload: { tanggal_persalinan: string; tempat_persalinan?: string; nama_bayi?: string; jenis_kelamin_bayi: 'L' | 'P'; nama_ayah?: string }) => {
+    const response = await api.post<{ success: boolean; message: string; data: any }>(`/warga/${id}/bersalin`, payload)
+    return response.data
+  }
 }

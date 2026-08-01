@@ -64,3 +64,19 @@ export function useUpdateWarga() {
     },
   })
 }
+
+export function useTandaiBersalin() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string, payload: { tanggal_persalinan: string; tempat_persalinan?: string; nama_bayi?: string; jenis_kelamin_bayi: 'L' | 'P'; nama_ayah?: string } }) => wargaService.tandaiBersalin(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warga'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      toast.success('Pasien berhasil ditandai telah bersalin dan data bayi didaftarkan.')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Gagal menandai bersalin.')
+    },
+  })
+}

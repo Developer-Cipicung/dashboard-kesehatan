@@ -4,7 +4,7 @@ import { pemeriksaanService } from '../services/pemeriksaanService'
 import { ActivitySquare, Edit3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { TandaiBersalinDialog } from './TandaiBersalinDialog'
 import { ImunisasiCell } from './ImunisasiCell'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
 import { Plus } from 'lucide-react'
@@ -372,8 +372,6 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
   const { mutateAsync: updateWarga } = useUpdateWarga()
   const [rows, setRows] = useState<Record<string, RowState>>({})
   const [confirmId, setConfirmId] = useState<string | null>(null)
-  const [tanggalPersalinan, setTanggalPersalinan] = useState(new Date().toISOString().split('T')[0])
-  const [tempatPersalinan, setTempatPersalinan] = useState('')
   const [addRecordWargaId, setAddRecordWargaId] = useState<string | null>(null)
 
   const getRow = (id: string): RowState => rows[id] ?? emptyRow()
@@ -948,81 +946,15 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
         </tbody>
       </table>
     </div>
-      <Dialog open={!!confirmId} onOpenChange={(open) => {
-        if (!open) {
-          setConfirmId(null)
-          setTempatPersalinan('')
-        }
-      }}>
-        <DialogContent className="max-w-[420px] sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Tandai Telah Bersalin</DialogTitle>
-            <DialogDescription>
-              Tandai ibu ini telah bersalin? Masukkan tanggal dan tempat persalinan untuk memindahkan data pasien ke Pasca Persalinan.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 py-2 sm:space-y-4 sm:py-4">
-            <div className="space-y-2">
-              <label htmlFor="tanggal_persalinan" className="text-sm font-medium leading-none">
-                Tanggal Persalinan <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="tanggal_persalinan"
-                type="date"
-                value={tanggalPersalinan}
-                onChange={(e) => setTanggalPersalinan(e.target.value)}
-                className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="tempat_persalinan" className="text-sm font-medium leading-none">
-                Tempat Persalinan <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="tempat_persalinan"
-                type="text"
-                value={tempatPersalinan}
-                onChange={(e) => setTempatPersalinan(e.target.value)}
-                placeholder="Contoh: RSUD / Bidan"
-                className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
-              />
-            </div>
-          </div>
-          <DialogFooter className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
-            <Button variant="outline" onClick={() => {
-              setConfirmId(null)
-              setTempatPersalinan('')
-            }}>
-              Batal
-            </Button>
-            <Button 
-              onClick={async () => {
-                if (!tanggalPersalinan || !tempatPersalinan || !confirmId) return;
-                try {
-                  await updateWarga({ id: confirmId, payload: { status_kehamilan: 'PASCA_PERSALINAN', tempat_persalinan: tempatPersalinan } })
-                  await pemeriksaanService.createPasca({
-                    warga_id: confirmId,
-                    tanggal_kunjungan: new Date().toISOString().split('T')[0],
-                    tanggal_persalinan: tanggalPersalinan,
-                    bb: data.find(x => x.id === confirmId)?.pemeriksaan_bumil?.[0]?.bb || 0,
-                    catatan: 'Data otomatis dari perubahan status Ibu Hamil ke Pasca Persalinan',
-                  })
-                  toast.success('Pasien berhasil ditandai telah bersalin')
-                  window.location.reload()
-                } catch (error) {
-                  toast.error('Gagal memproses data')
-                  console.error(error)
-                }
-                setConfirmId(null)
-                setTempatPersalinan('')
-              }}
-              disabled={!tanggalPersalinan || !tempatPersalinan}
-            >
-              Ya, Pindahkan
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <TandaiBersalinDialog 
+        open={!!confirmId} 
+        onOpenChange={(open) => {
+          if (!open) setConfirmId(null)
+        }} 
+        wargaId={confirmId} 
+        wargaName={confirmId ? data.find(x => x.id === confirmId)?.nama : undefined}
+      />
+
       
       <MonthlyRecordForm
         open={!!addRecordWargaId}

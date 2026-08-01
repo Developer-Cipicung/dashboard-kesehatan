@@ -278,7 +278,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
         <DialogHeader>
           <DialogTitle>Tambah Pasien Baru</DialogTitle>
           <DialogDescription>
-            Masukkan data pasien sesuai dengan KTP/KK.
+            Masukkan data pasien sesuai dengan KTP/KK. Field selain "Nama Lengkap" bersifat opsional dan dapat dikosongkan.
           </DialogDescription>
         </DialogHeader>
 
@@ -302,7 +302,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                         </div>
                         <FormControl>
                           <Input
-                            placeholder="16 digit NIK atau '-' jika tidak diketahui"
+                            placeholder="Masukkan 16 digit NIK"
                             type="text"
                             className="h-9 px-3 text-sm sm:h-10 sm:text-base"
                             {...field}
@@ -323,7 +323,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                     control={methods.control}
                     name="nomor"
                     label={<>{currentConfig?.phoneLabel || 'Nomor Telepon'}</>}
-                    placeholder={`Contoh: 08123456789 atau "-" jika tidak diketahui`}
+                    placeholder="Contoh: 08123456789"
                     type="text"
                   />
                   {!isIbuIbu && (

@@ -134,7 +134,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
         <DialogHeader>
           <DialogTitle>Edit Profil Pasien</DialogTitle>
           <DialogDescription>
-            Perbarui data profil pasien di bawah ini.
+            Perbarui data profil pasien di bawah ini. Field selain "Nama Lengkap" bersifat opsional dan dapat dikosongkan.
           </DialogDescription>
         </DialogHeader>
 

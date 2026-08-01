@@ -130,12 +130,12 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col max-w-full">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+        <div className='flex flex-col gap-2'>
           <h1 className="text-[28px] font-bold text-slate-800 leading-tight">
             Selamat Datang, {userName}
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            {currentDate} · {posyandu ? `Posyandu ${posyandu.nama}` : 'Pusat Pendataan Kesehatan Cipicung'}
+            {currentDate} · {posyandu ? `${posyandu.nama}` : 'Pusat Pendataan Kesehatan Cipicung'}
           </p>
         </div>
         {!isPendataanSelesai ? (
@@ -153,7 +153,7 @@ export function DashboardPage() {
             <div className="bg-white/20 p-2 rounded-lg">
               <ClipboardList className="w-6 h-6 text-white" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col p-2">
               <span className="font-bold text-lg">Pendataan Selesai</span>
               <span className="text-xs text-white/80">Lihat rekapitulasi terkunci</span>
             </div>

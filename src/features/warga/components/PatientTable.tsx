@@ -397,18 +397,17 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
       <table className="w-full min-w-[1400px] text-sm text-left">
         <thead>
           <tr className="border-b border-slate-200">
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs w-[160px]">NIK</th>
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs w-[190px]">Nama</th>
-            <th colSpan={isBalita ? 12 : isBumil ? 23 : isPasca ? 16 : 10} className="px-4 py-3 border-l border-slate-100">
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-0 z-20 bg-white min-w-[160px] max-w-[160px] w-[160px]" rowSpan={2}>NIK</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-[160px] z-20 bg-white min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-200 shadow-[1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Nama</th>
+            <th colSpan={isBalita ? 12 : isBumil ? 23 : isPasca ? 16 : 10} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
               <div className="flex items-center text-primary font-bold text-xs uppercase tracking-wider">
                 <ActivitySquare className="w-4 h-4 mr-2" />
                 Record Pemeriksaan Terakhir
               </div>
             </th>
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-100 w-[180px]">Aksi</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-100 w-[180px] align-middle" rowSpan={2}>Aksi</th>
           </tr>
           <tr className="border-b-2 border-primary bg-primary/5">
-            <th colSpan={2}></th>
 
             <th className="px-3 py-3 font-semibold text-primary text-xs">Tgl Periksa</th>
             <th className="px-3 py-3 font-semibold text-primary text-xs">Usia</th>
@@ -490,8 +489,6 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
             {!isLansia && (
               <th className="px-3 py-3 font-semibold text-primary text-xs">Tgl Kunjungan<br/>Berikutnya</th>
             )}
-
-            <th className="border-l border-slate-100"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -606,10 +603,10 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
             // Provide disabled rendering explicitly for table
 
             return (
-              <tr key={warga.id} className="hover:bg-primary/5 transition-colors">
-                <td className="px-4 py-3 text-slate-500 font-mono text-xs">{warga.nik}</td>
-                <td className="px-4 py-3">
-                  <div className="font-semibold text-slate-800 text-sm">{warga.nama}</div>
+              <tr key={warga.id} className="hover:bg-primary/5 transition-colors group">
+                <td className="px-4 py-3 text-slate-500 font-mono text-xs sticky left-0 z-10 bg-white group-hover:bg-slate-50 min-w-[160px] max-w-[160px] w-[160px]">{warga.nik}</td>
+                <td className="px-4 py-3 sticky left-[160px] z-10 bg-white group-hover:bg-slate-50 min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-100 shadow-[1px_0_3px_rgba(0,0,0,0.03)]">
+                  <div className="font-semibold text-slate-800 text-sm truncate" title={warga.nama}>{warga.nama}</div>
                   <div className="text-xs text-slate-400 mt-0.5">{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</div>
                 </td>
 
@@ -677,33 +674,6 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                           disabled={true} 
                         />
                       </td>
-                      <td className="px-3 py-3">
-                        {lastZScores ? (
-                          <div className="flex flex-col gap-1.5">
-                            {lastZScores.kategori_bb_u && (
-                               <span className={`text-[10px] px-2 py-0.5 rounded-md w-max ${lastZScores.kategori_bb_u.includes('Kurang') || lastZScores.kategori_bb_u.includes('Lebih') ? 'bg-red-50 text-red-600 border border-red-200 font-bold' : 'bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold'}`}>
-                                 BB/U: {lastZScores.kategori_bb_u}
-                               </span>
-                            )}
-                            {lastZScores.kategori_tb_u && (
-                               <span className={`text-[10px] px-2 py-0.5 rounded-md w-max ${lastZScores.kategori_tb_u.includes('Pendek') || lastZScores.kategori_tb_u.includes('Tinggi') ? 'bg-red-50 text-red-600 border border-red-200 font-bold' : 'bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold'}`}>
-                                 TB/U: {lastZScores.kategori_tb_u}
-                               </span>
-                            )}
-                            {lastZScores.kategori_bb_tb && (
-                               <span className={`text-[10px] px-2 py-0.5 rounded-md w-max ${lastZScores.kategori_bb_tb.includes('Buruk') || lastZScores.kategori_bb_tb.includes('Kurang') || lastZScores.kategori_bb_tb.includes('Obesitas') ? 'bg-red-50 text-red-600 border border-red-200 font-bold' : lastZScores.kategori_bb_tb.includes('Risiko') ? 'bg-amber-50 text-amber-600 border border-amber-200 font-bold' : 'bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold'}`}>
-                                 BB/TB: {lastZScores.kategori_bb_tb}
-                               </span>
-                            )}
-                          </div>
-                        ) : '-'}
-                      </td>
-                    <td className="px-3 py-3">
-                      <Cell type="checkbox" value={lastAsiEksklusif as any} onChange={(v) => set(warga.id, 'asi_eksklusif', v)} width="w-full" disabled={true} />
-                    </td>
-                    <td className="px-3 py-3">
-                      <ImunisasiCell wargaId={warga.id} disabled={true} />
-                    </td>
                     <td className="px-3 py-3">
                       <Cell type="checkbox" value={lastBansos as any} onChange={(v) => set(warga.id, 'fasilitasi_bantuan_sosial', v)} width="w-full" disabled={true} />
                     </td>

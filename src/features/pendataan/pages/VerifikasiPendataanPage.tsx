@@ -213,14 +213,12 @@ export function VerifikasiPendataanPage() {
             Data posyandu untuk bulan ini telah berhasil dikunci dan direkapitulasi. Anda dapat melihat laporannya di menu Laporan.
           </p>
           <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <button
-                className="mt-2 flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium border border-red-200 bg-red-50 hover:bg-red-100 rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
-                disabled={isBataling}
-              >
-                <XCircle className="w-4 h-4" />
-                {isBataling ? 'Membatalkan...' : 'Batalkan Verifikasi'}
-              </button>
+            <AlertDialogTrigger
+              className="mt-2 flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium border border-red-200 bg-red-50 hover:bg-red-100 rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
+              disabled={isBataling}
+            >
+              <XCircle className="w-4 h-4" />
+              {isBataling ? 'Membatalkan...' : 'Batalkan Verifikasi'}
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>

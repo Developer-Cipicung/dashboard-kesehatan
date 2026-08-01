@@ -12,7 +12,6 @@ export function Header() {
   const logout = useAuthStore((state) => state.logout)
   const user = useAuthStore((state) => state.user)
   const posyandu = useAuthStore((state) => state.posyandu)
-  const userRole = typeof user?.role === 'string' ? user.role : 'Kader'
   const userEmail = typeof user?.email === 'string' ? user.email : 'user@cipicung.com'
   
 

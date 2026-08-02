@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/services/api'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
-import { Link } from 'react-router-dom'
 import {
   MapPin,
   Calendar,
@@ -20,14 +19,6 @@ import {
 } from '@/components/ui/select'
 import { format, subDays } from 'date-fns'
 import { id } from 'date-fns/locale'
-
-const COLORS = {
-  balita: '#0ea5e9', // Sky blue
-  bumil: '#f43f5e',  // Rose
-  lansia: '#10b981', // Emerald
-  baduta: '#8b5cf6', // Violet
-  other: '#94a3b8'
-}
 
 const IndicatorCard = ({ title, colorClass, items }: { title: string, colorClass: string, items: { label: string, value: number, warning?: boolean, danger?: boolean }[] }) => (
   <div className={`bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden border-l-4 ${colorClass} flex flex-col h-full`}>
@@ -157,7 +148,7 @@ export function AdminReportPage() {
             <MapPin className="w-4 h-4 mr-2" />
             <span className="text-xs font-medium uppercase tracking-wider">Fokus Area</span>
           </div>
-          <Select value={selectedPosyanduId} onValueChange={setSelectedPosyanduId}>
+          <Select value={selectedPosyanduId} onValueChange={(val) => setSelectedPosyanduId(val as string)}>
             <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-9">
               <SelectValue placeholder="Pilih Posyandu">
                 {selectedPosyanduName}
@@ -202,7 +193,7 @@ export function AdminReportPage() {
 
             {/* Date Filter */}
             <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
-              <Select value={dateFilterType} onValueChange={handleDateFilterChange}>
+              <Select value={dateFilterType} onValueChange={(val) => handleDateFilterChange(val as string)}>
                 <SelectTrigger className="w-[140px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-9 rounded-lg">
                   <Calendar className="w-4 h-4 mr-2 text-slate-400" />
                   <SelectValue placeholder="Pilih Rentang" />

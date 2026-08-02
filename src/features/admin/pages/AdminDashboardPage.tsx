@@ -9,8 +9,6 @@ import {
   ClipboardList,
   AlertCircle,
   Calendar,
-  Filter,
-  CheckCircle2,
   TrendingUp,
   Activity
 } from 'lucide-react'
@@ -24,8 +22,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-  Legend,
+  ResponsiveContainer
 } from 'recharts'
 import {
   Select,
@@ -35,13 +32,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { format, subDays } from 'date-fns'
-import { id } from 'date-fns/locale'
 
 const COLORS = {
   balita: '#0ea5e9', // Sky blue
   bumil: '#f43f5e',  // Rose
   lansia: '#10b981', // Emerald
-  baduta: '#8b5cf6', // Violet
   baduta: '#8b5cf6', // Violet
   other: '#94a3b8'
 }
@@ -197,7 +192,7 @@ export function AdminDashboardPage() {
             <MapPin className="w-4 h-4 mr-2" />
             <span className="text-xs font-medium uppercase tracking-wider">Fokus Area</span>
           </div>
-          <Select value={selectedPosyanduId} onValueChange={setSelectedPosyanduId}>
+          <Select value={selectedPosyanduId} onValueChange={(val) => setSelectedPosyanduId(val as string)}>
             <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-9">
               <SelectValue placeholder="Pilih Posyandu">
                 {selectedPosyanduName}
@@ -414,7 +409,7 @@ export function AdminDashboardPage() {
           
           {/* Date Filter */}
           <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
-            <Select value={dateFilterType} onValueChange={handleDateFilterChange}>
+            <Select value={dateFilterType} onValueChange={(val) => handleDateFilterChange(val as string)}>
               <SelectTrigger className="w-[140px] border border-slate-200 focus:ring-0 bg-white font-semibold text-slate-700 h-9 rounded-lg">
                 <Calendar className="w-4 h-4 mr-2 text-slate-400" />
                 <SelectValue placeholder="Pilih Rentang" />

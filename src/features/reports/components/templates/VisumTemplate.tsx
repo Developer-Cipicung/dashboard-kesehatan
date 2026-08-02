@@ -1,10 +1,12 @@
 import React from 'react';
+import { formatDateID } from '@/utils/dateFormatter';
 
 interface VisumTemplateProps {
   kategori: string;
   data: any[];
-  bulan: number;
-  tahun: number;
+  bulan?: number;
+  tahun?: number;
+  periodeLabel?: string;
   posyanduName?: string;
   desa?: string;
   kecamatan?: string;
@@ -15,8 +17,9 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
   data, 
   bulan, 
   tahun,
+  periodeLabel,
   posyanduName = '...',
-  desa = '...',
+  desa = 'Cipicung',
   kecamatan = 'Cijeruk'
 }) => {
   // Config per kategori
@@ -166,7 +169,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
             <tr>
               <td style={{ paddingBottom: '1pt' }}>Bulan/Tahun</td>
               <td style={{ textAlign: 'center' }}>:</td>
-              <td style={{ paddingBottom: '1pt', fontWeight: 'bold' }}>{getBulanStr(bulan)} {tahun}</td>
+              <td style={{ paddingBottom: '1pt', fontWeight: 'bold' }}>{periodeLabel || `${getBulanStr(bulan!)} ${tahun}`}</td>
             </tr>
             <tr>
               <td style={{ paddingBottom: '1pt' }}>TPK</td>
@@ -280,7 +283,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
         </div>
 
         <div style={{ textAlign: 'center' }}>
-          <p style={{ textAlign: 'right', marginBottom: '4pt' }}>{kecamatan}, 28 {getBulanStr(bulan)} {tahun}</p>
+          <p style={{ textAlign: 'right', marginBottom: '4pt' }}>{kecamatan}, {formatDateID(new Date())}</p>
           <p style={{ fontWeight: 'bold', marginBottom: '4pt' }}>TIM PENDAMPING KELUARGA</p>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: '32pt', marginTop: '6pt' }}>

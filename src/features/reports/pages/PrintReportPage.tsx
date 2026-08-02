@@ -6,6 +6,7 @@ import { Printer, ZoomIn, ZoomOut, Settings2, FileText, ArrowLeft } from 'lucide
 import { useGetPemeriksaanList } from '@/features/pemeriksaan/hooks/usePemeriksaan';
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
 import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age';
+import { formatDateID } from '@/utils/dateFormatter';
 import { Button } from '@/components/ui/button';
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton';
 
@@ -24,10 +25,15 @@ export function PrintReportPage() {
   // Derived target month/year based on periodeType if not custom
   const targetBulan = periodeType === 'this_month' ? new Date().getMonth() + 1 : 
                       periodeType === 'last_month' ? (new Date().getMonth() === 0 ? 12 : new Date().getMonth()) : 
-                      undefined;
+                      bulanQuery;
   const targetTahun = periodeType === 'this_month' ? new Date().getFullYear() :
                       periodeType === 'last_month' ? (new Date().getMonth() === 0 ? new Date().getFullYear() - 1 : new Date().getFullYear()) :
-                      undefined;
+                      tahunQuery;
+
+  let customPeriodeLabel = undefined;
+  if (periodeType === 'custom' && startDate && endDate) {
+    customPeriodeLabel = `${formatDateID(startDate)} - ${formatDateID(endDate)}`;
+  }
 
   const [paperSize, setPaperSize] = useState<'A4' | 'F4' | 'Legal' | 'Letter'>('F4');
   // Default zoom is responsive to screen
@@ -310,8 +316,9 @@ export function PrintReportPage() {
                 }}
               >
                 <SummaryTemplate 
-                  bulan={targetBulan || bulanQuery} 
-                  tahun={targetTahun || tahunQuery} 
+                  bulan={targetBulan} 
+                  tahun={targetTahun} 
+                  periodeLabel={customPeriodeLabel}
                   data={dashboardData} 
                 />
               </div>
@@ -344,8 +351,9 @@ export function PrintReportPage() {
                   <VisumTemplate 
                     kategori={kategoriRaw} 
                     data={pageData} 
-                    bulan={targetBulan || bulanQuery} 
-                    tahun={targetTahun || tahunQuery} 
+                    bulan={targetBulan} 
+                    tahun={targetTahun} 
+                    periodeLabel={customPeriodeLabel}
                     posyanduName={group.name}
                   />
                 </div>

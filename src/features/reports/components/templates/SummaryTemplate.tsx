@@ -1,8 +1,10 @@
 import React from 'react';
+import { formatDateID } from '@/utils/dateFormatter';
 
 interface SummaryTemplateProps {
-  bulan: number;
-  tahun: number;
+  bulan?: number;
+  tahun?: number;
+  periodeLabel?: string;
   data: any; // Dashboard stats data
   kecamatan?: string;
 }
@@ -10,6 +12,7 @@ interface SummaryTemplateProps {
 export const SummaryTemplate: React.FC<SummaryTemplateProps> = ({ 
   bulan, 
   tahun, 
+  periodeLabel,
   data,
   kecamatan = 'Cijeruk'
 }) => {
@@ -44,7 +47,7 @@ export const SummaryTemplate: React.FC<SummaryTemplateProps> = ({
             <tr>
               <td style={{ paddingBottom: '2pt' }}>Bulan/Tahun</td>
               <td style={{ textAlign: 'center' }}>:</td>
-              <td style={{ paddingBottom: '2pt', fontWeight: 'bold' }}>{getBulanStr(bulan)} {tahun}</td>
+              <td style={{ paddingBottom: '2pt', fontWeight: 'bold' }}>{periodeLabel || `${getBulanStr(bulan!)} ${tahun}`}</td>
             </tr>
             <tr>
               <td style={{ paddingBottom: '2pt' }}>Cakupan Wilayah</td>
@@ -106,7 +109,7 @@ export const SummaryTemplate: React.FC<SummaryTemplateProps> = ({
         </div>
 
         <div style={{ textAlign: 'center', width: '200pt' }}>
-          <p style={{ marginBottom: '2pt' }}>{kecamatan}, 28 {getBulanStr(bulan)} {tahun}</p>
+          <p style={{ marginBottom: '2pt' }}>{kecamatan}, {formatDateID(new Date())}</p>
           <p style={{ fontWeight: 'bold', marginBottom: '50pt' }}>Kepala Seksi Terkait</p>
           <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>DRS. H. BUDI SANTOSO, M.Si.</p>
           <p>NIP. 197508212003121005</p>

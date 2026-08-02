@@ -289,8 +289,10 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
         <div style={{ textAlign: 'center', width: '160pt' }}>
           <p style={{ marginBottom: '2pt' }}>Mengetahui,</p>
           <p style={{ marginBottom: '30pt' }}>Koordinator Lapangan</p>
-          <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>SULAEMAN, S.Pd, M.H.</p>
-          <p>NIP. 198311142022211004</p>
+          <section className='flex flex-col gap-2'>
+            <p style={{ fontWeight: 'bold' }}>( .................... )</p>
+            <p>NIP. ....................</p>
+          </section>
         </div>
 
         <div style={{ textAlign: 'center' }}>
@@ -300,16 +302,16 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
           <div style={{ display: 'flex', justifyContent: 'center', gap: '32pt', marginTop: '6pt' }}>
             <div style={{ textAlign: 'center' }}>
               <p style={{ marginBottom: '30pt' }}>Nakes/Kader KB</p>
-              <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>DR. HJ. SITI AMINAH</p>
+              <p style={{ fontWeight: 'bold' }}>( .................... )</p>
             </div>
             <div style={{ textAlign: 'center' }}>
               <p>Pendamping TPK</p>
               <p style={{ marginBottom: '20pt' }}>Kader PKK</p>
-              <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>NURHAYATI, S.Kep</p>
+              <p style={{ fontWeight: 'bold' }}>( .................... )</p>
             </div>
             <div style={{ textAlign: 'center' }}>
               <p style={{ marginBottom: '30pt' }}>Kader KB</p>
-              <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>RINA MARLINA</p>
+              <p style={{ fontWeight: 'bold' }}>( .................... )</p>
             </div>
           </div>
         </div>

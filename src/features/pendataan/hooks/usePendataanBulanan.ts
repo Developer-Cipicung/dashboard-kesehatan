@@ -26,7 +26,7 @@ export function useGetPendataanGlobalStatus(bulan: number, tahun: number, posyan
   return useQuery({
     queryKey: ['pendataan', 'global', bulan, tahun, posyanduId],
     queryFn: () => pendataanBulananService.getGlobalStatus(bulan, tahun, posyanduId),
-    enabled: !!bulan && !!tahun,
+    enabled: !!bulan && !!tahun && posyanduId !== 'all',
     staleTime: 60 * 1000,
   })
 }

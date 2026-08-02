@@ -17,6 +17,7 @@ export function PrintReportPage() {
   const bulanQuery = parseInt(searchParams.get('bulan') || `${new Date().getMonth() + 1}`);
   const tahunQuery = parseInt(searchParams.get('tahun') || `${new Date().getFullYear()}`);
   const posyanduId = searchParams.get('posyanduId') || 'all';
+  const posyanduNameUrl = searchParams.get('posyanduName') || 'Posyandu Saya';
 
   const [periodeType, setPeriodeType] = useState<'this_month' | 'last_month' | 'custom'>('this_month');
   const [startDate, setStartDate] = useState('');
@@ -108,7 +109,7 @@ export function PrintReportPage() {
   let posyanduGroups: any = {};
   if (posyanduId === 'all') {
     if (filteredData.length === 0) {
-      posyanduGroups = { 'all': { name: 'Semua Posyandu (Kosong)', data: [] } };
+      posyanduGroups = { 'all': { name: 'Semua Posyandu', data: [] } };
     } else {
       posyanduGroups = filteredData.reduce((acc: any, curr: any) => {
         const pid = curr.warga?.posyandu_id || 'unknown';
@@ -118,7 +119,7 @@ export function PrintReportPage() {
       }, {});
     }
   } else {
-    posyanduGroups = { [posyanduId]: { name: filteredData[0]?.warga?.posyandu?.nama || 'Posyandu Saya', data: filteredData } };
+    posyanduGroups = { [posyanduId]: { name: filteredData[0]?.warga?.posyandu?.nama || posyanduNameUrl, data: filteredData } };
   }
 
   return (

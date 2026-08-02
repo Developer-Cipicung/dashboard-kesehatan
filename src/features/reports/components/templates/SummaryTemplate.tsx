@@ -104,15 +104,15 @@ export const SummaryTemplate: React.FC<SummaryTemplateProps> = ({
         <div style={{ textAlign: 'center', width: '200pt' }}>
           <p style={{ marginBottom: '2pt' }}>Mengetahui,</p>
           <p style={{ marginBottom: '50pt' }}>Koordinator Lapangan</p>
-          <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>SULAEMAN, S.Pd, M.H.</p>
-          <p>NIP. 198311142022211004</p>
+          <p style={{ fontWeight: 'bold' }}>( .................... )</p>
+          <p>NIP. ....................</p>
         </div>
 
         <div style={{ textAlign: 'center', width: '200pt' }}>
           <p style={{ marginBottom: '2pt' }}>{kecamatan}, {formatDateID(new Date())}</p>
           <p style={{ fontWeight: 'bold', marginBottom: '50pt' }}>Kepala Seksi Terkait</p>
-          <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>DRS. H. BUDI SANTOSO, M.Si.</p>
-          <p>NIP. 197508212003121005</p>
+          <p style={{ fontWeight: 'bold' }}>( .................... )</p>
+          <p>NIP. ....................</p>
         </div>
       </div>
       

@@ -6,6 +6,7 @@ import {
   useGetPendataanGlobalStatus,
   useGetAdminStatusPendataan,
 } from '@/features/pendataan/hooks/usePendataanBulanan'
+import { useAuthStore } from '@/stores/authStore'
 
 // Lazy load ExportActions to prevent loading heavy jsPDF & exceljs on page load
 const ExportActions = lazy(() =>
@@ -30,6 +31,7 @@ import { CategorySummaryCards } from '../components/CategorySummaryCards'
 
 export function ReportPage() {
   const navigate = useNavigate()
+  const posyanduStore = useAuthStore((state) => state.posyandu)
   const [selectedMonth, setSelectedMonth] = useState<number>(() => {
     const saved = localStorage.getItem('rekapitulasi_bulan')
     return saved ? parseInt(saved) : new Date().getMonth() + 1
@@ -535,7 +537,7 @@ export function ReportPage() {
               className="w-full gap-1.5 text-xs sm:w-auto sm:gap-2 sm:text-sm"
               onClick={() =>
                 navigate(
-                  `/laporan/cetak?kategori=${kategoriFilter}&bulan=${selectedMonth}&tahun=${selectedYear}${posyanduFilter === 'all' ? '&posyanduId=all' : ''}`
+                  `/laporan/cetak?kategori=${kategoriFilter}&bulan=${selectedMonth}&tahun=${selectedYear}&posyanduId=${posyanduFilter}&posyanduName=${encodeURIComponent(posyanduFilter === 'all' ? 'Semua Posyandu' : posyanduStore?.nama || 'Posyandu Saya')}`
                 )
               }
             >

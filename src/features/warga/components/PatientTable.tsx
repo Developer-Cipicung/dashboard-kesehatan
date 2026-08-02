@@ -562,7 +562,9 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
               const zScores = classifyZScore(
                 latestBalita.zscore_bb_u != null ? Number(latestBalita.zscore_bb_u) : null,
                 latestBalita.zscore_tb_u != null ? Number(latestBalita.zscore_tb_u) : null,
-                latestBalita.zscore_bb_tb != null ? Number(latestBalita.zscore_bb_tb) : null
+                latestBalita.zscore_bb_tb != null ? Number(latestBalita.zscore_bb_tb) : null,
+                latestBalita.bb,
+                latestBalita.tb
               )
               lastZScores = zScores
               

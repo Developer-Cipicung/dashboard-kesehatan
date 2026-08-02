@@ -14,27 +14,30 @@ interface PatientCardProps {
   isReadOnly?: boolean
 }
 
-export function classifyZScore(bb_u: number | null, tb_u: number | null, bb_tb: number | null) {
+export function classifyZScore(bb_u: number | null, tb_u: number | null, bb_tb: number | null, bb?: number | string | null, tb?: number | string | null) {
   let kategori_bb_u = null;
   let kategori_tb_u = null;
   let kategori_bb_tb = null;
 
   if (bb_u !== null) {
-    if (bb_u < -3) kategori_bb_u = 'Sangat Kurang';
+    if (bb !== undefined && bb !== null && Number(bb) === 0) kategori_bb_u = '-';
+    else if (bb_u < -3) kategori_bb_u = 'Sangat Kurang';
     else if (bb_u < -2) kategori_bb_u = 'Kurang';
     else if (bb_u <= 1) kategori_bb_u = 'Normal';
     else kategori_bb_u = 'Risiko Berat Badan Lebih';
   }
 
   if (tb_u !== null) {
-    if (tb_u < -3) kategori_tb_u = 'Sangat Pendek';
+    if (tb !== undefined && tb !== null && Number(tb) === 0) kategori_tb_u = '-';
+    else if (tb_u < -3) kategori_tb_u = 'Sangat Pendek';
     else if (tb_u < -2) kategori_tb_u = 'Pendek (Stunted)';
     else if (tb_u <= 3) kategori_tb_u = 'Normal';
     else kategori_tb_u = 'Tinggi';
   }
 
   if (bb_tb !== null) {
-    if (bb_tb < -3) kategori_bb_tb = 'Gizi Buruk';
+    if ((bb !== undefined && bb !== null && Number(bb) === 0) || (tb !== undefined && tb !== null && Number(tb) === 0)) kategori_bb_tb = '-';
+    else if (bb_tb < -3) kategori_bb_tb = 'Gizi Buruk';
     else if (bb_tb < -2) kategori_bb_tb = 'Gizi Kurang';
     else if (bb_tb <= 1) kategori_bb_tb = 'Gizi Baik';
     else if (bb_tb <= 2) kategori_bb_tb = 'Risiko Gizi Lebih';
@@ -106,7 +109,9 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   const zScores = classifyZScore(
                     latestBalita.zscore_bb_u != null ? Number(latestBalita.zscore_bb_u) : null,
                     latestBalita.zscore_tb_u != null ? Number(latestBalita.zscore_tb_u) : null,
-                    latestBalita.zscore_bb_tb != null ? Number(latestBalita.zscore_bb_tb) : null
+                    latestBalita.zscore_bb_tb != null ? Number(latestBalita.zscore_bb_tb) : null,
+                    latestBalita.bb,
+                    latestBalita.tb
                   )
                   
                   if (!zScores.kategori_bb_u && !zScores.kategori_tb_u && !zScores.kategori_bb_tb) {

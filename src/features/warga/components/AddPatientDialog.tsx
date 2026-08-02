@@ -255,7 +255,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
           queryClient.invalidateQueries({ queryKey: ['pendataan'] })
           queryClient.invalidateQueries({ queryKey: ['pemeriksaan_list', 'pasca_persalinan'] })
         } catch (err) {
-          console.error('Gagal membuat data pasca persalinan awal', err)
+          console.error('Gagal membuat data pasca persalinan awal', err.message || err)
         }
       }
 
@@ -263,7 +263,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
       onOpenChange(false)
       if (onSuccess) onSuccess()
     } catch (error) {
-      console.error(error)
+      console.error('Error menyimpan form:', (error as any).message || error)
       const apiError = error as ApiValidationError
       let errorMessage = apiError.response?.data?.message || apiError.message || 'Gagal menyimpan data'
       const validationErrors = apiError.response?.data?.errors

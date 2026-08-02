@@ -398,7 +398,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                 Record Pemeriksaan Terakhir
               </div>
             </th>
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-200 w-[180px] align-middle sticky right-0 z-20 bg-white shadow-[-1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Aksi</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-200 w-[180px] align-middle sticky right-0 z-20 bg-white shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)]" rowSpan={2}>Aksi</th>
           </tr>
           <tr className="border-b-2 border-primary bg-primary/5">
 
@@ -597,7 +597,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
 
             return (
               <tr key={warga.id} className="hover:bg-primary/5 transition-colors group">
-                <td className="px-4 py-3 text-slate-500 font-mono text-xs sticky left-0 z-10 bg-white group-hover:bg-slate-50 min-w-[160px] max-w-[160px] w-[160px]">{warga.nik}</td>
+                <td className="px-4 py-3 text-slate-500 font-mono text-xs sticky left-0 z-10 bg-white group-hover:bg-slate-50 min-w-[160px] max-w-[160px] w-[160px]">{warga.nik || '-'}</td>
                 <td className="px-4 py-3 sticky left-[160px] z-10 bg-white group-hover:bg-slate-50 min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-100 shadow-[1px_0_3px_rgba(0,0,0,0.03)]">
                   <div className="font-semibold text-slate-800 text-sm truncate" title={warga.nama}>{warga.nama}</div>
                   <div className="text-xs text-slate-400 mt-0.5">{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</div>
@@ -899,7 +899,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                   </td>
                 )}
 
-                <td className="px-4 py-3 border-l border-slate-100">
+                <td className="px-4 py-3 border-l border-slate-100 sticky right-0 z-10 bg-white shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)]">
                   <div className="flex flex-col gap-2">
                     <Button
                       size="sm"

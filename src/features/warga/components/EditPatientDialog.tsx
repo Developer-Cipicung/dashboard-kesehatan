@@ -122,7 +122,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
       onOpenChange(false)
       if (onSuccess) onSuccess()
     } catch (error) {
-      console.error(error)
+      console.error('Error menyimpan form:', (error as any).message || error)
       let errorMessage = (error as any).response?.data?.message || (error as Error).message || 'Gagal menyimpan data'
       const validationErrors = (error as any).response?.data?.errors
       if (Array.isArray(validationErrors) && validationErrors.length > 0) {

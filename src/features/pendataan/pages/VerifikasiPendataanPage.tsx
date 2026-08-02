@@ -98,99 +98,131 @@ export function VerifikasiPendataanPage() {
     return formatDateTimeWib(item.created_at)
   }
 
-  const renderTable = (title: string, category: SummaryCategory, data: SummaryRow[]) => {
-    if (data.length === 0) return null
+function PaginatedTable({ title, category, data, getInputTime }: { title: string; category: SummaryCategory; data: SummaryRow[]; getInputTime: (category: SummaryCategory, item: SummaryRow) => string }) {
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
-    return (
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-6">
-        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-          <h3 className="font-semibold text-slate-800">{title} <span className="text-sm font-normal text-slate-500 ml-2">({data.length} data)</span></h3>
-        </div>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12">No</TableHead>
-                <TableHead>Nama Warga</TableHead>
+  if (data.length === 0) return null;
+
+  const totalPages = Math.ceil(data.length / limit);
+  const startIndex = (page - 1) * limit;
+  const paginatedData = data.slice(startIndex, startIndex + limit);
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-6">
+      <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h3 className="font-semibold text-slate-800">{title} <span className="text-sm font-normal text-slate-500 ml-2">({data.length} data)</span></h3>
+        {totalPages > 1 && (
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              Prev
+            </Button>
+            <span className="text-sm text-slate-500 font-medium px-2">
+              Hal {page} / {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+      </div>
+      <div className="overflow-x-auto">
+        <Table className="min-w-[600px] sm:min-w-full">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[50px]">No</TableHead>
+              <TableHead className="w-[35%] min-w-[200px]">Nama Warga</TableHead>
+              {(category === 'balita' || category === 'baduta') && (
+                <>
+                  <TableHead>BB (kg)</TableHead>
+                  <TableHead>TB (cm)</TableHead>
+                </>
+              )}
+              {category === 'bumil' && (
+                <>
+                  <TableHead>Usia Kehamilan</TableHead>
+                  <TableHead>BB (kg)</TableHead>
+                  <TableHead>LILA (cm)</TableHead>
+                </>
+              )}
+              {category === 'pasca_persalinan' && (
+                <>
+                  <TableHead>Tensi (mmHg)</TableHead>
+                </>
+              )}
+              {category === 'lansia' && (
+                <>
+                  <TableHead>Tensi (mmHg)</TableHead>
+                  <TableHead>BB (kg)</TableHead>
+                  <TableHead>Gula Darah</TableHead>
+                </>
+              )}
+              {category === 'warga_baru' && (
+                <>
+                  <TableHead>NIK</TableHead>
+                  <TableHead>L/P</TableHead>
+                </>
+              )}
+              <TableHead className="text-right w-[180px]">Waktu Input</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedData.map((item, index) => (
+              <TableRow key={item.id}>
+                <TableCell>{startIndex + index + 1}</TableCell>
+                <TableCell className="font-medium">{item.nama}</TableCell>
                 {(category === 'balita' || category === 'baduta') && (
                   <>
-                    <TableHead>BB (kg)</TableHead>
-                    <TableHead>TB (cm)</TableHead>
+                    <TableCell>{item.bb ? `${item.bb} kg` : '-'}</TableCell>
+                    <TableCell>{item.tb ? `${item.tb} cm` : '-'}</TableCell>
                   </>
                 )}
                 {category === 'bumil' && (
                   <>
-                    <TableHead>Usia Kehamilan</TableHead>
-                    <TableHead>BB (kg)</TableHead>
-                    <TableHead>LILA (cm)</TableHead>
+                    <TableCell>{item.usia_kehamilan_minggu ? `${item.usia_kehamilan_minggu} mgg` : '-'}</TableCell>
+                    <TableCell>{item.bb || '-'}</TableCell>
+                    <TableCell>{item.lingkar_lengan_atas || '-'}</TableCell>
                   </>
                 )}
                 {category === 'pasca_persalinan' && (
                   <>
-                    <TableHead>Tensi (mmHg)</TableHead>
+                    <TableCell>{item.td_sistolik || item.td_diastolik ? `${item.td_sistolik || '-'}/${item.td_diastolik || '-'}` : '-'}</TableCell>
                   </>
                 )}
                 {category === 'lansia' && (
                   <>
-                    <TableHead>Tensi (mmHg)</TableHead>
-                    <TableHead>BB (kg)</TableHead>
-                    <TableHead>Gula Darah</TableHead>
+                    <TableCell>{item.td_sistolik || item.td_diastolik ? `${item.td_sistolik || '-'}/${item.td_diastolik || '-'}` : '-'}</TableCell>
+                    <TableCell>{item.bb || '-'}</TableCell>
+                    <TableCell>{item.gula_darah_sewaktu || '-'}</TableCell>
                   </>
                 )}
                 {category === 'warga_baru' && (
                   <>
-                    <TableHead>NIK</TableHead>
-                    <TableHead>L/P</TableHead>
+                    <TableCell>{item.nik || '-'}</TableCell>
+                    <TableCell>{item.jenis_kelamin || '-'}</TableCell>
                   </>
                 )}
-                <TableHead className="text-right">Waktu Input</TableHead>
+                <TableCell className="text-right text-slate-500 text-sm">{getInputTime(category, item)}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map((item, index) => (
-                <TableRow key={item.id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell className="font-medium">{item.nama}</TableCell>
-                  {(category === 'balita' || category === 'baduta') && (
-                    <>
-                      <TableCell>{item.bb} kg</TableCell>
-                      <TableCell>{item.tb} cm</TableCell>
-                    </>
-                  )}
-                  {category === 'bumil' && (
-                    <>
-                      <TableCell>{item.usia_kehamilan_minggu} mgg</TableCell>
-                      <TableCell>{item.bb}</TableCell>
-                      <TableCell>{item.lingkar_lengan_atas}</TableCell>
-                    </>
-                  )}
-                  {category === 'pasca_persalinan' && (
-                    <>
-                      <TableCell>{item.td_sistolik}/{item.td_diastolik}</TableCell>
-                    </>
-                  )}
-                  {category === 'lansia' && (
-                    <>
-                      <TableCell>{item.td_sistolik}/{item.td_diastolik}</TableCell>
-                      <TableCell>{item.bb}</TableCell>
-                      <TableCell>{item.gula_darah_sewaktu}</TableCell>
-                    </>
-                  )}
-                  {category === 'warga_baru' && (
-                    <>
-                      <TableCell>{item.nik}</TableCell>
-                      <TableCell>{item.jenis_kelamin}</TableCell>
-                    </>
-                  )}
-                  <TableCell className="text-right text-slate-500 text-sm">{getInputTime(category, item)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
   const totalData = summaryData.balita.length + summaryData.bumil.length + summaryData.pasca_persalinan.length + summaryData.lansia.length + summaryData.warga_baru.length
 
@@ -291,7 +323,7 @@ export function VerifikasiPendataanPage() {
             <div className="mb-8">
               <h3 className="text-md font-semibold text-slate-600 mb-3 border-b pb-2">Pendaftaran Warga Baru</h3>
               {summaryData.warga_baru.length > 0 ? (
-                renderTable('Warga Baru Didaftarkan', 'warga_baru', summaryData.warga_baru)
+                <PaginatedTable title="Warga Baru Didaftarkan" category="warga_baru" data={summaryData.warga_baru} getInputTime={getInputTime} />
               ) : (
                 <div className="text-center py-6 bg-slate-50 rounded-lg border border-dashed border-slate-200">
                   <p className="text-slate-500 text-sm">Tidak ada warga baru yang didaftarkan bulan ini.</p>
@@ -303,11 +335,11 @@ export function VerifikasiPendataanPage() {
               <h3 className="text-md font-semibold text-slate-600 mb-3 border-b pb-2">Riwayat Pemeriksaan Ditambahkan</h3>
               {(summaryData.balita.length > 0 || summaryData.bumil.length > 0 || summaryData.pasca_persalinan.length > 0 || summaryData.lansia.length > 0) ? (
                 <>
-                  {renderTable('Baduta', 'baduta', summaryData.balita.filter(b => isBadutaByBirthDate(b.tanggal_lahir, b.tanggal)))}
-                  {renderTable('Balita', 'balita', summaryData.balita.filter(b => isBalitaByBirthDate(b.tanggal_lahir, b.tanggal)))}
-                  {renderTable('Ibu Hamil', 'bumil', summaryData.bumil)}
-                  {renderTable('Ibu Pasca Persalinan', 'pasca_persalinan', summaryData.pasca_persalinan)}
-                  {renderTable('Lansia', 'lansia', summaryData.lansia)}
+                  <PaginatedTable title="Baduta" category="baduta" data={summaryData.balita.filter(b => isBadutaByBirthDate(b.tanggal_lahir, b.tanggal))} getInputTime={getInputTime} />
+                  <PaginatedTable title="Balita" category="balita" data={summaryData.balita.filter(b => isBalitaByBirthDate(b.tanggal_lahir, b.tanggal))} getInputTime={getInputTime} />
+                  <PaginatedTable title="Ibu Hamil" category="bumil" data={summaryData.bumil} getInputTime={getInputTime} />
+                  <PaginatedTable title="Ibu Pasca Persalinan" category="pasca_persalinan" data={summaryData.pasca_persalinan} getInputTime={getInputTime} />
+                  <PaginatedTable title="Lansia" category="lansia" data={summaryData.lansia} getInputTime={getInputTime} />
                 </>
               ) : (
                 <div className="text-center py-6 bg-slate-50 rounded-lg border border-dashed border-slate-200">

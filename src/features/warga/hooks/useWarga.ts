@@ -61,7 +61,7 @@ export function useUpdateWarga() {
       queryClient.invalidateQueries({ queryKey: ['pemeriksaan_list'] })
     },
     onError: (error: any) => {
-      console.error(error)
+      console.error('Error mengubah status ibu bersalin:', (error as any).message || error)
     },
   })
 }

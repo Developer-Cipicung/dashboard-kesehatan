@@ -61,7 +61,7 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
 
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Catatan</th>
             {!isLocked && (
-              <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs text-right">Aksi</th>
+              <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs text-right sticky right-0 z-10 bg-slate-50/95 backdrop-blur-sm shadow-[-8px_0_15px_-3px_rgba(0,0,0,0.05)] border-l border-slate-100/80">Aksi</th>
             )}
           </tr>
         </thead>
@@ -225,15 +225,15 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
                 </td>
                 
                 {!isLocked && (
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 sticky right-0 z-10 bg-white/95 backdrop-blur-sm shadow-[-8px_0_15px_-3px_rgba(0,0,0,0.05)] border-l border-slate-100/80">
                     <div className="flex items-center justify-end gap-2">
-                      <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => onEdit(record)}>
+                      <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-white" onClick={() => onEdit(record)}>
                         <Edit className="h-4 w-4 text-slate-500" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10 border-destructive/20"
+                        className="h-8 w-8 p-0 text-destructive bg-white hover:bg-destructive/10 border-destructive/20"
                         onClick={() => onDelete(record.id)}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -293,7 +293,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Status Medis</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Tgl Berikut</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Catatan</th>
-            {!isLocked && <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] text-right">Aksi</th>}
+            {!isLocked && <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] text-right sticky right-0 z-10 bg-slate-50/95 backdrop-blur-sm shadow-[-8px_0_15px_-3px_rgba(0,0,0,0.05)] border-l border-slate-100/80">Aksi</th>}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -376,12 +376,12 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 </td>
                 
                 {!isLocked && (
-                  <td className="px-3 py-3">
+                  <td className="px-3 py-3 sticky right-0 z-10 bg-white/95 backdrop-blur-sm shadow-[-8px_0_15px_-3px_rgba(0,0,0,0.05)] border-l border-slate-100/80">
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => onEdit(record)}>
+                      <Button variant="outline" size="sm" className="h-7 w-7 p-0 bg-white" onClick={() => onEdit(record)}>
                         <Edit className="h-3 w-3 text-slate-500" />
                       </Button>
-                      <Button variant="outline" size="sm" className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10 border-destructive/20" onClick={() => onDelete(record.id)}>
+                      <Button variant="outline" size="sm" className="h-7 w-7 p-0 text-destructive bg-white hover:bg-destructive/10 border-destructive/20" onClick={() => onDelete(record.id)}>
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
@@ -421,7 +421,7 @@ function BalitaTimelineTable({ history, warga, isLocked, onEdit, onDelete, kateg
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">KB</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Kondisi / Bansos</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Catatan</th>
-            {!isLocked && <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] text-right">Aksi</th>}
+            {!isLocked && <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] text-right sticky right-0 z-10 bg-slate-50/95 backdrop-blur-sm shadow-[-8px_0_15px_-3px_rgba(0,0,0,0.05)] border-l border-slate-100/80">Aksi</th>}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -485,12 +485,12 @@ function BalitaTimelineTable({ history, warga, isLocked, onEdit, onDelete, kateg
                 </td>
                 
                 {!isLocked && (
-                  <td className="px-3 py-3">
+                  <td className="px-3 py-3 sticky right-0 z-10 bg-white/95 backdrop-blur-sm shadow-[-8px_0_15px_-3px_rgba(0,0,0,0.05)] border-l border-slate-100/80">
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => onEdit(record)}>
+                      <Button variant="outline" size="sm" className="h-7 w-7 p-0 bg-white" onClick={() => onEdit(record)}>
                         <Edit className="h-3 w-3 text-slate-500" />
                       </Button>
-                      <Button variant="outline" size="sm" className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10 border-destructive/20" onClick={() => onDelete(record.id)}>
+                      <Button variant="outline" size="sm" className="h-7 w-7 p-0 text-destructive bg-white hover:bg-destructive/10 border-destructive/20" onClick={() => onDelete(record.id)}>
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>

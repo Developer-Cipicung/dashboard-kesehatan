@@ -56,9 +56,11 @@ export function ReportPage() {
       const saved = localStorage.getItem(
         `rekapitulasi_filters_${localStorage.getItem('rekapitulasi_kategori') || 'bumil'}`
       )
-      return saved ? JSON.parse(saved) : {}
+      const parsed = saved ? JSON.parse(saved) : {}
+      if (!parsed.status_periksa) parsed.status_periksa = 'sudah'
+      return parsed
     } catch {
-      return {}
+      return { status_periksa: 'sudah' }
     }
   })
   const [searchQuery, setSearchQuery] = useState(
@@ -88,9 +90,11 @@ export function ReportPage() {
       const saved = localStorage.getItem(
         `rekapitulasi_filters_${kategoriFilter}`
       )
-      setSubFilters(saved ? JSON.parse(saved) : {})
+      const parsed = saved ? JSON.parse(saved) : {}
+      if (!parsed.status_periksa) parsed.status_periksa = 'sudah'
+      setSubFilters(parsed)
     } catch {
-      setSubFilters({})
+      setSubFilters({ status_periksa: 'sudah' })
     }
   }, [kategoriFilter])
 
@@ -123,32 +127,35 @@ export function ReportPage() {
     })
 
   // Fetch Warga List to identify "Belum Diperiksa"
-  const fetchWargaKategori = kategoriFilter === 'baduta' ? 'balita' : (kategoriFilter === 'pasca_persalinan' || kategoriFilter === 'pasca-persalinan' ? 'pasca_persalinan' : kategoriFilter)
+  const fetchWargaKategori = kategoriFilter === 'pasca_persalinan' || kategoriFilter === 'pasca-persalinan' ? 'pasca_persalinan' : kategoriFilter
   const { data: wargaDataList, isLoading: isWargaLoading } = useGetWargaList(
     {
       kategori: fetchWargaKategori,
       posyanduId: posyanduIdParam,
       limit: 10000,
-    },
-    { enabled: subFilters.status_periksa === 'belum' }
+    }
   )
 
   // Compute baduta vs balita filter dynamically
   let filteredPemeriksaanList = (() => {
-    const list = pemeriksaanData?.data || []
-    let baseList = list;
+    const examinedList = pemeriksaanData?.data || []
+    const wargaList = wargaDataList?.data || []
+    const examinedWargaIds = new Set(examinedList.map((p: any) => p.warga_id))
+    const unexaminedWarga = wargaList.filter((w: any) => !examinedWargaIds.has(w.id))
+    
+    const fakeList = unexaminedWarga.map((w: any) => ({
+      id: `fake-${w.id}`,
+      warga_id: w.id,
+      warga: w,
+      is_belum_diperiksa: true,
+    })) as any[]
 
-    if (subFilters.status_periksa === 'belum') {
-      const wargaList = wargaDataList?.data || []
-      const examinedWargaIds = new Set(list.map((p: any) => p.warga_id))
-      const unexaminedWarga = wargaList.filter((w: any) => !examinedWargaIds.has(w.id))
-      
-      baseList = unexaminedWarga.map((w: any) => ({
-        id: `fake-${w.id}`,
-        warga_id: w.id,
-        warga: w,
-        is_belum_diperiksa: true,
-      })) as any[]
+    let baseList = [...examinedList, ...fakeList];
+
+    if (subFilters.status_periksa === 'sudah') {
+      baseList = baseList.filter(item => !item.is_belum_diperiksa)
+    } else if (subFilters.status_periksa === 'belum') {
+      baseList = baseList.filter(item => item.is_belum_diperiksa)
     }
 
     if (kategoriFilter === 'baduta') {
@@ -159,7 +166,7 @@ export function ReportPage() {
         return isBadutaByBirthDate(item.warga.tanggal_lahir, tglKunjungan)
       })
     } else if (kategoriFilter === 'balita') {
-      return list.filter((item: any) => {
+      return baseList.filter((item: any) => {
         if (!item.warga?.tanggal_lahir) return false
         const tglKunjungan =
           item.tanggal_kunjungan || item.tanggal_pemeriksaan || new Date()

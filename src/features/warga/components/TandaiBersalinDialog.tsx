@@ -53,7 +53,7 @@ export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaName }:
       onOpenChange(false)
       handleReset()
     } catch (error) {
-      console.error(error)
+      console.error('Error menyimpan status bersalin:', (error as any).message || error)
     }
   }
 
@@ -91,7 +91,7 @@ export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaName }:
               type="text"
               value={tempatPersalinan}
               onChange={(e) => setTempatPersalinan(e.target.value)}
-              placeholder="Contoh: RSUD / Bidan / -"
+              placeholder="Kosongkan jika tidak tahu"
               className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
             />
           </div>
@@ -151,7 +151,7 @@ export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaName }:
               type="text"
               value={namaAyah}
               onChange={(e) => setNamaAyah(e.target.value)}
-              placeholder="Isi '-' jika tidak tahu"
+              placeholder="Kosongkan jika tidak tahu"
               className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base"
             />
           </div>

@@ -41,10 +41,6 @@ export function useCreatePemeriksaan() {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
       queryClient.invalidateQueries({ queryKey: ['pendataan'] })
-      toast.success('Pemeriksaan berhasil ditambahkan.')
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal menambahkan pemeriksaan.')
     },
   })
 }
@@ -62,10 +58,6 @@ export function useUpdatePemeriksaan() {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
       queryClient.invalidateQueries({ queryKey: ['pendataan'] })
-      toast.success('Pemeriksaan berhasil diubah.')
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal mengubah pemeriksaan.')
     },
   })
 }

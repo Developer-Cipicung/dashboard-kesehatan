@@ -193,7 +193,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
     switch (kategori) {
       case 'baduta':
       case 'balita': {
-        const namaIbu = item.nama_ibu || '-'
+        const namaIbu = item.warga?.ibu?.nama || item.warga?.nama_ibu || item.nama_ibu || '-'
         let sg = item.status_gizi?.kategori_bb_tb || '-';
         let sc = 'green' as 'green' | 'orange' | 'red';
         if (sg.toLowerCase().includes('kurang') || sg.toLowerCase().includes('buruk')) sc = 'red';
@@ -224,8 +224,8 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell>{renderBadge(sbb, sbbc)}</TableCell>
             <TableCell>{renderBadge(stb, stbc)}</TableCell>
             <TableCell>{item.kondisi || '-'}</TableCell>
-            <TableCell>{item.asi_eksklusif ? 'Ya' : 'Tidak'}</TableCell>
-            <TableCell>{item.fasilitasi_bantuan_sosial ? 'Ya' : 'Tidak'}</TableCell>
+            <TableCell>{item.is_belum_diperiksa ? '-' : (item.asi_eksklusif ? 'Ya' : 'Tidak')}</TableCell>
+            <TableCell>{item.is_belum_diperiksa ? '-' : (item.fasilitasi_bantuan_sosial ? 'Ya' : 'Tidak')}</TableCell>
             <TableCell>{item.catatan || '-'}</TableCell>
             <TableCell>{(warga.riwayat_imunisasi || []).map((i: ReportImmunisasi) => i.jenis_vaksin).join(', ') || '-'}</TableCell>
           </>

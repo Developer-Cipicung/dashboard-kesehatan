@@ -4,6 +4,7 @@ import { ActivitySquare, Edit3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 import { TandaiBersalinDialog } from './TandaiBersalinDialog'
+import { formatDateID } from '@/utils/dateFormatter'
 import { ImunisasiCell } from './ImunisasiCell'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
 import { Plus } from 'lucide-react'
@@ -77,8 +78,7 @@ export function calculateHplRange(hphtStr?: string): string {
   const end = new Date(hpht)
   end.setDate(end.getDate() + 294) // 42 weeks
   
-  const formatOpts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }
-  return `${start.toLocaleDateString('id-ID', formatOpts)} - ${end.toLocaleDateString('id-ID', { ...formatOpts, year: 'numeric' })}`
+  return `${formatDateID(start.toISOString())} - ${formatDateID(end.toISOString())}`
 }
 
 export const calculateBMI = (bbStr?: string | number, tbStr?: string | number) => {
@@ -605,7 +605,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
 
                 <td className="px-3 py-3">
                   <div className="text-xs font-medium text-slate-700 min-w-[90px] px-2 py-1.5 bg-slate-50 rounded-md border border-slate-100 text-center whitespace-nowrap">
-                    {lastTgl ? new Date(lastTgl).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
+                    {lastTgl ? formatDateID(lastTgl) : '-'}
                   </div>
                 </td>
 
@@ -683,7 +683,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       </td>
                       <td className="px-3 py-3">
                         <div className="text-xs font-medium text-slate-700 min-w-[100px] px-2 py-1.5 bg-slate-50 rounded-md border border-slate-100 text-center whitespace-nowrap">
-                          {warga.hpht ? new Date(warga.hpht).toISOString().split('T')[0] : '-'}
+                          {warga.hpht ? formatDateID(warga.hpht) : '-'}
                         </div>
                       </td>
                       <td className="px-3 py-3">
@@ -847,7 +847,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                         {warga.tempat_persalinan || '-'}
                       </td>
                       <td className="px-3 py-3">
-                        <Cell type="date" value={row.tanggal_persalinan} onChange={(v) => set(warga.id, 'tanggal_persalinan', v)} width="w-[130px]" disabled={true} />
+                        <Cell type="date" value={row.tanggal_persalinan ? formatDateID(row.tanggal_persalinan) : ''} onChange={(v) => set(warga.id, 'tanggal_persalinan', v)} width="w-[130px]" disabled={true} />
                       </td>
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.tfuTb || lastTfuTb} onChange={(v) => set(warga.id, 'tfuTb', v)} placeholder="-" width="w-[70px]" disabled={true} max={250} min={0} />

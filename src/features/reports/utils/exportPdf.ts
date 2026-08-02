@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { formatDateID } from '@/utils/dateFormatter'
 import { Warga } from '@/features/warga/services/wargaService'
 import { formatTimeWib } from '@/utils/dateTime'
 import type { ReportImmunisasi, ReportPemeriksaanItem } from '../types/reportPemeriksaan'
@@ -16,7 +17,7 @@ export function exportWargaToPdf(wargaList: Warga[], filename: string = 'Laporan
 
   doc.text(`Laporan Pemeriksaan ${kategoriFilter ? kategoriFilter.replace('_', ' ').toUpperCase() : 'Warga'}`, 14, 15)
   doc.setFontSize(10)
-  doc.text(`Tanggal Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 22)
+  doc.text(`Tanggal Dicetak: ${formatDateID(new Date())}`, 14, 22)
 
   let tableColumn: string[] = []
   const tableRows: Array<Array<string | number>> = []
@@ -63,7 +64,7 @@ export function exportWargaToPdf(wargaList: Warga[], filename: string = 'Laporan
         }
       }
 
-      const visitDate = item.tanggal_kunjungan ? new Date(item.tanggal_kunjungan).toLocaleDateString('id-ID') : '-'
+      const visitDate = formatDateID(item.tanggal_kunjungan)
       const visitTime = formatTimeWib(item.created_at)
       const tglJamKunjungan = `${visitDate} ${visitTime}`
 
@@ -71,7 +72,7 @@ export function exportWargaToPdf(wargaList: Warga[], filename: string = 'Laporan
         (warga as any).posyandu?.nama || '-',
         warga.nik || '-',
         warga.nomor || '-',
-        `${warga.tempat_lahir || '-'}, ${warga.tanggal_lahir ? new Date(warga.tanggal_lahir).toLocaleDateString('id-ID') : '-'}`,
+        `${warga.tempat_lahir || '-'}, ${formatDateID(warga.tanggal_lahir)}`,
         warga.alamat || '-',
         warga.jenis_kelamin === 'L' ? 'L' : 'P'
       ]
@@ -125,7 +126,7 @@ export function exportWargaToPdf(wargaList: Warga[], filename: string = 'Laporan
             warga.nama || '-',
             ...commonRow,
             warga.tempat_persalinan || '-',
-            item.tanggal_persalinan ? new Date(item.tanggal_persalinan).toLocaleDateString('id-ID') : '-',
+            formatDateID(item.tanggal_persalinan),
             (item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-',
             item.kondisi_ibu || '-',
             item.tinggi_badan_bayi || '-',

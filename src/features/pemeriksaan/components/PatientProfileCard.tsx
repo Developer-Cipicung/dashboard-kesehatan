@@ -5,6 +5,7 @@ import { useGetWargaList } from '@/features/warga/hooks/useWarga'
 import { EditPatientDialog } from '@/features/warga/components/EditPatientDialog'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { formatDateID } from '@/utils/dateFormatter'
 import { Edit2 } from 'lucide-react'
 import { calculateAgeInWeeks, isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
 
@@ -60,11 +61,7 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
           <div>
             <span className="text-muted-foreground block text-xs">Tanggal Lahir</span>
             <span className="font-medium">
-              {warga.tanggal_lahir ? new Date(warga.tanggal_lahir).toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              }) : '-'}
+              {warga.tanggal_lahir ? formatDateID(warga.tanggal_lahir) : '-'}
             </span>
           </div>
           <div>
@@ -84,11 +81,7 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
             <div>
               <span className="text-muted-foreground block text-xs">Tanggal Persalinan</span>
               <span className="font-medium">
-                {warga.pemeriksaan_pasca_persalinan?.[0]?.tanggal_persalinan ? new Date(warga.pemeriksaan_pasca_persalinan[0].tanggal_persalinan).toLocaleDateString('id-ID', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                }) : '-'}
+                {warga.pemeriksaan_pasca_persalinan?.[0]?.tanggal_persalinan ? formatDateID(warga.pemeriksaan_pasca_persalinan[0].tanggal_persalinan) : '-'}
               </span>
             </div>
           )}
@@ -105,11 +98,7 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
               <div>
                 <span className="text-muted-foreground block text-xs">HPHT (Hari Pertama Haid Terakhir)</span>
                 <span className="font-medium">
-                  {warga.hpht ? new Date(warga.hpht).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                  }) : '-'}
+                  {warga.hpht ? formatDateID(warga.hpht) : '-'}
                 </span>
               </div>
               <div>
@@ -122,7 +111,7 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
                     start.setDate(start.getDate() + 280 - 7)
                     const end = new Date(hpht)
                     end.setDate(end.getDate() + 280 + 7)
-                    const fmt = (d: Date) => d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                    const fmt = (d: Date) => formatDateID(d.toISOString())
                     return `${fmt(start)} - ${fmt(end)}`
                   })()}
                 </span>

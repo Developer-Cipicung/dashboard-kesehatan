@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
+import { formatDateID } from '@/utils/dateFormatter'
 import { classifyTekananDarah } from '@/utils/kesehatan'
 
 import {
@@ -175,7 +176,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
       }
     }
 
-    const visitDate = item.tanggal_kunjungan ? new Date(item.tanggal_kunjungan).toLocaleDateString('id-ID') : '-'
+    const visitDate = formatDateID(item.tanggal_kunjungan)
     const visitCell = <TableCell>{visitDate}</TableCell>
 
     const commonDemographicsCells = (
@@ -183,7 +184,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         <TableCell>{(warga as any).posyandu?.nama || '-'}</TableCell>
         <TableCell>{warga.nik || '-'}</TableCell>
         <TableCell>{warga.nomor || '-'}</TableCell>
-        <TableCell>{`${warga.tempat_lahir || '-'}, ${warga.tanggal_lahir ? new Date(warga.tanggal_lahir).toLocaleDateString('id-ID') : '-'}`}</TableCell>
+        <TableCell>{`${warga.tempat_lahir || '-'}, ${formatDateID(warga.tanggal_lahir)}`}</TableCell>
         <TableCell>{warga.alamat || '-'}</TableCell>
         <TableCell>{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</TableCell>
       </>
@@ -287,7 +288,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell className="font-medium">{warga.nama}</TableCell>
             {commonDemographicsCells}
             <TableCell>{warga.tempat_persalinan || '-'}</TableCell>
-            <TableCell>{item.tanggal_persalinan ? new Date(item.tanggal_persalinan).toLocaleDateString('id-ID') : '-'}</TableCell>
+            <TableCell>{formatDateID(item.tanggal_persalinan)}</TableCell>
             <TableCell>{(item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-'}</TableCell>
             <TableCell>{renderBadge(tdStatusP, tdColorP)}</TableCell>
 

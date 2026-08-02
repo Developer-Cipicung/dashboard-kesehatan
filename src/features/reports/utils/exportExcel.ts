@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs'
 import { saveAs } from 'file-saver'
 import { Warga } from '@/features/warga/services/wargaService'
 import { formatTimeWib } from '@/utils/dateTime'
+import { formatDateID } from '@/utils/dateFormatter'
 import type { ReportImmunisasi, ReportPemeriksaanItem } from '../types/reportPemeriksaan'
 
 export async function exportWargaToExcel(wargaList: Warga[], filename: string = 'Laporan_Warga.xlsx', pemeriksaanList: ReportPemeriksaanItem[] = [], kategoriFilter: string = '') {
@@ -26,7 +27,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
         Nama: warga.nama,
         'Jenis Kelamin': warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
         'Tempat Lahir': warga.tempat_lahir,
-        'Tanggal Lahir': new Date(warga.tanggal_lahir).toLocaleDateString('id-ID'),
+        'Tanggal Lahir': formatDateID(warga.tanggal_lahir),
         Alamat: `${warga.alamat} RT ${warga.rt} RW ${warga.rw}`,
         Kategori: warga.kategori,
         'Status Pernikahan': warga.status_pernikahan,
@@ -46,7 +47,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
       }
     }
 
-    const visitDate = item.tanggal_kunjungan ? new Date(item.tanggal_kunjungan).toLocaleDateString('id-ID') : '-'
+    const visitDate = formatDateID(item.tanggal_kunjungan)
     const visitTime = formatTimeWib(item.created_at)
 
     const visitData = {
@@ -62,7 +63,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
       NIK: warga.nik || '-',
       'No. HP': warga.nomor || '-',
       'Tempat Lahir': warga.tempat_lahir || '-',
-      'Tanggal Lahir': warga.tanggal_lahir ? new Date(warga.tanggal_lahir).toLocaleDateString('id-ID') : '-',
+      'Tanggal Lahir': formatDateID(warga.tanggal_lahir),
       Alamat: warga.alamat || '-',
       'Jenis Kelamin': warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'
     }
@@ -107,7 +108,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
         return {
           ...baseData,
           'Tempat Persalinan': warga.tempat_persalinan || '-',
-          'Tanggal Persalinan': item.tanggal_persalinan ? new Date(item.tanggal_persalinan).toLocaleDateString('id-ID') : '-',
+          'Tanggal Persalinan': formatDateID(item.tanggal_persalinan),
           'Tekanan Darah': (item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-',
           'Kondisi Ibu': item.kondisi_ibu || '-',
           'Tinggi Bayi': item.tinggi_badan_bayi || '-',

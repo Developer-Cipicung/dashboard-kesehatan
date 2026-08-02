@@ -2,6 +2,7 @@ import { Pemeriksaan } from '../services/pemeriksaanService'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash2 } from 'lucide-react'
 import { calculateHplRange, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus, calculateAge } from '../../warga/components/PatientTable'
+import { formatDateID } from '@/utils/dateFormatter'
 
 interface HistoryTimelineProps {
   history: Pemeriksaan[]
@@ -68,11 +69,7 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
         <tbody className="divide-y divide-slate-100">
           {history.map((record: any) => {
             const dateRaw = record.tanggal_kunjungan || record.tanggal_pemeriksaan || record.created_at
-            const date = dateRaw ? new Date(dateRaw).toLocaleDateString('id-ID', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            }) : 'Tanggal Tidak Diketahui'
+            const date = dateRaw ? formatDateID(dateRaw) : 'Tanggal Tidak Diketahui'
 
             const bb = record.bb || record.berat_badan
             const tb = record.tb || record.tinggi_badan
@@ -80,13 +77,11 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
               ? `${record.tekanan_darah_sistolik}/${record.tekanan_darah_diastolik} mmHg` 
               : (record.tekanan_darah || '-')
 
-            const parseDate = (d: string) => d ? new Date(d).toLocaleDateString('id-ID') : '-'
-
             const renderHphtHtp = () => {
               if (!warga?.hpht) return <div className="text-slate-400 italic">Belum diset</div>
               return (
                 <div className="text-xs whitespace-nowrap">
-                  <div><span className="text-muted-foreground">HPHT:</span> {parseDate(warga.hpht)}</div>
+                  <div><span className="text-muted-foreground">HPHT:</span> {formatDateID(warga.hpht)}</div>
                   <div className="mt-0.5"><span className="text-muted-foreground">HPL:</span> {calculateHplRange(warga.hpht)}</div>
                 </div>
               )
@@ -264,8 +259,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
     start.setDate(start.getDate() + 259)
     const end = new Date(hpht)
     end.setDate(end.getDate() + 294)
-    const formatOpts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }
-    return `${start.toLocaleDateString('id-ID', formatOpts)} - ${end.toLocaleDateString('id-ID', { ...formatOpts, year: 'numeric' })}`
+    return `${formatDateID(start.toISOString())} - ${formatDateID(end.toISOString())}`
   }
 
 
@@ -298,13 +292,12 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
         </thead>
         <tbody className="divide-y divide-slate-100">
           {history.map((record: any) => {
-            const parseDate = (d: string) => d ? new Date(d).toLocaleDateString('id-ID') : '-'
             
             return (
               <tr key={record.id} className="hover:bg-primary/5 transition-colors">
-                <td className="px-4 py-3 font-semibold text-slate-700 whitespace-nowrap text-xs">{parseDate(record.tanggal_kunjungan || record.created_at)}</td>
+                <td className="px-4 py-3 font-semibold text-slate-700 whitespace-nowrap text-xs">{formatDateID(record.tanggal_kunjungan || record.created_at)}</td>
                 <td className="px-4 py-3 text-slate-600 text-[11px] whitespace-nowrap">
-                  <div><span className="text-muted-foreground">HPHT:</span> {parseDate(warga?.hpht)}</div>
+                  <div><span className="text-muted-foreground">HPHT:</span> {formatDateID(warga?.hpht)}</div>
                   <div className="mt-0.5"><span className="text-muted-foreground">HPL:</span> {getHplRange(warga?.hpht)}</div>
                 </td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.jumlah_anak ?? '-'}</td>
@@ -368,7 +361,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 </td>
                 
                 <td className="px-4 py-3 text-slate-600 text-xs whitespace-nowrap">
-                  {parseDate(record.tanggal_kunjungan_berikut)}
+                  {formatDateID(record.tanggal_kunjungan_berikut)}
                 </td>
 
                 <td className="px-4 py-3 text-slate-600 max-w-[150px]">
@@ -427,15 +420,10 @@ function BalitaTimelineTable({ history, warga, isLocked, onEdit, onDelete, kateg
         <tbody className="divide-y divide-slate-100">
           {history.map((record: any) => {
             const dateRaw = record.tanggal_kunjungan || record.tanggal_pemeriksaan || record.created_at
-            const dateStr = dateRaw ? new Date(dateRaw).toLocaleDateString('id-ID', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-            }) : '-'
 
             return (
               <tr key={record.id} className="hover:bg-primary/5 transition-colors">
-                <td className="px-4 py-3 font-semibold text-slate-700 whitespace-nowrap text-xs">{dateStr}</td>
+                <td className="px-4 py-3 font-semibold text-slate-700 whitespace-nowrap text-xs">{formatDateID(dateRaw)}</td>
                 <td className="px-3 py-3 text-slate-600 text-xs whitespace-nowrap">
                   {warga?.tanggal_lahir ? calculateAge(warga.tanggal_lahir, dateRaw, kategori) : '-'}
                 </td>

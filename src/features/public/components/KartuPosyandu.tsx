@@ -1,6 +1,7 @@
 import React from 'react';
 import { Warga } from '../../warga/services/wargaService';
 import { calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from '../../warga/components/PatientTable';
+import { formatDateID } from '@/utils/dateFormatter';
 
 interface KartuPosyanduProps {
   warga: Warga;
@@ -83,7 +84,7 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
       <div className="space-y-1 mt-2">
         {recentCheckups.map((p, idx) => {
           const rawDate = p.tanggal_kunjungan || p.tanggal_pemeriksaan;
-          const dateStr = rawDate ? new Date(rawDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+          const dateStr = rawDate ? formatDateID(rawDate) : '-';
           let metrics: { label: string, value: string }[] = [];
           
           if (type === 'balita') {
@@ -278,7 +279,7 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
             <div>
               <p className="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-semibold print:text-black print:text-xs">Tempat, Tgl Lahir</p>
               <p className="text-sm sm:text-base font-semibold text-slate-700 print:text-black">
-                {warga.tempat_lahir || '-'}, {new Date(warga.tanggal_lahir).toLocaleDateString('id-ID')}
+                {warga.tempat_lahir || '-'}, {formatDateID(warga.tanggal_lahir)}
               </p>
             </div>
           </div>

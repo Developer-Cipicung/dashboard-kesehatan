@@ -3,6 +3,7 @@ import { Plus, Printer, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Warga } from '../services/wargaService'
 import { TandaiBersalinDialog } from './TandaiBersalinDialog'
+import { formatDateID } from '@/utils/dateFormatter'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
 import { calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from './PatientTable'
 
@@ -78,7 +79,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
     || latestBalita?.tanggal_kunjungan
 
   const displayLastDate = lastDate
-    ? new Date(lastDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+    ? formatDateID(lastDate)
     : null
 
   return (

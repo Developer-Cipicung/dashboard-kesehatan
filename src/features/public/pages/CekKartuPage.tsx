@@ -16,8 +16,8 @@ export const CekKartuPage = () => {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (nik.length !== 16) {
-      toast.error('NIK harus 16 digit angka');
+    if (!nik || nik.trim() === '') {
+      toast.error('NIK wajib diisi');
       return;
     }
     if (!tanggalLahir) {
@@ -72,8 +72,8 @@ export const CekKartuPage = () => {
                 <Label htmlFor="nik">Nomor Induk Kependudukan (NIK)</Label>
                 <Input 
                   id="nik" 
-                  type="number" 
-                  placeholder="Masukkan 16 digit NIK / NIK Sementara" 
+                  type="text" 
+                  placeholder="Masukkan NIK / NIK Sementara" 
                   value={nik}
                   onChange={(e) => setNik(e.target.value)}
                   className="h-12"

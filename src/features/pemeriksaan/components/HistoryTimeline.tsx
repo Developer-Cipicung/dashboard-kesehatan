@@ -46,14 +46,17 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
             {/* Dynamic Headers */}
             {isBumil && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Usia Kandungan</th>}
             
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">BB / TB</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">BB (kg)</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">TB (cm)</th>
             
 
             
             {isBumil && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">HPHT / HTP</th>}
             
             {isLansia && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Tekanan Darah</th>}
-            {isLansia && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Pemeriksaan Darah</th>}
+            {isLansia && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">GDS</th>}
+            {isLansia && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Kolesterol</th>}
+            {isLansia && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Asam Urat</th>}
             {isPasca && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Kondisi Ibu</th>}
 
 
@@ -100,13 +103,10 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
                 )}
                 
                 <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <span>
-                      {bb !== undefined && bb !== null ? `${bb} kg` : '-'}
-                      {(tb !== undefined && tb !== null) ? ` / ${tb} cm` : ''}
-                    </span>
-
-                  </div>
+                  {bb !== undefined && bb !== null ? <span className="font-medium">{bb}</span> : <span className="text-slate-400">-</span>}
+                </td>
+                <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                  {tb !== undefined && tb !== null ? <span className="font-medium">{tb}</span> : <span className="text-slate-400">-</span>}
                 </td>
                 
 
@@ -132,41 +132,41 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
                 )}
 
                 {isLansia && (
-                  <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
-                    <div className="flex flex-col gap-1.5">
-                      {record.gula_darah_sewaktu !== undefined && record.gula_darah_sewaktu !== null && (
+                  <>
+                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                      {record.gula_darah_sewaktu !== undefined && record.gula_darah_sewaktu !== null ? (
                         <div className="flex items-center gap-1.5 text-xs">
-                          <span className="text-muted-foreground w-16">GDS:</span>
-                          <span>{record.gula_darah_sewaktu}</span>
+                          <span className="font-medium">{record.gula_darah_sewaktu}</span>
                           {(() => {
                             const st = calculateGdsStatus(record.gula_darah_sewaktu);
-                            return st ? <span className={`text-[9px] px-1 py-0.5 rounded border font-bold ${st.color}`}>{st.status}</span> : null;
+                            return st ? <span className={`text-[9px] px-1.5 py-0.5 rounded border font-bold ${st.color}`}>{st.status}</span> : null;
                           })()}
                         </div>
-                      )}
-                      {record.kolesterol !== undefined && record.kolesterol !== null && (
+                      ) : <span className="text-slate-400">-</span>}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                      {record.kolesterol !== undefined && record.kolesterol !== null ? (
                         <div className="flex items-center gap-1.5 text-xs">
-                          <span className="text-muted-foreground w-16">Kolesterol:</span>
-                          <span>{record.kolesterol}</span>
+                          <span className="font-medium">{record.kolesterol}</span>
                           {(() => {
                             const st = calculateKolesterolStatus(record.kolesterol);
-                            return st ? <span className={`text-[9px] px-1 py-0.5 rounded border font-bold ${st.color}`}>{st.status}</span> : null;
+                            return st ? <span className={`text-[9px] px-1.5 py-0.5 rounded border font-bold ${st.color}`}>{st.status}</span> : null;
                           })()}
                         </div>
-                      )}
-                      {record.asam_urat !== undefined && record.asam_urat !== null && (
+                      ) : <span className="text-slate-400">-</span>}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                      {record.asam_urat !== undefined && record.asam_urat !== null ? (
                         <div className="flex items-center gap-1.5 text-xs">
-                          <span className="text-muted-foreground w-16">Asam Urat:</span>
-                          <span>{record.asam_urat}</span>
+                          <span className="font-medium">{record.asam_urat}</span>
                           {(() => {
                             const st = calculateAsamUratStatus(record.asam_urat, warga?.jenis_kelamin);
-                            return st ? <span className={`text-[9px] px-1 py-0.5 rounded border font-bold ${st.color}`}>{st.status}</span> : null;
+                            return st ? <span className={`text-[9px] px-1.5 py-0.5 rounded border font-bold ${st.color}`}>{st.status}</span> : null;
                           })()}
                         </div>
-                      )}
-                      {(record.gula_darah_sewaktu === undefined && record.kolesterol === undefined && record.asam_urat === undefined) && '-'}
-                    </div>
-                  </td>
+                      ) : <span className="text-slate-400">-</span>}
+                    </td>
+                  </>
                 )}
 
                 {isPasca && (

@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 .env
+.testsprite/
+testsprite_tests/

@@ -2,6 +2,8 @@ import React from 'react';
 import { Warga } from '../../warga/services/wargaService';
 import { calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from '../../warga/components/PatientTable';
 import { formatDateID } from '@/utils/dateFormatter';
+import { KMSChart } from './KMSChart';
+import { BumilChart } from './BumilChart';
 
 interface KartuPosyanduProps {
   warga: Warga;
@@ -62,11 +64,15 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
         const val = parseFloat(p.zscore_bb_u);
         if (val < -3) gizi.push(`BB Sangat Kurang (${val})`);
         else if (val < -2) gizi.push(`BB Kurang (${val})`);
+        else if (val > 1) gizi.push(`Risiko BB Lebih (${val})`);
+        else gizi.push(`BB Normal (${val})`);
       }
       if (p.zscore_tb_u != null) {
         const val = parseFloat(p.zscore_tb_u);
         if (val < -3) gizi.push(`Sangat Pendek (${val})`);
         else if (val < -2) gizi.push(`Pendek (${val})`);
+        else if (val > 3) gizi.push(`Tinggi (${val})`);
+        else gizi.push(`Tinggi Normal (${val})`);
       }
       if (p.zscore_bb_tb != null) {
         const val = parseFloat(p.zscore_bb_tb);
@@ -75,6 +81,7 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
         else if (val > 3) gizi.push(`Obesitas (${val})`);
         else if (val > 2) gizi.push(`Gizi Lebih (${val})`);
         else if (val > 1) gizi.push(`Berisiko Lebih (${val})`);
+        else gizi.push(`Gizi Baik (${val})`);
       }
       return gizi.length > 0 ? gizi.join(', ') : 'Normal';
     };
@@ -98,6 +105,7 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
               { label: 'TB', value: `${p.tb || '-'} cm` },
               { label: 'LILA', value: `${p.lingkar_lengan_atas || '-'} cm` },
               { label: 'Usia', value: `${p.usia_kehamilan_minggu || '-'} mgg` },
+              { label: 'Hb', value: `${p.kadar_hemoglobin || '-'} g/dL` },
               { label: 'L.Perut', value: `${p.lingkar_perut || '-'} cm` },
               { label: 'T.Fundus', value: `${p.tinggi_fundus || '-'} cm` }
             ];
@@ -113,7 +121,9 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
               { label: 'Tensi', value: `${p.tekanan_darah_sistolik || '-'}/${p.tekanan_darah_diastolik || '-'}` },
               { label: 'BB', value: `${p.bb || '-'} kg` },
               { label: 'TB', value: `${p.tb || '-'} cm` },
-              { label: 'L.Perut', value: `${p.lingkar_perut || '-'} cm` }
+              { label: 'GDS', value: `${p.gula_darah_sewaktu || '-'} mg/dL` },
+              { label: 'Kolesterol', value: `${p.kolesterol || '-'} mg/dL` },
+              { label: 'Asam Urat', value: `${p.asam_urat || '-'} mg/dL` }
             ];
           }
 
@@ -313,7 +323,17 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
             {renderRiwayatKesehatan()}
           </div>
 
+          {getKategori(warga) === 'Balita / Baduta' && (
+            <div className="pt-3 sm:pt-4 mt-2 border-t border-slate-200/60 print:border-black">
+              <KMSChart warga={warga} />
+            </div>
+          )}
 
+          {getKategori(warga) === 'Ibu Hamil' && (
+            <div className="pt-3 sm:pt-4 mt-2 border-t border-slate-200/60 print:border-black">
+              <BumilChart warga={warga} />
+            </div>
+          )}
 
           {getKategori(warga) === 'Balita / Baduta' && (
             <div className="pt-3 sm:pt-4 mt-2 border-t border-slate-200/60 print:border-black">

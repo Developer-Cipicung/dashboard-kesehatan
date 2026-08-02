@@ -21,17 +21,17 @@ export function classifyZScore(bb_u: number | null, tb_u: number | null, bb_tb: 
 
   if (bb_u !== null) {
     if (bb !== undefined && bb !== null && Number(bb) === 0) kategori_bb_u = '-';
-    else if (bb_u < -3) kategori_bb_u = 'Sangat Kurang';
-    else if (bb_u < -2) kategori_bb_u = 'Kurang';
-    else if (bb_u <= 1) kategori_bb_u = 'Normal';
-    else kategori_bb_u = 'Risiko Berat Badan Lebih';
+    else if (bb_u < -3) kategori_bb_u = 'BB Sangat Kurang';
+    else if (bb_u < -2) kategori_bb_u = 'BB Kurang';
+    else if (bb_u <= 1) kategori_bb_u = 'BB Normal';
+    else kategori_bb_u = 'Risiko BB Lebih';
   }
 
   if (tb_u !== null) {
     if (tb !== undefined && tb !== null && Number(tb) === 0) kategori_tb_u = '-';
     else if (tb_u < -3) kategori_tb_u = 'Sangat Pendek';
-    else if (tb_u < -2) kategori_tb_u = 'Pendek (Stunted)';
-    else if (tb_u <= 3) kategori_tb_u = 'Normal';
+    else if (tb_u < -2) kategori_tb_u = 'Pendek';
+    else if (tb_u <= 3) kategori_tb_u = 'Tinggi Normal';
     else kategori_tb_u = 'Tinggi';
   }
 
@@ -40,7 +40,7 @@ export function classifyZScore(bb_u: number | null, tb_u: number | null, bb_tb: 
     else if (bb_tb < -3) kategori_bb_tb = 'Gizi Buruk';
     else if (bb_tb < -2) kategori_bb_tb = 'Gizi Kurang';
     else if (bb_tb <= 1) kategori_bb_tb = 'Gizi Baik';
-    else if (bb_tb <= 2) kategori_bb_tb = 'Risiko Gizi Lebih';
+    else if (bb_tb <= 2) kategori_bb_tb = 'Berisiko Lebih';
     else if (bb_tb <= 3) kategori_bb_tb = 'Gizi Lebih';
     else kategori_bb_tb = 'Obesitas';
   }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useGetWargaById } from '@/features/warga/hooks/useWarga'
+import { useGetWargaById, useDeleteWarga } from '@/features/warga/hooks/useWarga'
 import { useGetHistory, useDeletePemeriksaan } from '../hooks/usePemeriksaan'
 import { useGetPendataanStatus } from '@/features/pendataan/hooks/usePendataanBulanan'
 import { useAuthStore } from '@/stores/authStore'
@@ -8,8 +8,10 @@ import { PatientProfileCard } from '../components/PatientProfileCard'
 import { HistoryTimeline } from '../components/HistoryTimeline'
 import { MonthlyRecordForm } from '../components/MonthlyRecordForm'
 import { ImunisasiCell } from '@/features/warga/components/ImunisasiCell'
+import { KMSChart } from '@/features/public/components/KMSChart'
+import { BumilChart } from '@/features/public/components/BumilChart'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Plus } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { ErrorState } from '@/components/feedback/ErrorState'
 import { ConfirmDialog } from '@/components/dialogs/ConfirmDialog'
@@ -22,6 +24,7 @@ export function PatientHistoryPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState<Pemeriksaan | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [confirmDeleteWarga, setConfirmDeleteWarga] = useState(false)
 
   const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
@@ -34,6 +37,7 @@ export function PatientHistoryPage() {
   const { data: pendataanStatus, isLoading: isStatusLoading } = useGetPendataanStatus(currentMonth, currentYear, selectedPosyanduId || undefined)
 
   const { mutate: deletePemeriksaan, isPending: isDeleting } = useDeletePemeriksaan()
+  const { mutate: deleteWarga, isPending: isDeletingWarga } = useDeleteWarga()
 
   const isLocked = pendataanStatus?.status === 'selesai'
   const isReadOnly = posyandu?.id !== selectedPosyanduId
@@ -72,6 +76,14 @@ export function PatientHistoryPage() {
     }
   }
 
+  const handleConfirmDeleteWarga = () => {
+    deleteWarga(id!, {
+      onSuccess: () => {
+        navigate(`/${kategori?.replace('_', '-')}`)
+      }
+    })
+  }
+
   if (isWargaLoading || isHistoryLoading || isStatusLoading) {
     return (
       <div className="space-y-6">
@@ -93,31 +105,51 @@ export function PatientHistoryPage() {
 
   return (
     <div className="max-w-full space-y-4 overflow-x-hidden sm:space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <Button variant="ghost" onClick={() => navigate(-1)} className="h-8 pl-0 text-xs sm:h-9 sm:text-sm">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Kembali
         </Button>
-        {isLocked && (
-          <div className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-semibold">
-            Pendataan Sudah Terkunci
-          </div>
-        )}
-        {isReadOnly && !isLocked && (
-          <div className="bg-slate-100 text-slate-800 px-3 py-1 rounded-full text-xs font-semibold">
-            Mode Baca Saja (Beda Posyandu)
-          </div>
-        )}
+        <div className="flex items-center gap-3 ml-auto">
+          {isLocked && (
+            <div className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-semibold">
+              Pendataan Sudah Terkunci
+            </div>
+          )}
+          {isReadOnly && !isLocked && (
+            <div className="bg-slate-100 text-slate-800 px-3 py-1 rounded-full text-xs font-semibold">
+              Mode Baca Saja (Beda Posyandu)
+            </div>
+          )}
+          {!isReadOnly && (
+            <Button variant="destructive" onClick={() => setConfirmDeleteWarga(true)} className="h-8 text-xs sm:h-9 sm:text-sm px-3 shadow-sm">
+              <Trash2 className="mr-2 h-3.5 w-3.5" />
+              Hapus Pasien
+            </Button>
+          )}
+        </div>
       </div>
 
       <PatientProfileCard warga={warga} kategori={kategori} />
 
       {(kategori === 'balita' || kategori === 'baduta') && (
-        <div className="bg-white p-5 rounded-xl border border-slate-200 mt-6 shadow-sm">
-          <h3 className="text-lg font-bold mb-3">Kelola Imunisasi</h3>
-          <div className="max-w-md">
-            <ImunisasiCell wargaId={id!} disabled={isReadOnly} />
+        <>
+          <div className="bg-white p-5 rounded-xl border border-slate-200 mt-6 shadow-sm">
+            <h3 className="text-lg font-bold mb-3">Kelola Imunisasi</h3>
+            <div className="max-w-md">
+              <ImunisasiCell wargaId={id!} disabled={isReadOnly} />
+            </div>
           </div>
+          
+          <div className="mt-6">
+            <KMSChart warga={warga} />
+          </div>
+        </>
+      )}
+
+      {kategori === 'bumil' && (
+        <div className="mt-6">
+          <BumilChart warga={warga} />
         </div>
       )}
 
@@ -157,6 +189,16 @@ export function PatientHistoryPage() {
         description="Apakah Anda yakin ingin menghapus riwayat pemeriksaan ini? Data yang dihapus tidak dapat dikembalikan."
         onConfirm={handleConfirmDelete}
         isLoading={isDeleting}
+        variant="destructive"
+      />
+
+      <ConfirmDialog
+        open={confirmDeleteWarga}
+        onOpenChange={setConfirmDeleteWarga}
+        title="Hapus Pasien"
+        description={`Apakah Anda yakin ingin menghapus pasien ${warga.nama}? Semua riwayat pemeriksaan untuk pasien ini akan ikut terhapus secara permanen.`}
+        onConfirm={handleConfirmDeleteWarga}
+        isLoading={isDeletingWarga}
         variant="destructive"
       />
     </div>

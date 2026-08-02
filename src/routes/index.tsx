@@ -29,7 +29,7 @@ const AdminStatusPendataanPage = Loadable(lazy(() => import('@/features/admin/pa
 const VerifikasiPendataanPage = Loadable(lazy(() => import('@/features/pendataan/pages/VerifikasiPendataanPage').then(m => ({ default: m.VerifikasiPendataanPage }))))
 const CekKartuPage = Loadable(lazy(() => import('@/features/public/pages/CekKartuPage').then(m => ({ default: m.CekKartuPage }))))
 const PrintKartuPage = Loadable(lazy(() => import('@/features/public/components/PrintKartuPage').then(m => ({ default: m.PrintKartuPage }))))
-
+const TutorialPage = Loadable(lazy(() => import('@/features/public/pages/TutorialPage').then(m => ({ default: m.TutorialPage }))))
 const router = createBrowserRouter([
   {
     path: '/',
@@ -140,6 +140,10 @@ const router = createBrowserRouter([
   {
     path: '/cek-kartu',
     element: <CekKartuPage />,
+  },
+  {
+    path: '/bantuan',
+    element: <TutorialPage />,
   },
   {
     path: '/login',

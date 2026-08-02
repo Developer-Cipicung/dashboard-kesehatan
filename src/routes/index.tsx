@@ -22,6 +22,7 @@ const AdminDashboardPage = Loadable(lazy(() => import('@/features/admin/pages/Ad
 const AdminReportPage = Loadable(lazy(() => import('@/features/admin/pages/AdminReportPage').then(m => ({ default: m.AdminReportPage }))))
 const PosyanduManagementPage = Loadable(lazy(() => import('@/features/admin/pages/PosyanduManagementPage').then(m => ({ default: m.PosyanduManagementPage }))))
 const UserManagementPage = Loadable(lazy(() => import('@/features/admin/pages/UserManagementPage').then(m => ({ default: m.UserManagementPage }))))
+const AdminSharedPatientList = Loadable(lazy(() => import('@/features/admin/pages/AdminSharedPatientList').then(m => ({ default: m.AdminSharedPatientList }))))
 
 
 const AdminStatusPendataanPage = Loadable(lazy(() => import('@/features/admin/pages/AdminStatusPendataanPage').then(m => ({ default: m.AdminStatusPendataanPage }))))
@@ -95,6 +96,26 @@ const router = createBrowserRouter([
           {
             path: 'status-pendataan',
             element: <AdminStatusPendataanPage />,
+          },
+          {
+            path: 'warga/bumil',
+            element: <AdminSharedPatientList title="Ibu Hamil" kategori="bumil" />,
+          },
+          {
+            path: 'warga/pasca-persalinan',
+            element: <AdminSharedPatientList title="Pasca Persalinan" kategori="pasca_persalinan" />,
+          },
+          {
+            path: 'warga/baduta',
+            element: <AdminSharedPatientList title="Baduta" kategori="baduta" />,
+          },
+          {
+            path: 'warga/balita',
+            element: <AdminSharedPatientList title="Balita" kategori="balita" />,
+          },
+          {
+            path: 'warga/lansia',
+            element: <AdminSharedPatientList title="Lansia" kategori="lansia" />,
           },
           {
             path: 'posyandu',

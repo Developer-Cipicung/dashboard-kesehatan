@@ -392,6 +392,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
           <tr className="border-b border-slate-200">
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-0 z-20 bg-white min-w-[160px] max-w-[160px] w-[160px]" rowSpan={2}>NIK</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-[160px] z-20 bg-white min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-200 shadow-[1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Nama</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[140px] max-w-[180px]" rowSpan={2}>Posyandu</th>
             <th colSpan={isBalita ? 12 : isBumil ? 22 : isPasca ? 15 : 9} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
               <div className="flex items-center text-primary font-bold text-xs uppercase tracking-wider">
                 <ActivitySquare className="w-4 h-4 mr-2" />
@@ -603,6 +604,11 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                 <td className="px-4 py-3 sticky left-[160px] z-10 bg-white group-hover:bg-slate-50 min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-100 shadow-[1px_0_3px_rgba(0,0,0,0.03)]">
                   <div className="font-semibold text-slate-800 text-sm truncate" title={warga.nama}>{warga.nama}</div>
                   <div className="text-xs text-slate-400 mt-0.5">{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</div>
+                </td>
+                <td className="px-4 py-3 min-w-[140px] max-w-[180px]">
+                  <div className="text-xs font-medium text-slate-700 truncate" title={warga.posyandu?.nama}>
+                    {warga.posyandu?.nama || '-'}
+                  </div>
                 </td>
 
                 <td className="px-3 py-3">

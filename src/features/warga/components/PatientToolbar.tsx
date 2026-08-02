@@ -23,20 +23,19 @@ export function PatientToolbar({
 }: PatientToolbarProps) {
   return (
     <div className="flex flex-col space-y-6">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
-
-          <h2 className="text-[28px] font-bold text-slate-800 leading-tight">{title}</h2>
+          <h2 className="text-2xl md:text-[28px] font-bold text-slate-800 leading-tight">{title}</h2>
           <p className="text-sm text-slate-500 mt-1">{totalPatients} pasien terdaftar</p>
         </div>
         {!isReadOnly && (
-          <div className="flex flex-col gap-2">
-            <Button onClick={onAddPatient} className="bg-primary hover:bg-primary/90 text-white rounded-lg shadow-sm">
-              <Plus className="mr-2 h-4 w-4" />
-              Input Data Baru
+          <div className="flex flex-col min-[400px]:flex-row gap-2 w-full md:w-auto shrink-0">
+            <Button onClick={onAddPatient} className="bg-primary hover:bg-primary/90 text-white rounded-lg shadow-sm flex-1 h-9 md:h-10 text-xs md:text-sm">
+              <Plus className="mr-1.5 h-3.5 w-3.5 md:h-4 md:w-4" />
+              Input Baru
             </Button>
-            <Button onClick={onImportHealth} variant="outline" className="text-xs h-9 bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800 rounded-lg shadow-sm">
-              Import Data Kesehatan e-PPGBM
+            <Button onClick={onImportHealth} variant="outline" className="text-xs h-9 md:h-10 bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800 rounded-lg shadow-sm flex-1 whitespace-nowrap px-3">
+              Import e-PPGBM
             </Button>
           </div>
         )}

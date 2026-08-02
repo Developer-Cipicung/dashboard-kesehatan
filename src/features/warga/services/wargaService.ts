@@ -31,6 +31,10 @@ export interface Warga {
   hpht?: string
   htp?: string
   posyandu_id?: string
+  posyandu?: {
+    id: string
+    nama: string
+  }
   created_at: string
   updated_at: string
   pemeriksaan_balita_baduta?: Array<any>

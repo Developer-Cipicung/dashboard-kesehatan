@@ -1,21 +1,63 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { LayoutDashboard, Users, MapPin, LogOut, Menu, X, ClipboardList, BarChart2 } from 'lucide-react'
+import { LayoutDashboard, Users, MapPin, LogOut, Menu, X, ClipboardList, BarChart2, Heart, Baby, ChevronDown, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Header } from './Header'
+import { AdminSpeedDialNavigation } from '@/components/navigation/AdminSpeedDialNavigation'
 
 export default function AdminLayout() {
   const { user, logout } = useAuthStore()
   const location = useLocation()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    'Ibu-ibu': true,
+    'Anak-anak': true
+  })
 
   if (!user || (user as any).role !== 'admin') {
     return <Navigate to="/" replace />
   }
 
-  const menuItems = [
+  const toggleSection = (name: string) => {
+    setOpenSections(prev => ({ ...prev, [name]: !prev[name] }))
+  }
+
+  interface SubNavItem {
+    name: string
+    path: string
+  }
+
+  interface NavItem {
+    name: string
+    path?: string
+    icon?: any
+    isHeader?: boolean
+    subItems?: SubNavItem[]
+  }
+
+  const navigation: NavItem[] = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
+    { name: 'KATEGORI PASIEN', isHeader: true },
+    {
+      name: 'Ibu-ibu',
+      icon: Heart,
+      subItems: [
+        { name: 'Ibu Hamil', path: '/admin/warga/bumil' },
+        { name: 'Ibu Pasca Persalinan', path: '/admin/warga/pasca-persalinan' },
+      ],
+    },
+    { name: 'Lansia', path: '/admin/warga/lansia', icon: Users },
+    {
+      name: 'Anak-anak',
+      icon: Baby,
+      subItems: [
+        { name: 'Baduta', path: '/admin/warga/baduta' },
+        { name: 'Balita', path: '/admin/warga/balita' },
+      ],
+    },
+    { name: 'ADMINISTRASI', isHeader: true },
     { name: 'Rekapitulasi Bulanan', icon: BarChart2, path: '/admin/laporan' },
     { name: 'Status Pendataan', icon: ClipboardList, path: '/admin/status-pendataan' },
     { name: 'Data Posyandu', icon: MapPin, path: '/admin/posyandu' },
@@ -33,27 +75,79 @@ export default function AdminLayout() {
             Cipicung <span className="text-[10px] font-bold uppercase ml-2 px-1.5 py-0.5 bg-red-500 text-white rounded">Admin</span>
           </span>
         </div>
-        <Button variant="ghost" size="icon" aria-label="Tutup Menu" className="md:hidden text-white hover:bg-slate-800" onClick={() => setIsMobileMenuOpen(false)}>
-          <X className="h-5 w-5" />
-        </Button>
       </div>
 
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {menuItems.map((item) => {
+        {navigation.map((item) => {
+          if (item.isHeader) {
+            return (
+              <div key={item.name} className="px-3 pt-5 pb-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {item.name}
+              </div>
+            )
+          }
+
+          if (item.subItems) {
+            const isOpen = openSections[item.name]
+            const hasActiveSub = item.subItems.some(sub => location.pathname === sub.path)
+            
+            return (
+              <div key={item.name} className="space-y-1">
+                <button
+                  onClick={() => toggleSection(item.name)}
+                  className={`w-full group flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    hasActiveSub && !isOpen
+                      ? 'bg-slate-800 text-white'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center">
+                    {item.icon && <item.icon className="mr-3 h-5 w-5 shrink-0" aria-hidden="true" />}
+                    {item.name}
+                  </div>
+                  {isOpen ? (
+                    <ChevronDown className="h-4 w-4 shrink-0 text-slate-500" aria-hidden="true" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 shrink-0 text-slate-500" aria-hidden="true" />
+                  )}
+                </button>
+                {isOpen && (
+                  <div className="space-y-1 pl-10 mt-1">
+                    {item.subItems.map((subItem) => {
+                      const isSubActive = location.pathname === subItem.path
+                      return (
+                        <Link
+                          key={subItem.name}
+                          to={subItem.path}
+                          className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                            isSubActive
+                              ? 'bg-primary text-primary-foreground shadow-sm'
+                              : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                          }`}
+                        >
+                          {subItem.name}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          }
+
           const Icon = item.icon
           const isActive = location.pathname === item.path
           return (
             <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setIsMobileMenuOpen(false)}
+              key={item.path || item.name}
+              to={item.path || '#'}
               className={`flex items-center px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
                 isActive
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-slate-300 hover:bg-slate-800 hover:text-white'
               }`}
             >
-              <Icon className="mr-3 h-5 w-5 flex-shrink-0" />
+              {Icon && <Icon className="mr-3 h-5 w-5 flex-shrink-0" />}
               {item.name}
             </Link>
           )
@@ -78,44 +172,22 @@ export default function AdminLayout() {
   )
 
   return (
-    <div className="flex min-h-[100dvh] w-full bg-slate-50">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-64 bg-slate-900 text-slate-100 flex-col sticky top-0 h-[100dvh]">
+    <div className="flex h-[100dvh] w-full bg-slate-50 overflow-hidden">
+      {/* Desktop Sidebar (hidden on mobile) */}
+      <div className="hidden md:block flex-shrink-0 h-[100dvh] overflow-y-auto w-64 bg-slate-900 text-slate-100 flex-col">
         <SidebarContent />
-      </aside>
-
-      {/* Mobile Sidebar Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* Mobile Sidebar */}
-      <aside
-        className={cn(
-          'fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-100 transform transition-transform duration-200 ease-in-out md:hidden flex flex-col',
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        )}
-      >
-        <SidebarContent />
-      </aside>
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0">
-        {/* Mobile Header (Admin) */}
-        <header className="md:hidden flex items-center p-4 border-b bg-white sticky top-0 z-40">
-          <Button variant="ghost" size="icon" aria-label="Buka Menu" onClick={() => setIsMobileMenuOpen(true)}>
-            <Menu className="h-5 w-5" />
-          </Button>
-          <span className="ml-4 text-lg font-bold">Admin Cipicung</span>
-        </header>
-
-        <div className="flex-1 p-4 md:p-8">
-          <Outlet />
+      <div className="flex flex-1 flex-col min-w-0 h-full overflow-y-auto relative">
+        <div className="sticky top-0 z-40 w-full md:hidden">
+          <Header />
         </div>
-      </main>
+        <main className="flex-1 p-4 pb-28 md:p-8 md:pb-8">
+          <Outlet />
+          <AdminSpeedDialNavigation />
+        </main>
+      </div>
     </div>
   )
 }

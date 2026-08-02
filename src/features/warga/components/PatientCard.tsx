@@ -90,7 +90,15 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
       <div className="flex flex-col p-4 gap-3">
         <div>
           <div className="font-bold text-slate-800 text-lg">{data.nama}</div>
-          <div className="text-xs text-slate-500 mt-0.5 font-mono">NIK: {data.nik}</div>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-xs text-slate-500 font-mono">NIK: {data.nik}</span>
+            {data.posyandu && (
+              <>
+                <span className="text-slate-300">•</span>
+                <span className="text-xs text-slate-500 font-medium">{data.posyandu.nama}</span>
+              </>
+            )}
+          </div>
           {displayLastDate && (
             <div className="text-xs font-medium text-emerald-600 bg-emerald-50 inline-block px-2 py-1 rounded-md mt-2 border border-emerald-100">
               Terakhir diperiksa: {displayLastDate}

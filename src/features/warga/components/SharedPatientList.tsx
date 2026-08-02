@@ -22,9 +22,11 @@ import { useAuthStore } from '@/stores/authStore'
 interface SharedPatientListProps {
   title: string
   kategori: string
+  posyanduIdOverride?: string
+  isAdmin?: boolean
 }
 
-export function SharedPatientList({ title, kategori }: SharedPatientListProps) {
+export function SharedPatientList({ title, kategori, posyanduIdOverride, isAdmin }: SharedPatientListProps) {
   const [search, setSearch] = useState('')
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isImportHealthOpen, setIsImportHealthOpen] = useState(false)
@@ -35,7 +37,8 @@ export function SharedPatientList({ title, kategori }: SharedPatientListProps) {
     localStorage.setItem('rekapitulasi_kategori', kategori)
   }, [kategori])
 
-  const isReadOnly = posyandu?.id !== selectedPosyanduId
+  const activePosyanduId = isAdmin ? posyanduIdOverride : (selectedPosyanduId || undefined)
+  const isReadOnly = isAdmin ? false : (posyandu?.id !== selectedPosyanduId)
 
   const [page, setPage] = useState(1)
   const LIMIT = 10
@@ -50,7 +53,7 @@ export function SharedPatientList({ title, kategori }: SharedPatientListProps) {
     kategori,
     page,
     limit: LIMIT,
-    posyanduId: selectedPosyanduId || undefined,
+    posyanduId: activePosyanduId,
   })
 
   const paginatedWarga = data?.data || []

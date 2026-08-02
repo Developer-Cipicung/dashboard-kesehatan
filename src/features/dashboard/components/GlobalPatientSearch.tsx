@@ -45,7 +45,7 @@ export function GlobalPatientSearch() {
           setResults(res.data)
           setIsOpen(true)
         } catch (error) {
-          console.error("Failed to search", error.message || error)
+          console.error("Failed to search", (error as any).message || error)
         } finally {
           setLoading(false)
         }

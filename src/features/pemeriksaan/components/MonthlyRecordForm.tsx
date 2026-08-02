@@ -214,7 +214,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
           })
           setZscoreData(res)
         } catch (e) {
-          console.error('Error auto-save imunisasi:', e.message || e)
+          console.error('Error auto-save imunisasi:', (e as any).message || e)
         }
       }, 500)
       return () => clearTimeout(timer)
@@ -351,7 +351,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
       try {
         await createOptionalImunisasi(values)
       } catch (imunisasiError) {
-        console.error('Pemeriksaan tersimpan, tetapi imunisasi gagal disimpan', imunisasiError.message || imunisasiError)
+        console.error('Pemeriksaan tersimpan, tetapi imunisasi gagal disimpan', (imunisasiError as any).message || imunisasiError)
         setPemeriksaanAlreadySaved(true)
         toast.error('Pemeriksaan tersimpan, tetapi imunisasi gagal disimpan. Periksa data imunisasi lalu coba simpan lagi.')
         return

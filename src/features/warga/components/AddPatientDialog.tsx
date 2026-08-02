@@ -255,7 +255,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
           queryClient.invalidateQueries({ queryKey: ['pendataan'] })
           queryClient.invalidateQueries({ queryKey: ['pemeriksaan_list', 'pasca_persalinan'] })
         } catch (err) {
-          console.error('Gagal membuat data pasca persalinan awal', err.message || err)
+          console.error('Gagal membuat data pasca persalinan awal', (err as any).message || err)
         }
       }
 

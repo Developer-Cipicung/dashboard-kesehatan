@@ -1,9 +1,8 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { LayoutDashboard, Users, MapPin, LogOut, Menu, X, ClipboardList, BarChart2, Heart, Baby, ChevronDown, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Users, MapPin, LogOut, ClipboardList, BarChart2, Heart, Baby, ChevronDown, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
 import { Header } from './Header'
 import { AdminSpeedDialNavigation } from '@/components/navigation/AdminSpeedDialNavigation'
 

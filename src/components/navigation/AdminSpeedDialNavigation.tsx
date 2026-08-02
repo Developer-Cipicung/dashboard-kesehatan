@@ -4,7 +4,6 @@ import {
   Activity,
   Baby,
   BarChart2,
-  CheckSquare,
   ClipboardList,
   Grid3X3,
   HeartPulse,

@@ -35,7 +35,7 @@ export function AdminSharedPatientList({ title, kategori }: AdminSharedPatientLi
           <MapPin className="w-4 h-4 mr-2" />
           <span className="text-xs font-medium uppercase tracking-wider">Fokus Area</span>
         </div>
-        <Select value={posyanduId} onValueChange={setPosyanduId}>
+        <Select value={posyanduId} onValueChange={(v) => setPosyanduId(v || 'ALL')}>
           <SelectTrigger className="w-full md:w-[200px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-9">
             <SelectValue placeholder="Pilih Posyandu">
               {posyanduId === 'ALL' ? 'Semua Posyandu' : posyandus?.find((p: any) => p.id === posyanduId)?.nama || 'Pilih Posyandu'}

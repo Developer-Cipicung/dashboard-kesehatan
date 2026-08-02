@@ -19,6 +19,7 @@ const PatientHistoryPage = Loadable(lazy(() => import('@/features/pemeriksaan/pa
 const ReportPage = Loadable(lazy(() => import('@/features/reports/pages/ReportPage').then(m => ({ default: m.ReportPage }))))
 const PrintReportPage = Loadable(lazy(() => import('@/features/reports/pages/PrintReportPage').then(m => ({ default: m.PrintReportPage }))))
 const AdminDashboardPage = Loadable(lazy(() => import('@/features/admin/pages/AdminDashboardPage').then(m => ({ default: m.AdminDashboardPage }))))
+const AdminReportPage = Loadable(lazy(() => import('@/features/admin/pages/AdminReportPage').then(m => ({ default: m.AdminReportPage }))))
 const PosyanduManagementPage = Loadable(lazy(() => import('@/features/admin/pages/PosyanduManagementPage').then(m => ({ default: m.PosyanduManagementPage }))))
 const UserManagementPage = Loadable(lazy(() => import('@/features/admin/pages/UserManagementPage').then(m => ({ default: m.UserManagementPage }))))
 
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <AdminDashboardPage />,
+          },
+          {
+            path: 'laporan',
+            element: <AdminReportPage />,
           },
           {
             path: 'status-pendataan',

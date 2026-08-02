@@ -1,6 +1,6 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { LayoutDashboard, Users, MapPin, LogOut, Menu, X, ClipboardList } from 'lucide-react'
+import { LayoutDashboard, Users, MapPin, LogOut, Menu, X, ClipboardList, BarChart2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -16,6 +16,7 @@ export default function AdminLayout() {
 
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
+    { name: 'Rekapitulasi Bulanan', icon: BarChart2, path: '/admin/laporan' },
     { name: 'Status Pendataan', icon: ClipboardList, path: '/admin/status-pendataan' },
     { name: 'Data Posyandu', icon: MapPin, path: '/admin/posyandu' },
     { name: 'Manajemen User', icon: Users, path: '/admin/users' },

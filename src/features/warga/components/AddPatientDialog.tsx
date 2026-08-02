@@ -235,6 +235,8 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
           delete submitPayload[key]
         }
       })
+      
+      submitPayload.kategori_terdaftar = values.kategori
 
       const created = await addWarga(submitPayload as AddWargaPayload)
       if (values.kategori === 'pasca_persalinan' && values.tanggal_persalinan && created?.id) {

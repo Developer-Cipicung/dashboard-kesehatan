@@ -1,7 +1,15 @@
+import { useState, useEffect } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { classifyTekananDarah } from '@/utils/kesehatan'
-import { formatTimeWib } from '@/utils/dateTime'
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
 import type { ReportImmunisasi, ReportPemeriksaanItem } from '../types/reportPemeriksaan'
 
 interface MonthlyReportTableProps {
@@ -11,6 +19,13 @@ interface MonthlyReportTableProps {
 }
 
 export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportTableProps) {
+  const [currentPage, setCurrentPage] = useState(1)
+  const ITEMS_PER_PAGE = 20
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [kategori, data])
+
   if (isLoading) {
     return <SkeletonCard />
   }
@@ -46,7 +61,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
       </>
     )
 
-    const visitHeader = <TableHead>Tgl & Jam Kunjungan</TableHead>
+    const visitHeader = <TableHead>Tanggal Kunjungan</TableHead>
 
     switch (kategori) {
       case 'baduta':
@@ -161,8 +176,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
     }
 
     const visitDate = item.tanggal_kunjungan ? new Date(item.tanggal_kunjungan).toLocaleDateString('id-ID') : '-'
-    const visitTime = formatTimeWib(item.created_at)
-    const tglJamKunjungan = `${visitDate} ${visitTime}`
+    const visitCell = <TableCell>{visitDate}</TableCell>
 
     const commonDemographicsCells = (
       <>
@@ -175,7 +189,6 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
       </>
     )
 
-    const visitCell = <TableCell>{tglJamKunjungan}</TableCell>
 
     switch (kategori) {
       case 'baduta':
@@ -345,24 +358,87 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
     }
   }
 
+  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const paginatedData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
   return (
-    <div className="max-w-full overflow-hidden rounded-md border">
-      <Table className="min-w-max text-xs sm:text-sm">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">No</TableHead>
-            {renderHeaders()}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((item, idx) => (
-            <TableRow key={item.id}>
-              <TableCell>{idx + 1}</TableCell>
-              {renderCells(item)}
+    <div className="space-y-4">
+      <div className="max-w-full overflow-hidden rounded-md border">
+        <Table className="min-w-max text-xs sm:text-sm">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-12">No</TableHead>
+              {renderHeaders()}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {paginatedData.map((item, idx) => (
+              <TableRow key={item.id}>
+                <TableCell>{startIndex + idx + 1}</TableCell>
+                {renderCells(item)}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6 rounded-b-md">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="relative inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="relative ml-3 inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-slate-700">
+                Menampilkan <span className="font-medium">{startIndex + 1}</span> hingga <span className="font-medium">{Math.min(startIndex + ITEMS_PER_PAGE, data.length)}</span> dari <span className="font-medium">{data.length}</span> hasil
+              </p>
+            </div>
+            <div>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setCurrentPage((p) => Math.max(1, p - 1))
+                      }}
+                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                    />
+                  </PaginationItem>
+                  <div className="flex items-center px-4 text-sm font-medium text-slate-700">
+                    Halaman {currentPage} dari {totalPages}
+                  </div>
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      }}
+                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

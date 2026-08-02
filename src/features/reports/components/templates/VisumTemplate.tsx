@@ -33,7 +33,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
     titleRight = kategori === 'baduta' ? 'Anak Usia 0 - 23 Bulan' : 'Anak Usia 0 - 59 Bulan';
     columns = [
       { header: 'No.', accessor: (_, i) => i + 1, width: '3%' },
-      { header: 'Jam & Tanggal\nKunjungan', accessor: (r) => formatDate(r.tanggal_kunjungan), width: '8%' },
+      { header: 'Tanggal\nKunjungan', accessor: (r) => formatDate(r.tanggal_kunjungan), width: '8%' },
       { header: 'Nama Ibu', accessor: (r) => r.warga?.ibu?.nama || r.warga?.nama_ibu || '-', width: '8%' },
       { header: 'NIK', accessor: (r) => r.warga?.nik || '-', width: '8%' },
       { header: 'Tempat Tgl\nLahir', accessor: (r) => `${r.warga?.tempat_lahir || '-'}, ${formatDate(r.warga?.tanggal_lahir)}`, width: '8%' },
@@ -55,7 +55,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
     titleRight = 'Ibu Hamil';
     columns = [
       { header: 'No.', accessor: (_, i) => i + 1, width: '3%' },
-      { header: 'Jam & Tanggal\nKunjungan', accessor: (r) => formatDate(r.tanggal_kunjungan), width: '8%' },
+      { header: 'Tanggal\nKunjungan', accessor: (r) => formatDate(r.tanggal_kunjungan), width: '8%' },
       { header: 'Nama Ibu', accessor: (r) => r.warga?.nama || '-', width: '8%' },
       { header: 'NIK', accessor: (r) => r.warga?.nik || '-', width: '8%' },
       { header: 'Tempat Tgl\nLahir', accessor: (r) => `${r.warga?.tempat_lahir || '-'}, ${formatDate(r.warga?.tanggal_lahir)}`, width: '8%' },

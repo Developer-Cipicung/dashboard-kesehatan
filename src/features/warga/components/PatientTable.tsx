@@ -392,13 +392,13 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
           <tr className="border-b border-slate-200">
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-0 z-20 bg-white min-w-[160px] max-w-[160px] w-[160px]" rowSpan={2}>NIK</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-[160px] z-20 bg-white min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-200 shadow-[1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Nama</th>
-            <th colSpan={isBalita ? 12 : isBumil ? 23 : isPasca ? 16 : 10} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
+            <th colSpan={isBalita ? 12 : isBumil ? 22 : isPasca ? 15 : 9} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
               <div className="flex items-center text-primary font-bold text-xs uppercase tracking-wider">
                 <ActivitySquare className="w-4 h-4 mr-2" />
                 Record Pemeriksaan Terakhir
               </div>
             </th>
-            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-100 w-[180px] align-middle" rowSpan={2}>Aksi</th>
+            <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs border-l border-slate-200 w-[180px] align-middle sticky right-0 z-20 bg-white shadow-[-1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Aksi</th>
           </tr>
           <tr className="border-b-2 border-primary bg-primary/5">
 

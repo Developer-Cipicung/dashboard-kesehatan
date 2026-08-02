@@ -17,6 +17,7 @@ import { MonthlyReportTable } from '../components/MonthlyReportTable'
 import { useGetPemeriksaanList } from '@/features/pemeriksaan/hooks/usePemeriksaan'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { ErrorState } from '@/components/feedback/ErrorState'
+import { useGetWargaList } from '@/features/warga/hooks/useWarga'
 import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
 import {
   classifyTekananDarah
@@ -121,11 +122,37 @@ export function ReportPage() {
       posyanduId: posyanduIdParam,
     })
 
+  // Fetch Warga List to identify "Belum Diperiksa"
+  const fetchWargaKategori = kategoriFilter === 'baduta' ? 'balita' : (kategoriFilter === 'pasca_persalinan' || kategoriFilter === 'pasca-persalinan' ? 'pasca_persalinan' : kategoriFilter)
+  const { data: wargaDataList, isLoading: isWargaLoading } = useGetWargaList(
+    {
+      kategori: fetchWargaKategori,
+      posyanduId: posyanduIdParam,
+      limit: 10000,
+    },
+    { enabled: subFilters.status_periksa === 'belum' }
+  )
+
   // Compute baduta vs balita filter dynamically
   let filteredPemeriksaanList = (() => {
     const list = pemeriksaanData?.data || []
+    let baseList = list;
+
+    if (subFilters.status_periksa === 'belum') {
+      const wargaList = wargaDataList?.data || []
+      const examinedWargaIds = new Set(list.map((p: any) => p.warga_id))
+      const unexaminedWarga = wargaList.filter((w: any) => !examinedWargaIds.has(w.id))
+      
+      baseList = unexaminedWarga.map((w: any) => ({
+        id: `fake-${w.id}`,
+        warga_id: w.id,
+        warga: w,
+        is_belum_diperiksa: true,
+      })) as any[]
+    }
+
     if (kategoriFilter === 'baduta') {
-      return list.filter((item: any) => {
+      return baseList.filter((item: any) => {
         if (!item.warga?.tanggal_lahir) return false
         const tglKunjungan =
           item.tanggal_kunjungan || item.tanggal_pemeriksaan || new Date()
@@ -139,7 +166,7 @@ export function ReportPage() {
         return isBalitaByBirthDate(item.warga.tanggal_lahir, tglKunjungan)
       })
     }
-    return list
+    return baseList
   })()
 
   // Apply Sub Filters and Search Query
@@ -552,7 +579,7 @@ export function ReportPage() {
           <MonthlyReportTable
             kategori={kategoriFilter}
             data={filteredPemeriksaanList}
-            isLoading={isPemeriksaanLoading}
+            isLoading={isPemeriksaanLoading || isWargaLoading}
           />
         </div>
       </div>

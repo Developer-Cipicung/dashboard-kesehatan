@@ -57,10 +57,11 @@ export function useUpdateWarga() {
     mutationFn: ({ id, payload }: { id: string, payload: Partial<AddWargaPayload> }) => wargaService.updateWarga(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
-      toast.success('Data pasien berhasil diperbarui.')
+      queryClient.invalidateQueries({ queryKey: ['history'] })
+      queryClient.invalidateQueries({ queryKey: ['pemeriksaan_list'] })
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Gagal memperbarui data pasien.')
+      console.error(error)
     },
   })
 }

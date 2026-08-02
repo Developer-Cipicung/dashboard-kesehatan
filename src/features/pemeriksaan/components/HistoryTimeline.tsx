@@ -363,7 +363,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 
                 <td className="px-4 py-3 whitespace-nowrap">
                   <span className={`px-2 py-1 rounded-md text-[10px] font-bold border ${getBadgeColor(record.status_medis)}`}>
-                    {record.status_medis || 'Normal'}
+                    {record.status_medis || '-'}
                   </span>
                 </td>
                 

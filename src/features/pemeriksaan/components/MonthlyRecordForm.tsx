@@ -27,7 +27,7 @@ interface OptionalImunisasiValues {
   tanggal_kunjungan?: string
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
       <label className="text-sm font-medium leading-snug text-slate-700 sm:text-[15px]">
@@ -406,8 +406,8 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
             {/* Balita / Baduta */}
             {isBalita && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label="Berat Badan Anak (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 8.5" /></Field>
-                <Field label="Tinggi/Panjang Badan Anak (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 72" /></Field>
+                <Field label={<>Berat Badan Anak (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" placeholder="Contoh: 8.5" /></Field>
+                <Field label={<>Tinggi/Panjang Badan Anak (cm) <span className="text-red-500">*</span></>}><Input register={register} name="tb" type="number" placeholder="Contoh: 72" /></Field>
                 <Field label="Lingkar Kepala (cm)"><Input register={register} name="lingkar_kepala" type="number" placeholder="Contoh: 45" /></Field>
                 <Field label="Lingkar Lengan Atas / LILA (cm)"><Input register={register} name="lingkar_lengan_atas" type="number" placeholder="Contoh: 15" /></Field>
                 <Field label="Kondisi Bayi"><Input register={register} name="kondisi" placeholder="Contoh: Sehat" /></Field>
@@ -500,7 +500,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
                     <p className="text-[10px] text-red-500 font-bold mt-1 leading-tight">⚠️ Lewat Waktu (Normal 37-42 mgg)</p>
                   )}
                 </Field>
-                <Field label="Berat Badan (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 60.5" max={200} min={0} /></Field>
+                <Field label={<>Berat Badan (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" placeholder="Contoh: 60.5" max={200} min={0} /></Field>
                 <Field label="Tinggi Badan (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 155" max={250} min={0} /></Field>
 
                 <Field label="Lingkar Perut (cm)"><Input register={register} name="lingkar_perut" type="number" placeholder="Contoh: 85" max={200} min={0} /></Field>
@@ -549,7 +549,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
             {/* Lansia */}
             {isLansia && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label="Berat Badan Lansia (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 58" /></Field>
+                <Field label={<>Berat Badan Lansia (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" placeholder="Contoh: 58" /></Field>
                 <Field label="Tinggi Badan Lansia (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 160" /></Field>
 
                 <Field label="Tekanan Darah (mmHg)">

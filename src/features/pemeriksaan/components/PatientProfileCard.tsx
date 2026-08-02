@@ -60,11 +60,11 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
           <div>
             <span className="text-muted-foreground block text-xs">Tanggal Lahir</span>
             <span className="font-medium">
-              {new Date(warga.tanggal_lahir).toLocaleDateString('id-ID', {
+              {warga.tanggal_lahir ? new Date(warga.tanggal_lahir).toLocaleDateString('id-ID', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
-              })}
+              }) : '-'}
             </span>
           </div>
           <div>

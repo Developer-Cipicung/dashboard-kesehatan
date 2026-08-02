@@ -105,6 +105,10 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
       if (isIbuIbu) {
         payload.jenis_kelamin = 'P'
       }
+      
+      if (kategori) {
+        (payload as any).kategori_terdaftar = kategori
+      }
 
       // Cleanup empty strings for optional fields
       Object.keys(payload).forEach(key => {

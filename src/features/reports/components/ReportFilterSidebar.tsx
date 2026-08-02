@@ -42,6 +42,16 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
 
   let filtersContent = null;
 
+  const globalFilters = (
+    <>
+      {renderSelect('status_periksa', 'Status Pemeriksaan', [
+        { value: 'sudah', label: 'Sudah Diperiksa' },
+        { value: 'belum', label: 'Belum Diperiksa' },
+      ])}
+      <hr className="my-4 border-slate-200" />
+    </>
+  );
+
   if (kategori === 'bumil') {
     filtersContent = (
       <>
@@ -185,7 +195,8 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
           <div className="mb-4 rounded-lg border border-emerald-100 bg-emerald-50/70 p-3 text-xs leading-snug text-emerald-800">
             Filter ini akan berlaku untuk tabel, Cetak Visum, dan Download Excel.
           </div>
-          {filtersContent}
+          {globalFilters}
+        {filtersContent}
           
         </div>
 

@@ -185,7 +185,10 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         <TableCell>{warga.nik || '-'}</TableCell>
         <TableCell>{warga.nomor || '-'}</TableCell>
         <TableCell>{`${warga.tempat_lahir || '-'}, ${formatDateID(warga.tanggal_lahir)}`}</TableCell>
-        <TableCell>{warga.alamat || '-'}</TableCell>
+        <TableCell>
+          {warga.alamat || '-'}
+          {(warga.rt || warga.rw) ? `, RT ${warga.rt || '-'} RW ${warga.rw || '-'}` : ''}
+        </TableCell>
         <TableCell>{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</TableCell>
       </>
     )

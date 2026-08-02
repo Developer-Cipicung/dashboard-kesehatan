@@ -55,21 +55,21 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
   if (kategori === 'bumil') {
     filtersContent = (
       <>
-        {renderSelect('trimester', '1. Trimester', [
+        {renderSelect('trimester', 'Trimester', [
           { value: '1', label: 'Trimester 1 (0-13 mgg)' },
           { value: '2', label: 'Trimester 2 (14-27 mgg)' },
           { value: '3', label: 'Trimester 3 (28+ mgg)' },
         ])}
-        {renderSelect('anemia', '2. Status Anemia', [
+        {renderSelect('anemia', 'Status Anemia', [
           { value: 'normal', label: 'Normal' },
           { value: 'ringan', label: 'Anemia Ringan' },
           { value: 'berat', label: 'Anemia Berat' },
         ])}
-        {renderSelect('kek', '3. Status KEK', [
+        {renderSelect('kek', 'Status KEK', [
           { value: 'normal', label: 'Normal' },
           { value: 'kek', label: 'Risiko KEK (< 23.5 cm)' },
         ])}
-        {renderSelect('kie', '4. KIE', [
+        {renderSelect('kie', 'KIE', [
           { value: 'ya', label: 'Diberikan' },
           { value: 'tidak', label: 'Tidak Diberikan' },
         ])}
@@ -80,13 +80,13 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
     filtersContent = (
       <>
 
-        {renderSelect('tensi', '2. Tekanan Darah', [
+        {renderSelect('tensi', 'Tekanan Darah', [
           { value: 'hipotensi', label: 'Hipotensi' },
           { value: 'normal', label: 'Normal' },
           { value: 'prahipertensi', label: 'Prahipertensi' },
           { value: 'hipertensi', label: 'Hipertensi' },
         ])}
-        {renderSelect('kie', '3. KIE', [
+        {renderSelect('kie', 'KIE', [
           { value: 'ya', label: 'Diberikan' },
           { value: 'tidak', label: 'Tidak Diberikan' },
         ])}
@@ -95,22 +95,22 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
   } else if (kategori === 'balita' || kategori === 'baduta') {
     filtersContent = (
       <>
-        {renderSelect('gizi', '1. Status Gizi (BB/TB)', [
+        {renderSelect('gizi', 'Status Gizi (BB/TB)', [
           { value: 'baik', label: 'Gizi Baik' },
           { value: 'kurang', label: 'Gizi Kurang/Buruk' },
           { value: 'lebih', label: 'Gizi Lebih/Obesitas' },
         ])}
-        {renderSelect('tinggi', '2. Tinggi (TB/U)', [
+        {renderSelect('tinggi', 'Tinggi (TB/U)', [
           { value: 'normal', label: 'Normal' },
           { value: 'pendek', label: 'Pendek (Stunting)' },
           { value: 'tinggi', label: 'Tinggi' },
         ])}
-        {renderSelect('berat', '3. Berat (BB/U)', [
+        {renderSelect('berat', 'Berat (BB/U)', [
           { value: 'normal', label: 'Normal' },
           { value: 'kurang', label: 'BB Kurang' },
           { value: 'lebih', label: 'BB Lebih' },
         ])}
-        {renderSelect('imunisasi', '4. Imunisasi', [
+        {renderSelect('imunisasi', 'Imunisasi', [
           { value: 'HB0', label: 'HB0' },
           { value: 'BCG', label: 'BCG' },
           { value: 'POLIO1', label: 'POLIO 1' },
@@ -137,22 +137,22 @@ export function ReportFilterSidebar({ isOpen, onClose, kategori, subFilters, set
   } else if (kategori === 'lansia') {
     filtersContent = (
       <>
-        {renderSelect('tensi', '1. Status Tekanan Darah', [
+        {renderSelect('tensi', 'Status Tekanan Darah', [
           { value: 'hipotensi', label: 'Hipotensi' },
           { value: 'normal', label: 'Normal' },
           { value: 'prahipertensi', label: 'Prahipertensi' },
           { value: 'hipertensi', label: 'Hipertensi' },
         ])}
-        {renderSelect('gula_darah', '2. Gula Darah Sewaktu', [
+        {renderSelect('gula_darah', 'Gula Darah Sewaktu', [
           { value: 'normal', label: 'Normal' },
           { value: 'tinggi', label: 'Tinggi' },
         ])}
 
-        {renderSelect('kolesterol', '4. Kolesterol', [
+        {renderSelect('kolesterol', 'Kolesterol', [
           { value: 'normal', label: 'Normal' },
           { value: 'tinggi', label: 'Tinggi' },
         ])}
-        {renderSelect('asam_urat', '5. Asam Urat', [
+        {renderSelect('asam_urat', 'Asam Urat', [
           { value: 'normal', label: 'Normal' },
           { value: 'tinggi', label: 'Tinggi' },
         ])}

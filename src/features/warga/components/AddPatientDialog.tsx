@@ -34,6 +34,8 @@ const formSchema = z.object({
   nama_ibu: z.string().optional(),
   tanggal_persalinan: z.string().optional(),
   alamat: z.string().optional(),
+  rt: z.string().max(3, 'Maksimal 3 karakter').optional(),
+  rw: z.string().max(3, 'Maksimal 3 karakter').optional(),
   tempat_persalinan: z.string().optional(),
   penggunaan_kontrasepsi: z.string().optional(),
   jumlah_anak: z.string().optional(),
@@ -127,6 +129,8 @@ const getDefaultValues = (category: PatientCategory | ''): z.infer<typeof formSc
     tanggal_persalinan: todayInputValue(),
     tempat_lahir: '',
     alamat: '',
+    rt: '',
+    rw: '',
     tempat_persalinan: '',
     penggunaan_kontrasepsi: '',
     jumlah_anak: '',
@@ -245,7 +249,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
             warga_id: created.id,
             tanggal_kunjungan: new Date().toISOString().split('T')[0],
             tanggal_persalinan: values.tanggal_persalinan,
-            bb: 0,
+            bb: 0.1,
             tekanan_darah_sistolik: 120,
             tekanan_darah_diastolik: 80,
             suhu_tubuh: 36.5,
@@ -276,7 +280,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[calc(100dvh-1rem)] max-w-[420px] overflow-x-hidden overflow-y-auto sm:max-w-xl lg:max-w-2xl">
+      <DialogContent className="max-h-[90vh] max-w-[420px] overflow-x-hidden overflow-y-auto sm:max-w-xl lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Tambah Pasien Baru</DialogTitle>
           <DialogDescription>
@@ -481,13 +485,31 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                       />
                     )}
                     <div className="sm:col-span-2">
-                      <FormField
-                        control={methods.control}
-                        name="alamat"
-                        label="Alamat Lengkap"
-                        placeholder="Contoh: Jl. Mawar No. 12"
-                        type="text"
-                      />
+                      <div className="grid grid-cols-1 gap-3 sm:gap-4">
+                        <FormField
+                          control={methods.control}
+                          name="alamat"
+                          label="Alamat Lengkap"
+                          placeholder="Contoh: Jl. Mawar No. 12"
+                          type="text"
+                        />
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                          <FormField
+                            control={methods.control}
+                            name="rt"
+                            label="RT"
+                            placeholder="Contoh: 01"
+                            type="text"
+                          />
+                          <FormField
+                            control={methods.control}
+                            name="rw"
+                            label="RW"
+                            placeholder="Contoh: 02"
+                            type="text"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -502,6 +524,22 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                     placeholder="Contoh: Jl. Mawar No. 12"
                     type="text"
                   />
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <FormField
+                      control={methods.control}
+                      name="rt"
+                      label="RT"
+                      placeholder="Contoh: 01"
+                      type="text"
+                    />
+                    <FormField
+                      control={methods.control}
+                      name="rw"
+                      label="RW"
+                      placeholder="Contoh: 02"
+                      type="text"
+                    />
+                  </div>
                 </div>
               )}
             </div>

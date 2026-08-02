@@ -74,7 +74,10 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
           </div>
           <div className="md:col-span-2">
             <span className="text-muted-foreground block text-xs">Alamat</span>
-            <span className="font-medium">{warga.alamat || '-'}</span>
+            <span className="font-medium">
+              {warga.alamat || '-'}
+              {(warga.rt || warga.rw) ? `, RT ${warga.rt || '-'} RW ${warga.rw || '-'}` : ''}
+            </span>
           </div>
 
           {(isPasca || warga.pemeriksaan_pasca_persalinan?.[0]?.tanggal_persalinan) && (

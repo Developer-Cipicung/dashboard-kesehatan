@@ -27,6 +27,9 @@ export function useAddWarga() {
     mutationFn: (payload: AddWargaPayload) => wargaService.addWarga(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['pendataan'] })
+      queryClient.invalidateQueries({ queryKey: ['admin_status_pendataan'] })
       toast.success('Pasien berhasil ditambahkan.')
     },
     onError: (error: any) => {
@@ -42,6 +45,9 @@ export function useDeleteWarga() {
     mutationFn: (id: string) => wargaService.deleteWarga(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['pendataan'] })
+      queryClient.invalidateQueries({ queryKey: ['admin_status_pendataan'] })
       toast.success('Pasien berhasil dihapus.')
     },
     onError: (error: any) => {
@@ -59,6 +65,9 @@ export function useUpdateWarga() {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
       queryClient.invalidateQueries({ queryKey: ['history'] })
       queryClient.invalidateQueries({ queryKey: ['pemeriksaan_list'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['pendataan'] })
+      queryClient.invalidateQueries({ queryKey: ['admin_status_pendataan'] })
     },
     onError: (error: any) => {
       console.error('Error mengubah status ibu bersalin:', (error as any).message || error)

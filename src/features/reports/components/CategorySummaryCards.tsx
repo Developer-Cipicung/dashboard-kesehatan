@@ -9,7 +9,7 @@ interface CategorySummaryCardsProps {
 export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsProps) {
   if (!data || data.length === 0) return null;
 
-  const total = data.length;
+  const totalKunjungan = data.filter((item: any) => !item.is_belum_diperiksa).length;
 
   const renderCard = (title: string, value: number, suffix: string = '', highlight?: 'green' | 'orange' | 'red') => {
     let pctColor = 'text-slate-500';
@@ -17,7 +17,7 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
     if (highlight === 'orange') pctColor = 'text-orange-500';
     if (highlight === 'red') pctColor = 'text-red-600';
 
-    const percentage = total > 0 ? ((value / total) * 100).toFixed(1).replace('.', ',') + '%' : '0%';
+    const percentage = totalKunjungan > 0 ? ((value / totalKunjungan) * 100).toFixed(1).replace('.', ',') + '%' : '0%';
 
     return (
       <Card className="border border-slate-200 shadow-sm">
@@ -77,7 +77,7 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
       <div className="mb-5 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
         <div className="col-span-2 md:col-span-4">
           <div className="w-full md:w-1/4">
-            {renderCard('Total Data Pemeriksaan', total, 'kunjungan')}
+            {renderCard('Total Data Pemeriksaan', totalKunjungan, 'kunjungan')}
           </div>
         </div>
         
@@ -108,7 +108,7 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
       <div className="mb-5 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
         <div className="col-span-2 md:col-span-4">
           <div className="w-full md:w-1/4">
-            {renderCard('Total Data Pemeriksaan', total, 'kunjungan')}
+            {renderCard('Total Data Pemeriksaan', totalKunjungan, 'kunjungan')}
           </div>
         </div>
         
@@ -148,7 +148,7 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
       <div className="mb-5 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
         <div className="col-span-2 md:col-span-4">
           <div className="w-full md:w-1/4">
-            {renderCard('Total Data Pemeriksaan', total, 'kunjungan')}
+            {renderCard('Total Data Pemeriksaan', totalKunjungan, 'kunjungan')}
           </div>
         </div>
         
@@ -205,7 +205,7 @@ export function CategorySummaryCards({ kategori, data }: CategorySummaryCardsPro
       <div className="mb-5 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
         <div className="col-span-2 md:col-span-4">
           <div className="w-full md:w-1/4">
-            {renderCard('Total Data Pemeriksaan', total, 'kunjungan')}
+            {renderCard('Total Data Pemeriksaan', totalKunjungan, 'kunjungan')}
           </div>
         </div>
         

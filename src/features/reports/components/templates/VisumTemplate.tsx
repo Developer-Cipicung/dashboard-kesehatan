@@ -32,6 +32,17 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
     return d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
+  const formatAddress = (warga: any) => {
+    if (!warga) return '-';
+    let result = warga.alamat || '';
+    if (warga.rt || warga.rw) {
+      const rtrw = `RT ${warga.rt || '-'} RW ${warga.rw || '-'}`;
+      result = result ? `${result}, ${rtrw}` : rtrw;
+    }
+    result = result ? `${result}, Desa Cipicung` : 'Desa Cipicung';
+    return result;
+  };
+
   if (kategori === 'baduta' || kategori === 'balita') {
     titleRight = kategori === 'baduta' ? 'Anak Usia 0 - 23 Bulan' : 'Anak Usia 0 - 59 Bulan';
     columns = [
@@ -40,7 +51,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
       { header: 'Nama Ibu', accessor: (r) => r.warga?.ibu?.nama || r.warga?.nama_ibu || '-', width: '8%' },
       { header: 'NIK', accessor: (r) => r.warga?.nik || '-', width: '8%' },
       { header: 'Tempat Tgl\nLahir', accessor: (r) => `${r.warga?.tempat_lahir || '-'}, ${formatDate(r.warga?.tanggal_lahir)}`, width: '8%' },
-      { header: 'Alamat', accessor: (r) => r.warga?.alamat || '-', width: '9%' },
+      { header: 'Alamat', accessor: (r) => formatAddress(r.warga), width: '9%' },
       { header: 'Penggunaan\nKontrasepsi', accessor: (r) => r.penggunaan_kontrasepsi || '-', width: '7%' },
       { header: 'Nama Bayi/Baduta', accessor: (r) => r.warga?.nama || '-', width: '8%' },
       { header: 'Tgl Lahir\nBayi/Baduta', accessor: (r) => formatDate(r.warga?.tanggal_lahir), width: '6%' },
@@ -62,7 +73,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
       { header: 'Nama Ibu', accessor: (r) => r.warga?.nama || '-', width: '8%' },
       { header: 'NIK', accessor: (r) => r.warga?.nik || '-', width: '8%' },
       { header: 'Tempat Tgl\nLahir', accessor: (r) => `${r.warga?.tempat_lahir || '-'}, ${formatDate(r.warga?.tanggal_lahir)}`, width: '8%' },
-      { header: 'Alamat', accessor: (r) => r.warga?.alamat || '-', width: '10%' },
+      { header: 'Alamat', accessor: (r) => formatAddress(r.warga), width: '10%' },
       { header: 'Nama Suami', accessor: (r) => r.warga?.nama_suami || '-', width: '7%' },
       { header: 'Usia\nKandungan\n(Mgg)', accessor: (r) => r.usia_kehamilan_minggu || '-', width: '5%' },
       { header: 'HPHT / HTP', accessor: (r) => `${formatDate(r.hpht)}\n${formatDate(r.htp)}`, width: '6%' },
@@ -84,7 +95,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
       { header: 'Nama Ibu', accessor: (r) => r.warga?.nama || '-', width: '9%' },
       { header: 'NIK', accessor: (r) => r.warga?.nik || '-', width: '9%' },
       { header: 'Tempat Tgl Lahir', accessor: (r) => `${r.warga?.tempat_lahir || '-'}, ${formatDate(r.warga?.tanggal_lahir)}`, width: '10%' },
-      { header: 'Alamat', accessor: (r) => r.warga?.alamat || '-', width: '12%' },
+      { header: 'Alamat', accessor: (r) => formatAddress(r.warga), width: '12%' },
       { header: 'Penggunaan\nKontrasepsi', accessor: (r) => r.penggunaan_kontrasepsi || '-', width: '8%' },
       { header: 'BB Ibu (Kg)', accessor: (r) => r.berat_badan_ibu || '-', width: '6%' },
       { header: 'Kondisi Ibu', accessor: (r) => r.kondisi_ibu || '-', width: '7%' },
@@ -101,7 +112,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
       { header: 'Tanggal Kunjungan', accessor: (r) => formatDate(r.tanggal_kunjungan), width: '8%' },
       { header: 'Nama Lansia', accessor: (r) => r.warga?.nama || '-', width: '9%' },
       { header: 'NIK', accessor: (r) => r.warga?.nik || '-', width: '9%' },
-      { header: 'Alamat', accessor: (r) => r.warga?.alamat || '-', width: '11%' },
+      { header: 'Alamat', accessor: (r) => formatAddress(r.warga), width: '11%' },
       { header: 'Usia (Thn)', accessor: (r) => {
         if (!r.warga?.tanggal_lahir) return '-';
         const ageDifMs = Date.now() - new Date(r.warga.tanggal_lahir).getTime();

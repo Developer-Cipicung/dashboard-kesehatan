@@ -79,6 +79,8 @@ export interface AddWargaPayload {
   status_kehamilan?: 'HAMIL' | 'PASCA_PERSALINAN' | 'TIDAK_HAMIL'
   tempat_lahir?: string
   alamat?: string
+  rt?: string
+  rw?: string
   tempat_persalinan?: string
   penggunaan_kontrasepsi?: string
   nama_ayah?: string

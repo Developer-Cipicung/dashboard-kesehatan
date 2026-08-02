@@ -30,6 +30,8 @@ const getFormSchema = () => z.object({
   nama_ayah: z.string().optional(),
   nama_ibu: z.string().optional(),
   alamat: z.string().optional(),
+  rt: z.string().max(3, 'Maksimal 3 karakter').optional(),
+  rw: z.string().max(3, 'Maksimal 3 karakter').optional(),
   tempat_persalinan: z.string().optional(),
   penggunaan_kontrasepsi: z.string().optional(),
   hpht: z.string().optional(),
@@ -66,6 +68,8 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
       nama_ibu: warga.nama_ibu || '',
       tempat_lahir: warga.tempat_lahir || '',
       alamat: warga.alamat || '',
+      rt: warga.rt || '',
+      rw: warga.rw || '',
       tempat_persalinan: warga.tempat_persalinan || '',
       penggunaan_kontrasepsi: warga.penggunaan_kontrasepsi || '',
       hpht: warga.hpht ? new Date(warga.hpht).toISOString().split('T')[0] : '',
@@ -86,6 +90,8 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
         nama_ibu: warga.nama_ibu || '',
         tempat_lahir: warga.tempat_lahir || '',
         alamat: warga.alamat || '',
+        rt: warga.rt || '',
+        rw: warga.rw || '',
         tempat_persalinan: warga.tempat_persalinan || '',
         penggunaan_kontrasepsi: warga.penggunaan_kontrasepsi || '',
         hpht: warga.hpht ? new Date(warga.hpht).toISOString().split('T')[0] : '',
@@ -134,7 +140,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[420px] sm:max-w-xl lg:max-w-2xl">
+      <DialogContent className="max-w-[420px] sm:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
         <DialogHeader>
           <DialogTitle>Edit Profil Pasien</DialogTitle>
           <DialogDescription>
@@ -307,6 +313,22 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                   placeholder="Contoh: Jl. Mawar No. 12"
                   type="text"
                 />
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <FormField
+                    control={methods.control}
+                    name="rt"
+                    label="RT"
+                    placeholder="Contoh: 01"
+                    type="text"
+                  />
+                  <FormField
+                    control={methods.control}
+                    name="rw"
+                    label="RW"
+                    placeholder="Contoh: 02"
+                    type="text"
+                  />
+                </div>
               </div>
             </div>
 

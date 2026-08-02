@@ -302,8 +302,8 @@ export const KartuPosyandu: React.FC<KartuPosyanduProps> = ({ warga }) => {
           <div>
             <p className="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider font-semibold print:text-black print:text-xs">Alamat Domisili</p>
             <p className="text-sm font-medium text-slate-700 print:text-black leading-snug mt-0.5">
-              {warga.alamat || '-'} 
-              {warga.rt || warga.rw ? ` RT ${warga.rt || '-'}/RW ${warga.rw || '-'}` : ''}
+              {warga.alamat || '-'}
+              {(warga.rt || warga.rw) ? `, RT ${warga.rt || '-'} RW ${warga.rw || '-'}` : ''}
               {warga.kelurahan ? `, ${warga.kelurahan}` : ''}
             </p>
           </div>

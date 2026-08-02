@@ -21,8 +21,12 @@ import { pemeriksaanService } from '../../pemeriksaan/services/pemeriksaanServic
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { calculateAgeInMonths } from '@/utils/age'
+import { useAuthStore } from '@/stores/authStore'
+import { api } from '@/services/api'
+import { useQuery } from '@tanstack/react-query'
 
 const formSchema = z.object({
+  posyandu_id: z.string().optional(),
   nik: z.string().optional(),
   nomor: z.string().optional(),
   nama: z.string().min(1, 'Nama wajib diisi'),
@@ -136,6 +140,7 @@ const getDefaultValues = (category: PatientCategory | ''): z.infer<typeof formSc
     jumlah_anak: '',
     hpht: '',
     ibu_id: 'none',
+    posyandu_id: '',
   }
 }
 
@@ -170,6 +175,18 @@ interface AddPatientDialogProps {
 }
 
 export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSuccess }: AddPatientDialogProps) {
+  const { user } = useAuthStore()
+  const isAdmin = (user as any)?.role === 'admin'
+  const { data: posyandus } = useQuery({
+    queryKey: ['admin', 'posyandu'],
+    queryFn: async () => {
+      const response = await api.get('/posyandu')
+      return response.data.data
+    },
+    enabled: isAdmin && open,
+    staleTime: 5 * 60 * 1000,
+  })
+
   const { mutateAsync: addWarga, isPending } = useAddWarga()
   const queryClient = useQueryClient()
   const normalizedDefaultCategory = normalizeCategory(defaultCategory)
@@ -217,6 +234,11 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      if (isAdmin && (!values.posyandu_id || values.posyandu_id.trim() === '')) {
+        toast.error('Posyandu tujuan harus dipilih!')
+        return
+      }
+
       let status_kehamilan: PregnancyStatus = 'TIDAK_HAMIL'
       if (values.kategori === 'bumil') status_kehamilan = 'HAMIL'
       if (values.kategori === 'pasca_persalinan') status_kehamilan = 'PASCA_PERSALINAN'
@@ -241,6 +263,9 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
       })
       
       submitPayload.kategori_terdaftar = values.kategori
+      if (isAdmin && values.posyandu_id) {
+        submitPayload.posyandu_id = values.posyandu_id
+      }
 
       const created = await addWarga(submitPayload as AddWargaPayload)
       if (values.kategori === 'pasca_persalinan' && values.tanggal_persalinan && created?.id) {
@@ -295,6 +320,32 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
               <div>
                 <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-800 sm:text-sm">Data Diri</h4>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                  {isAdmin && (
+                    <RHFFormField
+                      control={methods.control}
+                      name="posyandu_id"
+                      render={({ field }) => (
+                        <FormItem className="sm:col-span-2 mb-2">
+                          <FormLabel>Posyandu <span className="text-red-500">*</span></FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="h-9 text-sm sm:h-10 sm:text-base border-primary/20 bg-primary/5">
+                                <SelectValue placeholder="Pilih Posyandu tujuan pasien">
+                                  {posyandus?.find((p: any) => p.id === field.value)?.nama || 'Pilih Posyandu tujuan pasien'}
+                                </SelectValue>
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {posyandus?.map((p: any) => (
+                                <SelectItem key={p.id} value={p.id}>{p.nama}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                   <RHFFormField
                     control={methods.control}
                     name="nik"

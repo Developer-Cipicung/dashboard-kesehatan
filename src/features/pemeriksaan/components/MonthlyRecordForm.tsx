@@ -621,7 +621,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label="Tanggal Persalinan"><Input register={register} name="tanggal_persalinan" type="date" /></Field>
                 <Field label="Tinggi Badan Ibu (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 155" /></Field>
-                <Field label={<>Berat Badan Ibu (kg) <span className="text-red-500">*</span></>} required><Input register={register} name="bb" type="number" placeholder="Contoh: 62" required /></Field>
+                <Field label="Berat Badan Ibu (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 62" required /></Field>
 
                 <div className="sm:col-span-2">
                   <Field label="Kondisi Ibu"><Input register={register} name="kondisi_ibu" placeholder="Contoh: Baik, tidak ada keluhan" /></Field>

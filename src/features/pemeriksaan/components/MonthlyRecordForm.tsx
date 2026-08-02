@@ -38,18 +38,19 @@ function Field({ label, children }: { label: React.ReactNode; children: React.Re
   )
 }
 
-function Input({ register, name, type = 'text', placeholder, min, max, step }: { register: any; name: string; type?: string; placeholder?: string; min?: number; max?: number; step?: string }) {
+function Input({ register, name, type = 'text', placeholder, min, max, step, required }: { register: any; name: string; type?: string; placeholder?: string; min?: number; max?: number; step?: string; required?: boolean }) {
   const { formState: { errors } } = useFormContext()
   const error = errors[name]?.message as string
   return (
     <div>
       <input
-        {...register(name, { valueAsNumber: type === 'number' ? true : false })}
+        {...register(name, { valueAsNumber: type === 'number' ? true : false, required: required ? 'Field ini wajib diisi' : false })}
         type={type}
         min={min}
         max={max}
         step={step || (type === 'number' ? 'any' : undefined)}
         placeholder={placeholder}
+        required={required}
         className={`flex h-9 w-full min-w-0 rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring placeholder:text-muted-foreground sm:h-10 sm:text-base ${error ? 'border-red-500' : 'border-input'}`}
       />
       {error && <p className="text-[10px] text-red-500 font-bold mt-1 leading-tight">{error}</p>}
@@ -620,7 +621,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label="Tanggal Persalinan"><Input register={register} name="tanggal_persalinan" type="date" /></Field>
                 <Field label="Tinggi Badan Ibu (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 155" /></Field>
-                <Field label="Berat Badan Ibu (kg)"><Input register={register} name="bb" type="number" placeholder="Contoh: 62" /></Field>
+                <Field label={<>Berat Badan Ibu (kg) <span className="text-red-500">*</span></>} required><Input register={register} name="bb" type="number" placeholder="Contoh: 62" required /></Field>
 
                 <div className="sm:col-span-2">
                   <Field label="Kondisi Ibu"><Input register={register} name="kondisi_ibu" placeholder="Contoh: Baik, tidak ada keluhan" /></Field>

@@ -375,11 +375,6 @@ export function AdminReportPage() {
                           {kasus.risiko}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="px-3 py-1.5 bg-white border border-slate-200 hover:border-primary hover:text-primary text-slate-600 text-xs font-semibold rounded-md shadow-sm transition-all opacity-0 group-hover:opacity-100">
-                          Tindak Lanjut
-                        </button>
-                      </td>
                     </tr>
                   ))}
                 </tbody>

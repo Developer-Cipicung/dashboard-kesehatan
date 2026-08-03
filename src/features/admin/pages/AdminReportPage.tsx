@@ -369,9 +369,13 @@ export function AdminReportPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold bg-rose-50 text-rose-600 border border-rose-100">
-                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
-                          {kasus.risiko}
+                        <div className="flex flex-wrap gap-1.5">
+                          {kasus.risiko ? kasus.risiko.split(', ').map((item: string, idx: number) => (
+                            <span key={idx} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-rose-50 text-rose-600 border border-rose-100">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
+                              {item}
+                            </span>
+                          )) : '-'}
                         </div>
                       </td>
                     </tr>

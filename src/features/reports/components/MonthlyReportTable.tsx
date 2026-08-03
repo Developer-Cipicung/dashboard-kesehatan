@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { formatDateID } from '@/utils/dateFormatter'
 import { classifyTekananDarah } from '@/utils/kesehatan'
+import { calculateHpl } from '../../warga/components/PatientTable'
 
 import {
   Pagination,
@@ -95,19 +96,22 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableHead>Nama Ibu Hamil</TableHead>
             {commonDemographicsHeaders}
             <TableHead>Usia Kehamilan (Minggu)</TableHead>
+            <TableHead>HPHT</TableHead>
+            <TableHead>HPL</TableHead>
             <TableHead>Berat Badan (kg)</TableHead>
             <TableHead>Tinggi Badan (cm)</TableHead>
-
             <TableHead>LILA (cm)</TableHead>
-            <TableHead>Status KEK</TableHead>
             <TableHead>Lingkar Perut (cm)</TableHead>
+            <TableHead>Tinggi Fundus (cm)</TableHead>
+            <TableHead>Riwayat Penyakit</TableHead>
             <TableHead>Anak Ke-</TableHead>
             <TableHead>Kadar Hb</TableHead>
-            <TableHead>Status Anemia</TableHead>
             <TableHead>Berat Janin</TableHead>
             <TableHead>Rokok</TableHead>
             <TableHead>KIE</TableHead>
             <TableHead>TTD</TableHead>
+            <TableHead>Risiko KEK</TableHead>
+            <TableHead>Risiko Anemia</TableHead>
           </>
         )
       case 'pasca_persalinan':
@@ -236,24 +240,23 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         )
       }
       case 'bumil':
-        let skek = 'Normal';
-        let skekc = 'green' as 'green' | 'orange' | 'red';
-        if (item.lingkar_lengan_atas && Number(item.lingkar_lengan_atas) < 23.5) {
-          skek = 'Risiko KEK';
-          skekc = 'red';
-        } else if (!item.lingkar_lengan_atas) {
-          skek = '-';
+        const isUnexaminedBumil = item.is_belum_diperiksa === true;
+        let skekText = '-';
+        if (!isUnexaminedBumil && item.lingkar_lengan_atas) {
+          const lila = Number(item.lingkar_lengan_atas);
+          skekText = `${lila} (${lila < 23.5 ? 'KEK' : 'Normal'})`;
         }
 
-        let san = 'Normal';
-        let sanc = 'green' as 'green' | 'orange' | 'red';
-        if (item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) {
+        let sanText = '-';
+        if (!isUnexaminedBumil && item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) {
           const hb = Number(item.kadar_hemoglobin);
-          if (hb < 8) { san = 'Anemia Berat'; sanc = 'red'; }
-          else if (hb < 11) { san = 'Anemia Ringan'; sanc = 'orange'; }
-        } else {
-          san = '-';
+          let status = 'Normal';
+          if (hb < 8) status = 'Berat';
+          else if (hb < 11) status = 'Ringan';
+          sanText = `${hb} (${status})`;
         }
+        
+        const formatBoolBumil = (val: any) => isUnexaminedBumil ? '-' : (val ? 'Ya' : 'Tidak');
 
         return (
           <>
@@ -261,19 +264,22 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell className="font-medium">{warga.nama}</TableCell>
             {commonDemographicsCells}
             <TableCell>{item.usia_kehamilan_minggu || '-'}</TableCell>
+            <TableCell>{formatDateID(warga.hpht)}</TableCell>
+            <TableCell>{formatDateID(warga.htp || calculateHpl(warga.hpht))}</TableCell>
             <TableCell>{item.bb || '-'}</TableCell>
             <TableCell>{item.tb || '-'}</TableCell>
-
             <TableCell>{item.lingkar_lengan_atas || '-'}</TableCell>
-            <TableCell>{renderBadge(skek, skekc)}</TableCell>
             <TableCell>{item.lingkar_perut || '-'}</TableCell>
+            <TableCell>{(item as any).tinggi_fundus || '-'}</TableCell>
+            <TableCell>{(item as any).riwayat_penyakit || '-'}</TableCell>
             <TableCell>{item.jumlah_anak || '-'}</TableCell>
             <TableCell>{(item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) ? item.kadar_hemoglobin : '-'}</TableCell>
-            <TableCell>{renderBadge(san, sanc)}</TableCell>
             <TableCell>{item.berat_janin || '-'}</TableCell>
-            <TableCell>{item.terpapar_rokok ? 'Ya' : 'Tidak'}</TableCell>
-            <TableCell>{item.kie ? 'Ya' : 'Tidak'}</TableCell>
-            <TableCell>{item.suplemen_tambah_darah ? 'Ya' : 'Tidak'}</TableCell>
+            <TableCell>{formatBoolBumil(item.terpapar_rokok)}</TableCell>
+            <TableCell>{formatBoolBumil(item.kie)}</TableCell>
+            <TableCell>{formatBoolBumil(item.suplemen_tambah_darah)}</TableCell>
+            <TableCell>{skekText}</TableCell>
+            <TableCell>{sanText}</TableCell>
           </>
         )
       case 'pasca_persalinan':

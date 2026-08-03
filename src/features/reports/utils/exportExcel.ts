@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver'
 import { Warga } from '@/features/warga/services/wargaService'
 import { formatTimeWib } from '@/utils/dateTime'
 import { formatDateID } from '@/utils/dateFormatter'
+import { calculateHpl } from '../../warga/components/PatientTable'
 import type { ReportImmunisasi, ReportPemeriksaanItem } from '../types/reportPemeriksaan'
 
 export async function exportWargaToExcel(wargaList: Warga[], filename: string = 'Laporan_Warga.xlsx', pemeriksaanList: ReportPemeriksaanItem[] = [], kategoriFilter: string = '') {
@@ -36,13 +37,16 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
 
     const item = rawItem as ReportPemeriksaanItem
     const warga = item.warga || {}
+    const isUnexamined = item.is_belum_diperiksa === true
+
     let ageText = '-'
-    if (warga.tanggal_lahir && item.tanggal_kunjungan) {
+    if (warga.tanggal_lahir) {
+      const refDate = item.tanggal_kunjungan ? new Date(item.tanggal_kunjungan) : new Date()
       if (kategoriFilter === 'baduta' || kategoriFilter === 'balita') {
-        const ageMonths = Math.floor((new Date(item.tanggal_kunjungan).getTime() - new Date(warga.tanggal_lahir).getTime()) / (1000 * 60 * 60 * 24 * 30.44))
+        const ageMonths = Math.floor((refDate.getTime() - new Date(warga.tanggal_lahir).getTime()) / (1000 * 60 * 60 * 24 * 30.44))
         ageText = `${ageMonths} bln`
       } else {
-        const ageYears = Math.floor((new Date(item.tanggal_kunjungan).getTime() - new Date(warga.tanggal_lahir).getTime()) / (1000 * 60 * 60 * 24 * 365.25))
+        const ageYears = Math.floor((refDate.getTime() - new Date(warga.tanggal_lahir).getTime()) / (1000 * 60 * 60 * 24 * 365.25))
         ageText = `${ageYears} thn`
       }
     }
@@ -67,6 +71,8 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
       Alamat: warga.alamat || '-',
       'Jenis Kelamin': warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'
     }
+    
+    const formatBool = (val: any) => isUnexamined ? '-' : (val ? 'Ya' : 'Tidak')
 
     switch (kategoriFilter) {
       case 'baduta':
@@ -83,27 +89,49 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
           'Status Gizi (BB/TB)': item.status_gizi?.kategori_bb_tb || '-',
           'Status Berat (BB/U)': item.status_gizi?.kategori_bb_u || '-',
           'Status Tinggi (TB/U)': item.status_gizi?.kategori_tb_u || '-',
-          'ASI Eksklusif': item.asi_eksklusif ? 'Ya' : 'Tidak',
-          'Bansos': item.fasilitasi_bantuan_sosial ? 'Ya' : 'Tidak',
+          'ASI Eksklusif': formatBool(item.asi_eksklusif),
+          'Bansos': formatBool(item.fasilitasi_bantuan_sosial),
           'Catatan': item.catatan || '-',
-          'Imunisasi': (warga.riwayat_imunisasi || []).map((i: ReportImmunisasi) => i.jenis_vaksin).join(', ') || '-',
+          'Imunisasi': isUnexamined ? '-' : ((warga.riwayat_imunisasi || []).map((i: ReportImmunisasi) => i.jenis_vaksin).join(', ') || '-'),
         }
       }
-      case 'bumil':
+      case 'bumil': {
+        let lilaText = '-'
+        if (!isUnexamined && item.lingkar_lengan_atas) {
+          const lila = Number(item.lingkar_lengan_atas)
+          lilaText = `${lila} (${lila < 23.5 ? 'KEK' : 'Normal'})`
+        }
+
+        let hbText = '-'
+        if (!isUnexamined && item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) {
+          const hb = Number(item.kadar_hemoglobin)
+          let status = 'Normal'
+          if (hb < 8) status = 'Berat'
+          else if (hb < 11) status = 'Ringan'
+          hbText = `${hb} (${status})`
+        }
+
         return {
           ...baseData,
           'Usia Kehamilan (Minggu)': item.usia_kehamilan_minggu || '-',
+          'HPHT': formatDateID(warga.hpht),
+          'HPL': formatDateID(warga.htp || calculateHpl(warga.hpht)),
           'Berat Badan (kg)': item.bb || '-',
           'Tinggi Badan (cm)': item.tb || '-',
           'LILA (cm)': item.lingkar_lengan_atas || '-',
           'Lingkar Perut (cm)': item.lingkar_perut || '-',
+          'Tinggi Fundus (cm)': (item as any).tinggi_fundus || '-',
+          'Riwayat Penyakit': (item as any).riwayat_penyakit || '-',
           'Anak Ke-': item.jumlah_anak || '-',
           'Kadar Hb': (item.kadar_hemoglobin && Number(item.kadar_hemoglobin) > 0) ? item.kadar_hemoglobin : '-',
           'Berat Janin': item.berat_janin || '-',
-          'Rokok': item.terpapar_rokok ? 'Ya' : 'Tidak',
-          'KIE': item.kie ? 'Ya' : 'Tidak',
-          'TTD': item.suplemen_tambah_darah ? 'Ya' : 'Tidak',
+          'Rokok': formatBool(item.terpapar_rokok),
+          'KIE': formatBool(item.kie),
+          'TTD': formatBool(item.suplemen_tambah_darah),
+          'Risiko KEK': lilaText,
+          'Risiko Anemia': hbText,
         }
+      }
       case 'pasca_persalinan':
         return {
           ...baseData,
@@ -113,9 +141,9 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
           'Kondisi Ibu': item.kondisi_ibu || '-',
           'Tinggi Bayi': item.tinggi_badan_bayi || '-',
           'Berat Bayi': item.berat_badan_bayi || '-',
-          'KIE': item.kie ? 'Ya' : 'Tidak',
-          'Rujukan': item.fasilitasi_rujukan ? 'Ya' : 'Tidak',
-          'Bansos': item.fasilitasi_bantuan_sosial ? 'Ya' : 'Tidak',
+          'KIE': formatBool(item.kie),
+          'Rujukan': formatBool(item.fasilitasi_rujukan),
+          'Bansos': formatBool(item.fasilitasi_bantuan_sosial),
           'Catatan': item.catatan || '-',
         }
       case 'lansia':
@@ -123,8 +151,11 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
           ...baseData,
           'Umur (Tahun)': ageText,
           'Berat Badan (kg)': item.bb || '-',
+          'Tinggi Badan (cm)': item.tb || '-',
           'Tekanan Darah': (item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-',
           'Gula Darah (mg/dL)': item.gula_darah_sewaktu || '-',
+          'Kolesterol (mg/dL)': item.kolesterol || '-',
+          'Asam Urat (mg/dL)': item.asam_urat || '-',
           'Catatan': item.catatan || '-',
         }
       default:

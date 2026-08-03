@@ -182,6 +182,10 @@ export function ReportPage() {
   filteredPemeriksaanList = filteredPemeriksaanList.filter((item: any) => {
     let passed = true
 
+    const hasMedicalFilter = Object.entries(subFilters).some(([k, v]) => k !== 'status_periksa' && v !== '')
+    if (item.is_belum_diperiksa && hasMedicalFilter) {
+      passed = false
+    } else if (!item.is_belum_diperiksa) {
       // Bumil
       if (kategoriFilter === 'bumil') {
         if (subFilters.trimester) {
@@ -210,12 +214,10 @@ export function ReportPage() {
           if (subFilters.kie === 'ya' && !item.kie) passed = false
           if (subFilters.kie === 'tidak' && item.kie) passed = false
         }
-
       }
 
       // Pasca / Lansia
       if (kategoriFilter.startsWith('pasca') || kategoriFilter === 'lansia') {
-
         if (subFilters.tensi) {
           const tensi = classifyTekananDarah(
             item.tekanan_darah_sistolik,
@@ -318,6 +320,7 @@ export function ReportPage() {
           if (!hasVaksin) passed = false
         }
       }
+    }
 
       // Search Query
       if (searchQuery.trim() !== '') {
@@ -569,9 +572,8 @@ export function ReportPage() {
               <ExportActions
                 isLoading={isPemeriksaanLoading}
                 kategoriFilter={kategoriFilter}
-                posyanduIdParam={posyanduIdParam}
-                bulan={selectedMonth}
-                tahun={selectedYear}
+                filteredData={filteredPemeriksaanList}
+                fileNamePrefix={`Laporan_${kategoriFilter}_${['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'][selectedMonth - 1]}_${selectedYear}${activeFilterBadges.length > 0 ? `_[${activeFilterBadges.map(b => b.value.replace(/\s+/g, '_')).join('-')}]` : ''}`}
               />
             </Suspense>
           </div>

@@ -44,6 +44,7 @@ const formSchema = z.object({
   penggunaan_kontrasepsi: z.string().optional(),
   jumlah_anak: z.string().optional(),
   hpht: z.string().optional(),
+  htp: z.string().optional(),
   ibu_id: z.string().optional(),
 })
 
@@ -139,6 +140,7 @@ const getDefaultValues = (category: PatientCategory | ''): z.infer<typeof formSc
     penggunaan_kontrasepsi: '',
     jumlah_anak: '',
     hpht: '',
+    htp: '',
     ibu_id: 'none',
     posyandu_id: '',
   }
@@ -204,6 +206,10 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
     control: methods.control,
     name: 'tanggal_lahir',
   })
+  const watchHpht = useWatch({
+    control: methods.control,
+    name: 'hpht',
+  })
   const isIbuIbu = watchKategori === 'bumil' || watchKategori === 'pasca_persalinan' || watchKategori === 'wus_pus'
   const currentCategory = normalizeCategory(watchKategori)
   const currentConfig = currentCategory ? patientFormConfig[currentCategory] : undefined
@@ -218,6 +224,16 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
       methods.setValue('jenis_kelamin', currentConfig.genderDefault)
     }
   }, [currentConfig, methods])
+
+  useEffect(() => {
+    if (watchHpht) {
+      try {
+        const hphtDate = new Date(watchHpht)
+        hphtDate.setDate(hphtDate.getDate() + 280)
+        methods.setValue('htp', hphtDate.toISOString().split('T')[0])
+      } catch (e) {}
+    }
+  }, [watchHpht, methods])
 
   useEffect(() => {
     if (watchTanggalLahir) {
@@ -492,12 +508,20 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                       </>
                     )}
                     {currentConfig?.showHpht && (
-                      <FormField
-                        control={methods.control}
-                        name="hpht"
-                        label={<>HPHT (Hari Pertama Haid Terakhir)</>}
-                        type="date"
-                      />
+                      <>
+                        <FormField
+                          control={methods.control}
+                          name="hpht"
+                          label={<>HPHT (Hari Pertama Haid Terakhir)</>}
+                          type="date"
+                        />
+                        <FormField
+                          control={methods.control}
+                          name="htp"
+                          label={<>HPL (Hari Perkiraan Lahir)</>}
+                          type="date"
+                        />
+                      </>
                     )}
                     {currentConfig?.showParents && (
                       <>

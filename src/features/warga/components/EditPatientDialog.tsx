@@ -35,6 +35,7 @@ const getFormSchema = () => z.object({
   tempat_persalinan: z.string().optional(),
   penggunaan_kontrasepsi: z.string().optional(),
   hpht: z.string().optional(),
+  htp: z.string().optional(),
   ibu_id: z.string().optional(),
 })
 
@@ -73,6 +74,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
       tempat_persalinan: warga.tempat_persalinan || '',
       penggunaan_kontrasepsi: warga.penggunaan_kontrasepsi || '',
       hpht: warga.hpht ? new Date(warga.hpht).toISOString().split('T')[0] : '',
+      htp: warga.htp ? new Date(warga.htp).toISOString().split('T')[0] : '',
       ibu_id: warga.ibu_id || 'none',
     },
   })
@@ -95,12 +97,25 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
         tempat_persalinan: warga.tempat_persalinan || '',
         penggunaan_kontrasepsi: warga.penggunaan_kontrasepsi || '',
         hpht: warga.hpht ? new Date(warga.hpht).toISOString().split('T')[0] : '',
+        htp: warga.htp ? new Date(warga.htp).toISOString().split('T')[0] : '',
         ibu_id: warga.ibu_id || 'none',
       })
     }
   }, [warga, open, methods])
 
   const watchStatusKehamilan = methods.watch('status_kehamilan')
+  const watchHpht = methods.watch('hpht')
+
+  useEffect(() => {
+    if (watchHpht) {
+      try {
+        const hphtDate = new Date(watchHpht)
+        hphtDate.setDate(hphtDate.getDate() + 280)
+        methods.setValue('htp', hphtDate.toISOString().split('T')[0])
+      } catch (e) {}
+    }
+  }, [watchHpht, methods])
+
   const onSubmit = async (values: z.infer<ReturnType<typeof getFormSchema>>) => {
     try {
       const payload: Partial<AddWargaPayload> = { ...values }
@@ -267,12 +282,20 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                       />
                     )}
                     {isIbuIbu && watchStatusKehamilan === 'HAMIL' && (
-                      <FormField
-                        control={methods.control}
-                        name="hpht"
-                        label={<>HPHT (Hari Pertama Haid Terakhir)</>}
-                        type="date"
-                      />
+                      <>
+                        <FormField
+                          control={methods.control}
+                          name="hpht"
+                          label={<>HPHT (Hari Pertama Haid Terakhir)</>}
+                          type="date"
+                        />
+                        <FormField
+                          control={methods.control}
+                          name="htp"
+                          label={<>HPL (Hari Perkiraan Lahir)</>}
+                          type="date"
+                        />
+                      </>
                     )}
                     {isAnak && (
                       <>

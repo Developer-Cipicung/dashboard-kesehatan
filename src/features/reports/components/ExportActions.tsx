@@ -2,73 +2,26 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { FileSpreadsheet, Loader2 } from 'lucide-react'
 import { exportWargaToExcel } from '../utils/exportExcel'
-import { wargaService } from '@/features/warga/services/wargaService'
-import { pemeriksaanService } from '@/features/pemeriksaan/services/pemeriksaanService'
 import { toast } from 'sonner'
-import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
+import { ReportPemeriksaanItem } from '../types/reportPemeriksaan'
 
 interface ExportActionsProps {
   isLoading: boolean
   kategoriFilter: string
-  posyanduIdParam?: string
-  bulan: number
-  tahun: number
+  filteredData: ReportPemeriksaanItem[]
+  fileNamePrefix?: string
 }
 
-export function ExportActions({ isLoading, kategoriFilter, posyanduIdParam, bulan, tahun }: ExportActionsProps) {
+export function ExportActions({ isLoading, kategoriFilter, filteredData, fileNamePrefix }: ExportActionsProps) {
   const [isExporting, setIsExporting] = useState(false)
-
-  const fetchChunkedData = async () => {
-    let allWarga: any[] = [];
-    let allPemeriksaan: any[] = [];
-    
-    let page = 1;
-    let hasMore = true;
-    const limit = 500;
-    
-    // Fetch Warga
-    while (hasMore) {
-      const data = await wargaService.getWargaList({ kategori: kategoriFilter, posyanduId: posyanduIdParam, limit, page });
-      allWarga = [...allWarga, ...data.data];
-      if (!data.metadata || page >= data.metadata.totalPages) {
-        hasMore = false;
-      } else {
-        page++;
-      }
-    }
-    
-    // Fetch Pemeriksaan
-    page = 1;
-    hasMore = true;
-    while (hasMore) {
-      const data = await pemeriksaanService.getAll(kategoriFilter, { bulan, tahun, posyanduId: posyanduIdParam, limit, page });
-      allPemeriksaan = [...allPemeriksaan, ...data.data];
-      if (!data.metadata || page >= data.metadata.totalPages) {
-        hasMore = false;
-      } else {
-        page++;
-      }
-    }
-    
-    // Client-side filtering if baduta vs balita
-    let filteredPemeriksaan = allPemeriksaan;
-    if (kategoriFilter === 'baduta' || kategoriFilter === 'balita') {
-      filteredPemeriksaan = allPemeriksaan.filter((item: any) => {
-        if (!item.warga?.tanggal_lahir) return false
-        const tglKunjungan = item.tanggal_kunjungan || item.tanggal_pemeriksaan || new Date()
-        if (kategoriFilter === 'baduta') return isBadutaByBirthDate(item.warga.tanggal_lahir, tglKunjungan);
-        return isBalitaByBirthDate(item.warga.tanggal_lahir, tglKunjungan);
-      })
-    }
-    
-    return { allWarga, filteredPemeriksaan };
-  }
 
   const handleExportExcel = async () => {
     try {
       setIsExporting(true)
-      const { allWarga, filteredPemeriksaan } = await fetchChunkedData()
-      await exportWargaToExcel(allWarga, `Laporan_${kategoriFilter}_${new Date().toISOString().split('T')[0]}.xlsx`, filteredPemeriksaan, kategoriFilter)
+      const now = new Date()
+      const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`
+      const filename = fileNamePrefix ? `${fileNamePrefix}_${dateStr}.xlsx` : `Laporan_${kategoriFilter}_${dateStr}.xlsx`
+      await exportWargaToExcel([], filename, filteredData, kategoriFilter)
       toast.success('Laporan Excel berhasil diunduh.')
     } catch (error: any) {
       toast.error(error.message || 'Gagal mengekspor Excel.')
@@ -79,7 +32,6 @@ export function ExportActions({ isLoading, kategoriFilter, posyanduIdParam, bula
 
   return (
     <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row sm:gap-3">
-
       <Button 
         variant="default"
         onClick={handleExportExcel}

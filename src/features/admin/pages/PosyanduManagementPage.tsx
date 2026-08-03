@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/services/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Plus, Edit2, Trash2 } from 'lucide-react'
+import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { PosyanduForm } from '../components/PosyanduForm'
@@ -55,12 +55,12 @@ export function PosyanduManagementPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Manajemen Posyandu</h2>
           <p className="text-muted-foreground">Kelola fasilitas Posyandu dalam sistem.</p>
         </div>
-        <Button onClick={() => setIsFormOpen(true)}>
+        <Button onClick={() => setIsFormOpen(true)} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" /> Tambah Posyandu
         </Button>
       </div>
@@ -81,18 +81,20 @@ export function PosyanduManagementPage() {
                   <tr key={item.id} className="border-b transition-colors hover:bg-muted/50">
                     <td className="p-4 align-middle font-medium">{item.nama}</td>
                     <td className="p-4 align-middle">{item.rw}</td>
-                    <td className="p-4 align-middle text-right space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleEdit(item)}>
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-destructive hover:bg-destructive/10"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <td className="p-4 align-middle text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleEdit(item)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -349,7 +349,6 @@ export function AdminReportPage() {
                     <th className="px-6 py-4 font-semibold">Tanggal Periksa</th>
                     <th className="px-6 py-4 font-semibold">Kategori</th>
                     <th className="px-6 py-4 font-semibold">Indikasi Risiko</th>
-                    <th className="px-6 py-4 font-semibold text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">

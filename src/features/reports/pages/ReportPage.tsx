@@ -86,6 +86,10 @@ export function ReportPage() {
     staleTime: 5 * 60 * 1000,
   })
 
+  const selectedPosyanduName = posyanduFilter === 'all' || posyanduFilter === 'my'
+    ? 'Semua Posyandu'
+    : posyandus?.find((p: any) => p.id === posyanduFilter)?.nama || 'Pilih Posyandu'
+
   useEffect(() => {
     localStorage.setItem(
       `rekapitulasi_filters_${kategoriFilter}`,
@@ -412,7 +416,9 @@ export function ReportPage() {
               </div>
               <Select value={posyanduFilter} onValueChange={(val) => setPosyanduFilter(val as string)}>
                 <SelectTrigger className="w-[180px] sm:w-[220px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-8 text-xs sm:text-sm">
-                  <SelectValue placeholder="Pilih Posyandu" />
+                  <SelectValue placeholder="Pilih Posyandu">
+                    {selectedPosyanduName}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all" className="font-semibold text-primary">Semua Posyandu</SelectItem>

@@ -9,6 +9,10 @@ import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age';
 import { formatDateID } from '@/utils/dateFormatter';
 import { Button } from '@/components/ui/button';
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton';
+import { useAuthStore } from '@/stores/authStore';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/services/api';
+import { MapPin } from 'lucide-react';
 
 export function PrintReportPage() {
   const navigate = useNavigate();
@@ -16,8 +20,23 @@ export function PrintReportPage() {
   const [kategoriRaw, setKategoriRaw] = useState(searchParams.get('kategori') || 'baduta');
   const bulanQuery = parseInt(searchParams.get('bulan') || `${new Date().getMonth() + 1}`);
   const tahunQuery = parseInt(searchParams.get('tahun') || `${new Date().getFullYear()}`);
-  const posyanduId = searchParams.get('posyanduId') || 'all';
+  const posyanduIdUrl = searchParams.get('posyanduId') || 'all';
   const posyanduNameUrl = searchParams.get('posyanduName') || 'Posyandu Saya';
+
+  const { user } = useAuthStore();
+  const isAdmin = user?.role === 'admin';
+
+  const [posyanduId, setPosyanduId] = useState<string>(posyanduIdUrl);
+
+  const { data: posyandus } = useQuery({
+    queryKey: ['admin', 'posyandu'],
+    queryFn: async () => {
+      const res = await api.get('/posyandu/all');
+      return res.data.data;
+    },
+    enabled: isAdmin,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const [periodeType, setPeriodeType] = useState<'this_month' | 'last_month' | 'custom'>('this_month');
   const [startDate, setStartDate] = useState('');
@@ -186,6 +205,35 @@ export function PrintReportPage() {
         </div>
 
         <div className="p-5 flex flex-col gap-6 flex-1 overflow-y-auto custom-scrollbar">
+          {isAdmin && (
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-primary" /> Posyandu
+              </label>
+              <div className="relative">
+                <select 
+                  className="w-full appearance-none border border-slate-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary shadow-sm text-slate-700 font-medium cursor-pointer"
+                  value={posyanduId}
+                  onChange={(e: any) => {
+                    setPosyanduId(e.target.value);
+                    searchParams.set('posyanduId', e.target.value);
+                    const name = e.target.value === 'all' ? 'Semua Posyandu' : posyandus?.find((p: any) => p.id === e.target.value)?.nama || 'Posyandu Saya';
+                    searchParams.set('posyanduName', name);
+                    navigate(`?${searchParams.toString()}`, { replace: true });
+                  }}
+                >
+                  <option value="all">Semua Posyandu</option>
+                  {posyandus?.map((p: any) => (
+                    <option key={p.id} value={p.id}>{p.nama}</option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <Settings2 className="w-4 h-4 text-primary" /> Kategori Laporan
@@ -379,6 +427,28 @@ export function PrintReportPage() {
 
         {/* MOBILE BOTTOM NAVIGATION */}
         <div className="hide-on-print lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.1)] flex items-center justify-around z-50 pb-safe">
+          {isAdmin && (
+            <div className="relative flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-600 hover:bg-slate-50 transition-colors border-r border-slate-100">
+              <MapPin className="w-5 h-5" />
+              <span className="text-[10px] font-medium leading-none mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis px-1 w-full text-center">Posyandu</span>
+              <select 
+                className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                value={posyanduId}
+                onChange={(e: any) => {
+                  setPosyanduId(e.target.value);
+                  searchParams.set('posyanduId', e.target.value);
+                  const name = e.target.value === 'all' ? 'Semua Posyandu' : posyandus?.find((p: any) => p.id === e.target.value)?.nama || 'Posyandu Saya';
+                  searchParams.set('posyanduName', name);
+                  navigate(`?${searchParams.toString()}`, { replace: true });
+                }}
+              >
+                <option value="all">Semua Posyandu</option>
+                {posyandus?.map((p: any) => (
+                  <option key={p.id} value={p.id}>{p.nama}</option>
+                ))}
+              </select>
+            </div>
+          )}
           {/* Kategori Button */}
           <div className="relative flex-1 flex flex-col items-center justify-center py-3 gap-1 text-slate-600 hover:bg-slate-50 transition-colors">
             <Settings2 className="w-5 h-5" />

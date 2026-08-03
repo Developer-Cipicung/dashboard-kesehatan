@@ -4,7 +4,6 @@ import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats'
 import { useNavigate } from 'react-router-dom'
 import {
   useGetPendataanGlobalStatus,
-  useGetAdminStatusPendataan,
 } from '@/features/pendataan/hooks/usePendataanBulanan'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -130,12 +129,6 @@ export function ReportPage() {
   const { isLoading: isStatusLoading } = useGetPendataanGlobalStatus(
     selectedMonth,
     selectedYear
-  )
-
-  // Fetch all posyandus status if filter is 'all'
-  const { data: allPosyanduData } = useGetAdminStatusPendataan(
-    selectedYear,
-    posyanduFilter === 'all'
   )
 
   // Fetch Pemeriksaan List for the selected category, month, and year (limit 1000 for full month stats)
@@ -640,39 +633,6 @@ export function ReportPage() {
         setSubFilters={setSubFilters}
       />
 
-      {posyanduFilter === 'all' && allPosyanduData && (
-        <div className="mt-4 rounded-lg border bg-card p-3 sm:mt-6 sm:p-5 lg:p-6">
-          <h3 className="mb-3 text-base font-bold sm:mb-4 sm:text-lg">
-            Status Pendataan Posyandu (Bulan Ini)
-          </h3>
-          <div className="grid grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {allPosyanduData.map((posyandu) => {
-              const currentMonthStatus =
-                posyandu.status.find((s) => s.bulan === selectedMonth)?.status ||
-                'draft'
-              return (
-                <div
-                  key={posyandu.id}
-                  className="flex items-center justify-between gap-2 rounded-md border bg-slate-50/50 p-3"
-                >
-                  <div className="min-w-0 truncate text-sm font-medium">
-                    {posyandu.nama}
-                  </div>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      currentMonthStatus === 'selesai'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-amber-100 text-amber-700'
-                    }`}
-                  >
-                    {currentMonthStatus === 'selesai' ? 'Selesai' : 'Draft'}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

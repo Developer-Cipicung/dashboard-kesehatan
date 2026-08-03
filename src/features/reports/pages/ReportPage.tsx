@@ -27,7 +27,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Filter, RotateCcw, Search, MapPin } from 'lucide-react'
 import { ReportFilterSidebar } from '../components/ReportFilterSidebar'
-import { CategorySummaryCards } from '../components/CategorySummaryCards'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/services/api'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -449,10 +448,6 @@ export function ReportPage() {
           )}
         </div>
 
-      <CategorySummaryCards
-        kategori={kategoriFilter}
-        data={filteredPemeriksaanList}
-      />
 
       <div className="rounded-xl border border-slate-200 bg-card p-3 shadow-sm sm:p-5 lg:p-6">
         {/* Top Controls Row */}

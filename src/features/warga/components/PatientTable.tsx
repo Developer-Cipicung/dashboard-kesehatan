@@ -12,7 +12,7 @@ import { classifyZScore } from './PatientCard'
 interface PatientTableProps {
   data: Warga[]
   kategori: string
-  onView: (id: string) => void
+  onView: (id: string, posyanduId?: string) => void
   isReadOnly?: boolean
 }
 
@@ -364,10 +364,11 @@ function Cell({
   )
 }
 
-export function PatientTable({ data, kategori, onView }: PatientTableProps) {
+export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTableProps) {
   const [rows, setRows] = useState<Record<string, RowState>>({})
   const [confirmId, setConfirmId] = useState<string | null>(null)
   const [addRecordWargaId, setAddRecordWargaId] = useState<string | null>(null)
+  const [addRecordPosyanduId, setAddRecordPosyanduId] = useState<string | null>(null)
 
   const getRow = (id: string): RowState => rows[id] ?? emptyRow()
 
@@ -914,18 +915,23 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
 
                 <td className="px-4 py-3 border-l border-slate-100 sticky right-0 z-10 bg-white shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)]">
                   <div className="flex flex-col gap-2">
-                    <Button
-                      size="sm"
-                      className="bg-primary hover:bg-primary-dark text-white h-8 px-3 text-xs w-full flex items-center justify-center gap-1"
-                      onClick={() => setAddRecordWargaId(warga.id)}
-                    >
-                      <Plus className="w-3 h-3" /> Tambah Catatan
-                    </Button>
+                    {!isReadOnly && (
+                      <Button
+                        size="sm"
+                        className="bg-primary hover:bg-primary-dark text-white h-8 px-3 text-xs w-full flex items-center justify-center gap-1"
+                        onClick={() => {
+                          setAddRecordWargaId(warga.id)
+                          setAddRecordPosyanduId(warga.posyandu_id || null)
+                        }}
+                      >
+                        <Plus className="w-3 h-3" /> Tambah Catatan
+                      </Button>
+                    )}
                     <Button
                       variant="outline"
                       size="sm"
                       className="h-8 px-3 text-xs border-slate-200 text-slate-500 hover:bg-slate-50 w-full flex items-center justify-center gap-1"
-                      onClick={() => onView(warga.id)}
+                      onClick={() => onView(warga.id, warga.posyandu_id)}
                     >
                       <Edit3 className="w-3 h-3" /> Profil Lengkap
                     </Button>
@@ -968,11 +974,15 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
         open={!!addRecordWargaId}
         onOpenChange={(open) => {
           if (!open) {
-            setTimeout(() => setAddRecordWargaId(null), 300)
+            setTimeout(() => {
+              setAddRecordWargaId(null)
+              setAddRecordPosyanduId(null)
+            }, 300)
           }
         }}
         kategori={kategori}
         wargaId={addRecordWargaId || ''}
+        wargaPosyanduId={addRecordPosyanduId || undefined}
         initialData={null}
       />
     </>

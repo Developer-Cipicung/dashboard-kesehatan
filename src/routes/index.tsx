@@ -126,6 +126,10 @@ const router = createBrowserRouter([
             element: <AdminSharedPatientList title="Lansia" kategori="lansia" />,
           },
           {
+            path: 'warga/:kategori/:id',
+            element: <PatientHistoryPage />,
+          },
+          {
             path: 'posyandu',
             element: <PosyanduManagementPage />,
           },

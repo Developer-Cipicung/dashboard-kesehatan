@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useGetWargaById, useDeleteWarga } from '@/features/warga/hooks/useWarga'
 import { useGetHistory, useDeletePemeriksaan } from '../hooks/usePemeriksaan'
 import { useGetPendataanStatus } from '@/features/pendataan/hooks/usePendataanBulanan'
@@ -29,18 +29,23 @@ export function PatientHistoryPage() {
   const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
 
-  const { selectedPosyanduId, posyandu } = useAuthStore()
+  const { selectedPosyanduId, posyandu, user } = useAuthStore()
+  const isAdmin = user?.role === 'admin'
+
+  const [searchParams] = useSearchParams()
+  const queryPosyanduId = searchParams.get('posyanduId')
+  const activePosyanduId = isAdmin ? (queryPosyanduId || undefined) : (selectedPosyanduId || undefined)
 
   // Queries
-  const { data: warga, isLoading: isWargaLoading, error: wargaError } = useGetWargaById(id!, selectedPosyanduId || undefined)
-  const { data: history, isLoading: isHistoryLoading, error: historyError } = useGetHistory(kategori!, id!, selectedPosyanduId || undefined)
-  const { data: pendataanStatus, isLoading: isStatusLoading } = useGetPendataanStatus(currentMonth, currentYear, selectedPosyanduId || undefined)
+  const { data: warga, isLoading: isWargaLoading, error: wargaError } = useGetWargaById(id!, activePosyanduId)
+  const { data: history, isLoading: isHistoryLoading, error: historyError } = useGetHistory(kategori!, id!, activePosyanduId)
+  const { data: pendataanStatus, isLoading: isStatusLoading } = useGetPendataanStatus(currentMonth, currentYear, activePosyanduId)
 
-  const { mutate: deletePemeriksaan, isPending: isDeleting } = useDeletePemeriksaan()
-  const { mutate: deleteWarga, isPending: isDeletingWarga } = useDeleteWarga()
+  const { mutate: deletePemeriksaan, isPending: isDeleting } = useDeletePemeriksaan(activePosyanduId)
+  const { mutate: deleteWarga, isPending: isDeletingWarga } = useDeleteWarga(activePosyanduId)
 
   const isLocked = pendataanStatus?.status === 'selesai'
-  const isReadOnly = posyandu?.id !== selectedPosyanduId
+  const isReadOnly = isAdmin ? false : (posyandu?.id !== selectedPosyanduId)
 
   const handleEdit = (record: Pemeriksaan) => {
     setEditingRecord(record)
@@ -79,7 +84,11 @@ export function PatientHistoryPage() {
   const handleConfirmDeleteWarga = () => {
     deleteWarga(id!, {
       onSuccess: () => {
-        navigate(`/${kategori?.replace('_', '-')}`)
+        if (isAdmin) {
+          navigate(`/admin/warga/${kategori?.replace('_', '-')}`)
+        } else {
+          navigate(`/${kategori?.replace('_', '-')}`)
+        }
       }
     })
   }
@@ -177,6 +186,7 @@ export function PatientHistoryPage() {
         onOpenChange={handleCloseForm}
         kategori={kategori!}
         wargaId={id!}
+        wargaPosyanduId={activePosyanduId}
         initialData={editingRecord}
         previousRecord={history?.[0]}
         defaultTanggalPersalinan={warga.pemeriksaan_pasca_persalinan?.[0]?.tanggal_persalinan}

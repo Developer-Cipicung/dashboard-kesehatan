@@ -38,11 +38,11 @@ export function useAddWarga() {
   })
 }
 
-export function useDeleteWarga() {
+export function useDeleteWarga(posyanduId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => wargaService.deleteWarga(id),
+    mutationFn: (id: string) => wargaService.deleteWarga(id, posyanduId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })

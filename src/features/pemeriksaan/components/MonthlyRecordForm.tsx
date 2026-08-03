@@ -15,6 +15,7 @@ interface MonthlyRecordFormProps {
   onOpenChange: (open: boolean) => void
   kategori: string
   wargaId: string
+  wargaPosyanduId?: string
   initialData?: Pemeriksaan | null
   previousRecord?: Pemeriksaan | null
   defaultTanggalPersalinan?: string
@@ -115,9 +116,9 @@ const parseNum = (val: any, isInt = false) => {
   return isNaN(num) ? undefined : num;
 }
 
-export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initialData, previousRecord, defaultTanggalPersalinan }: MonthlyRecordFormProps) {
-  const { mutateAsync: createRecord, isPending: isCreating } = useCreatePemeriksaan()
-  const { mutateAsync: updateRecord, isPending: isUpdating } = useUpdatePemeriksaan()
+export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, wargaPosyanduId, initialData, previousRecord, defaultTanggalPersalinan }: MonthlyRecordFormProps) {
+  const { mutateAsync: createRecord, isPending: isCreating } = useCreatePemeriksaan(wargaPosyanduId)
+  const { mutateAsync: updateRecord, isPending: isUpdating } = useUpdatePemeriksaan(wargaPosyanduId)
   const queryClient = useQueryClient()
 
   const isBumil = kategori === 'bumil'

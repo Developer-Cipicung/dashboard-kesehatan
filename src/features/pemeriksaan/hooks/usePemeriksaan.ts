@@ -29,12 +29,12 @@ export function useGetPemeriksaanById(kategori: string, id: string, posyanduId?:
   })
 }
 
-export function useCreatePemeriksaan() {
+export function useCreatePemeriksaan(posyanduId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: ({ kategori, payload }: { kategori: string; payload: Partial<Pemeriksaan> }) =>
-      pemeriksaanService.create(kategori, payload),
+      pemeriksaanService.create(kategori, payload, posyanduId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['history', variables.kategori] })
       queryClient.invalidateQueries({ queryKey: ['pemeriksaan_list', variables.kategori] })
@@ -45,12 +45,12 @@ export function useCreatePemeriksaan() {
   })
 }
 
-export function useUpdatePemeriksaan() {
+export function useUpdatePemeriksaan(posyanduId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ kategori, id, payload }: { kategori: string; id: string; payload: Partial<Pemeriksaan> }) =>
-      pemeriksaanService.update(kategori, id, payload),
+    mutationFn: ({ id, kategori, payload }: { id: string; kategori: string; payload: Partial<Pemeriksaan> }) =>
+      pemeriksaanService.update(kategori, id, payload, posyanduId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['history', variables.kategori] })
       queryClient.invalidateQueries({ queryKey: ['pemeriksaan', variables.kategori, variables.id] })
@@ -62,12 +62,12 @@ export function useUpdatePemeriksaan() {
   })
 }
 
-export function useDeletePemeriksaan() {
+export function useDeletePemeriksaan(posyanduId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ kategori, id }: { kategori: string; id: string }) =>
-      pemeriksaanService.delete(kategori, id),
+    mutationFn: ({ id, kategori }: { id: string; kategori: string }) =>
+      pemeriksaanService.delete(kategori, id, posyanduId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['history', variables.kategori] })
       queryClient.invalidateQueries({ queryKey: ['pemeriksaan_list', variables.kategori] })

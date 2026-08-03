@@ -59,26 +59,26 @@ export const pemeriksaanService = {
     const response = await api.get<PemeriksaanResponse>(`/${actualEndpoint}/${id}`, { params: { posyanduId } })
     return response.data.data
   },
-  create: async (kategori: string, payload: Partial<Pemeriksaan>) => {
+  create: async (kategori: string, payload: Partial<Pemeriksaan>, posyanduId?: string) => {
     const endpoint = kategori.replace('_', '-')
     const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
-    const response = await api.post<PemeriksaanResponse>(`/${actualEndpoint}`, payload)
+    const response = await api.post<PemeriksaanResponse>(`/${actualEndpoint}`, payload, { params: { posyanduId } })
     return response.data.data
   },
-  bulkCreate: async (kategori: string, payload: Partial<Pemeriksaan>[]) => {
+  bulkCreate: async (kategori: string, payload: Partial<Pemeriksaan>[], posyanduId?: string) => {
     const endpoint = kategori.replace('_', '-')
     const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
-    const response = await api.post(`/${actualEndpoint}/bulk-pemeriksaan`, payload)
+    const response = await api.post(`/${actualEndpoint}/bulk-pemeriksaan`, payload, { params: { posyanduId } })
     return response.data
   },
   calculateZscore: async (payload: any) => {
     const response = await api.post(`/balita/calculate-zscore`, payload)
     return response.data.data
   },
-  update: async (kategori: string, id: string, payload: Partial<Pemeriksaan>) => {
+  update: async (kategori: string, id: string, payload: Partial<Pemeriksaan>, posyanduId?: string) => {
     const endpoint = kategori.replace('_', '-')
     const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
-    const response = await api.put<PemeriksaanResponse>(`/${actualEndpoint}/${id}`, payload)
+    const response = await api.put<PemeriksaanResponse>(`/${actualEndpoint}/${id}`, payload, { params: { posyanduId } })
     return response.data.data
   },
   delete: async (kategori: string, id: string, posyanduId?: string) => {

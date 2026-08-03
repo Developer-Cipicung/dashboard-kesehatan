@@ -61,7 +61,11 @@ export function SharedPatientList({ title, kategori, posyanduIdOverride, isAdmin
   const totalPages = data?.metadata.totalPages || 1
 
   const handleView = (id: string) => {
-    navigate(`/${kategori.replace('_', '-')}/${id}`)
+    if (isAdmin) {
+      navigate(`/admin/warga/${kategori.replace('_', '-')}/${id}`)
+    } else {
+      navigate(`/${kategori.replace('_', '-')}/${id}`)
+    }
   }
 
   return (

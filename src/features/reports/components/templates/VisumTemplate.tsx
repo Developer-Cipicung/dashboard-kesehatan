@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatDateID } from '@/utils/dateFormatter';
-import { calculateHpl } from '@/features/warga/components/PatientTable';
+import { calculateHplRange } from '@/features/warga/components/PatientTable';
 
 interface VisumTemplateProps {
   kategori: string;
@@ -79,7 +79,7 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
       { header: 'Usia\nKandungan\n(Mgg)', accessor: (r) => r.usia_kehamilan_minggu || '-', width: '4%' },
       { header: 'HPHT / HPL', accessor: (r) => {
         const hphtStr = r.warga?.hpht ? formatDate(r.warga.hpht) : '-';
-        const hplStr = r.warga?.htp ? formatDate(r.warga.htp) : (r.warga?.hpht ? formatDate(calculateHpl(r.warga.hpht)) : '-');
+        const hplStr = r.warga?.hpht ? calculateHplRange(r.warga.hpht) : '-';
         return `${hphtStr}\n${hplStr}`;
       }, width: '6%' },
       { header: 'LILA (cm)', accessor: (r) => r.lingkar_lengan_atas || '-', width: '4%' },

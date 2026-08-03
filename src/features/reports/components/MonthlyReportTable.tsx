@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
 import { formatDateID } from '@/utils/dateFormatter'
 import { classifyTekananDarah } from '@/utils/kesehatan'
-import { calculateHpl } from '../../warga/components/PatientTable'
+import { calculateHplRange } from '../../warga/components/PatientTable'
 
 import {
   Pagination,
@@ -273,7 +273,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             {commonDemographicsCells}
             <TableCell>{item.usia_kehamilan_minggu || '-'}</TableCell>
             <TableCell>{formatDateID(warga.hpht)}</TableCell>
-            <TableCell>{formatDateID(warga.htp || calculateHpl(warga.hpht))}</TableCell>
+            <TableCell>{calculateHplRange(warga.hpht)}</TableCell>
             <TableCell>{item.bb || '-'}</TableCell>
             <TableCell>{item.tb || '-'}</TableCell>
             <TableCell>{(item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-'}</TableCell>

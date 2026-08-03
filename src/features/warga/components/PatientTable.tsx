@@ -393,7 +393,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-0 z-20 bg-white min-w-[160px] max-w-[160px] w-[160px]" rowSpan={2}>NIK</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-[160px] z-20 bg-white min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-200 shadow-[1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Nama</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[140px] max-w-[180px]" rowSpan={2}>Posyandu</th>
-            <th colSpan={isBalita ? 12 : isBumil ? 22 : isPasca ? 15 : 9} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
+            <th colSpan={isBalita ? 12 : isBumil ? 23 : isPasca ? 15 : 9} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
               <div className="flex items-center text-primary font-bold text-xs uppercase tracking-wider">
                 <ActivitySquare className="w-4 h-4 mr-2" />
                 Record Pemeriksaan Terakhir
@@ -432,6 +432,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Usia Kandungan (mgg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Ibu (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Ibu (kg)</th>
+                <th className="px-3 py-3 font-semibold text-primary text-xs">Tekanan Darah (mmHg)</th>
 
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Lingkar Perut (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi<br/>Fundus (cm)</th>
@@ -544,6 +545,7 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
               lastLilaGds = latestBumil.lingkar_lengan_atas?.toString()
               lastJmlAnak = latestBumil.jumlah_anak?.toString() || ''
               lastRiwPen = latestBumil.riwayat_penyakit || ''
+              lastTd = (latestBumil.tekanan_darah_sistolik && latestBumil.tekanan_darah_diastolik) ? `${latestBumil.tekanan_darah_sistolik}/${latestBumil.tekanan_darah_diastolik}` : ''
               lastTinggiFundus = latestBumil.tinggi_fundus?.toString() || ''
               lastKadarHb = (latestBumil.kadar_hemoglobin && Number(latestBumil.kadar_hemoglobin) > 0) ? latestBumil.kadar_hemoglobin.toString() : ''
               lastBeratJanin = latestBumil.berat_janin?.toString() || ''
@@ -718,6 +720,9 @@ export function PatientTable({ data, kategori, onView }: PatientTableProps) {
                       </td>
                       <td className="px-3 py-3">
                         <Cell type="number" value={row.bb} onChange={(v) => set(warga.id, 'bb', v)} placeholder={lastBb || '-'} width="w-[70px]" disabled={true} max={200} min={0} />
+                      </td>
+                      <td className="px-3 py-3">
+                        <Cell type="text" value={row.td} onChange={(v) => set(warga.id, 'td', v)} placeholder={lastTd || '-'} width="w-[90px]" disabled={true} />
                       </td>
 
                       <td className="px-3 py-3">

@@ -38,7 +38,7 @@ export function exportWargaToPdf(wargaList: Warga[], filename: string = 'Laporan
         tableColumn = ['No', 'Tgl & Jam', 'Nama Balita', ...commonCols, 'Umur', 'Ibu', 'KB', 'BB', 'TB', 'LK', 'Status Gizi', 'ASI', 'Bansos', 'Catatan', 'Imunisasi']
         break
       case 'bumil':
-        tableColumn = ['No', 'Tgl & Jam', 'Nama Ibu Hamil', ...commonCols, 'Hamil(Mgg)', 'BB', 'TB', 'LILA', 'LP', 'Anak Ke', 'Hb', 'Janin', 'Rokok', 'KIE', 'TTD']
+        tableColumn = ['No', 'Tgl & Jam', 'Nama Ibu Hamil', ...commonCols, 'Hamil(Mgg)', 'BB', 'TB', 'TD', 'LILA', 'LP', 'Anak Ke', 'Hb', 'Janin', 'Rokok', 'KIE', 'TTD']
         break
       case 'pasca_persalinan':
         tableColumn = ['No', 'Tgl & Jam', 'Nama Ibu', ...commonCols, 'Tmpt Salin', 'Tgl Salin', 'TD', 'Kondisi', 'TB Bayi', 'BB Bayi', 'KIE', 'Rujukan', 'Bansos', 'Catatan']
@@ -109,6 +109,7 @@ export function exportWargaToPdf(wargaList: Warga[], filename: string = 'Laporan
             item.usia_kehamilan_minggu || '-',
             item.bb || '-',
             item.tb || '-',
+            (item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-',
             item.lingkar_lengan_atas || '-',
             item.lingkar_perut || '-',
             item.jumlah_anak || '-',

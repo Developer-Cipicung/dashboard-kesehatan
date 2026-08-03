@@ -275,6 +275,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Usia Hamil</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">TB (cm)</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">BB (kg)</th>
+            <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Tekanan Darah</th>
 
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">L. Perut</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">T. Fundus</th>
@@ -309,7 +310,9 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 </td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.tb ?? '-'}</td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.bb ?? '-'}</td>
-
+                <td className="px-3 py-3 text-slate-600 text-xs text-center">
+                  {(record.tekanan_darah_sistolik && record.tekanan_darah_diastolik) ? <span className="font-medium">{`${record.tekanan_darah_sistolik}/${record.tekanan_darah_diastolik}`}</span> : <span className="text-slate-400">-</span>}
+                </td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.lingkar_perut ?? '-'}</td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.tinggi_fundus ?? '-'}</td>
                 <td className="px-4 py-3 text-slate-600 text-xs max-w-[120px] truncate" title={record.riwayat_penyakit}>{record.riwayat_penyakit || '-'}</td>

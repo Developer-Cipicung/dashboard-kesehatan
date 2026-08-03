@@ -118,6 +118,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
           'HPL': formatDateID(warga.htp || calculateHpl(warga.hpht)),
           'Berat Badan (kg)': item.bb || '-',
           'Tinggi Badan (cm)': item.tb || '-',
+          'Tekanan Darah': (item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-',
           'LILA (cm)': item.lingkar_lengan_atas || '-',
           'Lingkar Perut (cm)': item.lingkar_perut || '-',
           'Tinggi Fundus (cm)': (item as any).tinggi_fundus || '-',

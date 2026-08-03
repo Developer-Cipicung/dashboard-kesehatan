@@ -158,6 +158,20 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
                   <span className="text-sm font-semibold text-slate-800">{latestBumil.bb || '-'} kg / {latestBumil.tb || '-'} cm</span>
                 </div>
 
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tekanan Darah</span>
+                  {(() => {
+                    const tdStr = (latestBumil.tekanan_darah_sistolik && latestBumil.tekanan_darah_diastolik) 
+                      ? `${latestBumil.tekanan_darah_sistolik}/${latestBumil.tekanan_darah_diastolik}` : '';
+                    const status = calculateTDStatus(tdStr);
+                    return (
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm font-semibold text-slate-800">{tdStr || '-'}</span>
+                        {status && <span className={`text-[10px] px-1.5 py-0.5 rounded border font-bold ${status.color}`}>{status.status}</span>}
+                      </div>
+                    )
+                  })()}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 <div className="flex flex-col">

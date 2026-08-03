@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatDateID } from '@/utils/dateFormatter';
+import { calculateHpl } from '@/features/warga/components/PatientTable';
 
 interface VisumTemplateProps {
   kategori: string;
@@ -75,16 +76,21 @@ export const VisumTemplate: React.FC<VisumTemplateProps> = ({
       { header: 'Tempat Tgl\nLahir', accessor: (r) => `${r.warga?.tempat_lahir || '-'}, ${formatDate(r.warga?.tanggal_lahir)}`, width: '8%' },
       { header: 'Alamat', accessor: (r) => formatAddress(r.warga), width: '10%' },
       { header: 'Nama Suami', accessor: (r) => r.warga?.nama_suami || '-', width: '7%' },
-      { header: 'Usia\nKandungan\n(Mgg)', accessor: (r) => r.usia_kehamilan_minggu || '-', width: '5%' },
-      { header: 'HPHT / HTP', accessor: (r) => `${formatDate(r.hpht)}\n${formatDate(r.htp)}`, width: '6%' },
+      { header: 'Usia\nKandungan\n(Mgg)', accessor: (r) => r.usia_kehamilan_minggu || '-', width: '4%' },
+      { header: 'HPHT / HPL', accessor: (r) => {
+        const hphtStr = r.warga?.hpht ? formatDate(r.warga.hpht) : '-';
+        const hplStr = r.warga?.htp ? formatDate(r.warga.htp) : (r.warga?.hpht ? formatDate(calculateHpl(r.warga.hpht)) : '-');
+        return `${hphtStr}\n${hplStr}`;
+      }, width: '6%' },
       { header: 'LILA (cm)', accessor: (r) => r.lingkar_lengan_atas || '-', width: '4%' },
       { header: 'BB (Kg)', accessor: (r) => r.bb || r.berat_badan || '-', width: '4%' },
+      { header: 'TD (mmHg)', accessor: (r) => (r.tekanan_darah_sistolik && r.tekanan_darah_diastolik) ? `${r.tekanan_darah_sistolik}/${r.tekanan_darah_diastolik}` : '-', width: '6%' },
       { header: 'Beresiko', accessor: (r) => r.is_berisiko_stunting ? 'Ya' : 'Tdk', width: '4%' },
       { header: 'Kondisi Ibu', accessor: (r) => r.kondisi_ibu || '-', width: '5%' },
       { header: 'TTD\n(Ya/Tdk)', accessor: (r) => r.suplemen_tambah_darah ? 'Ya' : 'Tdk', width: '4%' },
       { header: 'KIE\n(Ya/Tdk)', accessor: (r) => r.kie ? 'Ya' : 'Tdk', width: '4%' },
-      { header: 'Fasilitasi\nBantuan\nSosial', accessor: (r) => r.fasilitasi_bantuan_sosial ? 'Ya' : 'Tdk', width: '4%' },
-      { header: 'Tgl\nKunjungan\nBerikut', accessor: (r) => formatDate(r.tanggal_kunjungan_berikut), width: '6%' },
+      { header: 'Fasilitasi\nBansos', accessor: (r) => r.fasilitasi_bantuan_sosial ? 'Ya' : 'Tdk', width: '4%' },
+      { header: 'Tgl\nKunjungan\nBerikut', accessor: (r) => formatDate(r.tanggal_kunjungan_berikut), width: '5%' },
       { header: 'Tanda Tangan', accessor: () => '', width: '6%' },
     ];
   } else if (kategori === 'pasca_persalinan' || kategori === 'pasca-persalinan') {

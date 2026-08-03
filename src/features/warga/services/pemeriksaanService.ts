@@ -9,6 +9,8 @@ export interface CreateBumilPayload {
   lingkar_perut: number
   lingkar_lengan_atas: number
   tinggi_fundus?: number
+  tekanan_darah_sistolik?: number
+  tekanan_darah_diastolik?: number
   usia_kehamilan_minggu: number
   jumlah_anak?: number
   riwayat_penyakit?: string

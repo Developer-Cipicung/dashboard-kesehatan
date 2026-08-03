@@ -291,8 +291,11 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
           nama_ayah: values.nama_ayah || undefined,
         }
       } else if (isBumil) {
+        const td = parseTd(values.td)
         payload = {
           ...payload,
+          tekanan_darah_sistolik: td?.s,
+          tekanan_darah_diastolik: td?.d,
           bb: parseNum(values.bb),
           tb: parseNum(values.tb),
           lingkar_perut: parseNum(values.lingkar_perut),
@@ -504,6 +507,22 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, initi
                 </Field>
                 <Field label={<>Berat Badan (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" placeholder="Contoh: 60.5" max={200} min={0} /></Field>
                 <Field label="Tinggi Badan (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 155" max={250} min={0} /></Field>
+
+                <Field label="Tekanan Darah (mmHg)">
+                  <div>
+                    <TdInput name="td" />
+                    {(() => {
+                      const td = watch('td')
+                      if (td) {
+                        const st = calculateTDStatus(td)
+                        if (st) {
+                          return <div className={`mt-1.5 inline-block text-[10px] px-2 py-0.5 rounded font-bold border ${st.color}`}>{st.status}</div>
+                        }
+                      }
+                      return null
+                    })()}
+                  </div>
+                </Field>
 
                 <Field label="Lingkar Perut (cm)"><Input register={register} name="lingkar_perut" type="number" placeholder="Contoh: 85" max={200} min={0} /></Field>
                 <Field label="Tinggi Fundus (cm)"><Input register={register} name="tinggi_fundus" type="number" placeholder="Contoh: 20" max={100} min={0} /></Field>

@@ -100,6 +100,8 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableHead>HPL</TableHead>
             <TableHead>Berat Badan (kg)</TableHead>
             <TableHead>Tinggi Badan (cm)</TableHead>
+            <TableHead>Tekanan Darah</TableHead>
+            <TableHead>Status TD</TableHead>
             <TableHead>LILA (cm)</TableHead>
             <TableHead>Lingkar Perut (cm)</TableHead>
             <TableHead>Tinggi Fundus (cm)</TableHead>
@@ -258,6 +260,12 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         
         const formatBoolBumil = (val: any) => isUnexaminedBumil ? '-' : (val ? 'Ya' : 'Tidak');
 
+        let tdStatusB = classifyTekananDarah(item.tekanan_darah_sistolik, item.tekanan_darah_diastolik);
+        let tdColorB = 'green' as 'green' | 'orange' | 'red';
+        if (tdStatusB.toLowerCase().includes('rendah') || tdStatusB.toLowerCase().includes('hipertensi')) tdColorB = 'red';
+        else if (tdStatusB.toLowerCase().includes('pra')) tdColorB = 'orange';
+        if (!item.tekanan_darah_sistolik) tdStatusB = '-';
+
         return (
           <>
             {visitCell}
@@ -268,6 +276,8 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell>{formatDateID(warga.htp || calculateHpl(warga.hpht))}</TableCell>
             <TableCell>{item.bb || '-'}</TableCell>
             <TableCell>{item.tb || '-'}</TableCell>
+            <TableCell>{(item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-'}</TableCell>
+            <TableCell>{renderBadge(tdStatusB, tdColorB)}</TableCell>
             <TableCell>{item.lingkar_lengan_atas || '-'}</TableCell>
             <TableCell>{item.lingkar_perut || '-'}</TableCell>
             <TableCell>{(item as any).tinggi_fundus || '-'}</TableCell>

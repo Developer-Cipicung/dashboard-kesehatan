@@ -94,6 +94,14 @@ const router = createBrowserRouter([
             element: <AdminReportPage />,
           },
           {
+            path: 'laporan-detail',
+            element: <ReportPage />,
+          },
+          {
+            path: 'laporan-detail/print',
+            element: <PrintReportPage />,
+          },
+          {
             path: 'status-pendataan',
             element: <AdminStatusPendataanPage />,
           },

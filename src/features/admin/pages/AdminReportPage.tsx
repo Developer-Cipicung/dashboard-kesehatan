@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/services/api'
 import { SkeletonCard } from '@/components/feedback/LoadingSkeleton'
@@ -8,7 +9,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   Activity,
-  BarChart2
+  BarChart2,
+  FileText
 } from 'lucide-react'
 import {
   Select,
@@ -143,7 +145,12 @@ export function AdminReportPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-white p-1.5 rounded-lg shadow-sm border border-slate-200">
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <Link to="/admin/laporan-detail" className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-primary/90 transition-colors whitespace-nowrap shadow-sm">
+            <FileText className="w-4 h-4" />
+            Laporan Detail
+          </Link>
+          <div className="flex items-center gap-3 bg-white p-1.5 rounded-lg shadow-sm border border-slate-200">
           <div className="pl-2 flex items-center text-slate-400">
             <MapPin className="w-4 h-4 mr-2" />
             <span className="text-xs font-medium uppercase tracking-wider">Fokus Area</span>
@@ -161,6 +168,7 @@ export function AdminReportPage() {
               ))}
             </SelectContent>
           </Select>
+          </div>
         </div>
       </div>
 

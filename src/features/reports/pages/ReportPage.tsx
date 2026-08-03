@@ -25,12 +25,17 @@ import {
 } from '@/utils/kesehatan'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Filter, RotateCcw, Search } from 'lucide-react'
+import { Filter, RotateCcw, Search, MapPin } from 'lucide-react'
 import { ReportFilterSidebar } from '../components/ReportFilterSidebar'
 import { CategorySummaryCards } from '../components/CategorySummaryCards'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '@/services/api'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export function ReportPage() {
   const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
+  const isAdmin = user?.role === 'admin'
   const posyanduStore = useAuthStore((state) => state.posyandu)
   const [selectedMonth, setSelectedMonth] = useState<number>(() => {
     const saved = localStorage.getItem('rekapitulasi_bulan')
@@ -46,9 +51,9 @@ export function ReportPage() {
     localStorage.setItem('rekapitulasi_tahun', selectedYear.toString())
   }, [selectedMonth, selectedYear])
 
-  const [posyanduFilter, setPosyanduFilter] = useState<'my' | 'all'>(
+  const [posyanduFilter, setPosyanduFilter] = useState<string>(
     () =>
-      (localStorage.getItem('rekapitulasi_posyandu') as 'my' | 'all') || 'my'
+      localStorage.getItem('rekapitulasi_posyandu') || (isAdmin ? 'all' : 'my')
   )
   const [kategoriFilter, setKategoriFilter] = useState<string>(
     () => localStorage.getItem('rekapitulasi_kategori') || 'bumil'
@@ -69,7 +74,18 @@ export function ReportPage() {
     () => localStorage.getItem('rekapitulasi_search') || ''
   )
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const posyanduIdParam = posyanduFilter === 'all' ? 'all' : undefined
+  const posyanduIdParam = posyanduFilter === 'my' ? undefined : posyanduFilter
+
+  // Fetch Posyandus for Admin
+  const { data: posyandus } = useQuery({
+    queryKey: ['admin', 'posyandu'],
+    queryFn: async () => {
+      const response = await api.get('/posyandu')
+      return response.data.data
+    },
+    enabled: isAdmin,
+    staleTime: 5 * 60 * 1000,
+  })
 
   useEffect(() => {
     localStorage.setItem(
@@ -389,29 +405,49 @@ export function ReportPage() {
           </h2>
           {/* <p className="mt-1 text-sm leading-snug text-muted-foreground">Menampilkan data pemeriksaan terbaru dan ekspor laporan berdasarkan filter aktif.</p> */}
         </div>
-        <div className="grid grid-cols-2 gap-1 rounded-md border bg-slate-100 p-1 sm:flex sm:items-center sm:space-x-2 sm:gap-0 sm:shrink-0">
-          <button
-            onClick={() => setPosyanduFilter('my')}
-            className={`rounded-sm px-2 py-1.5 text-xs font-semibold transition-colors sm:px-4 sm:text-sm ${
-              posyanduFilter === 'my'
-                ? 'bg-green-600 text-white shadow'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Posyandu Saya
-          </button>
-          <button
-            onClick={() => setPosyanduFilter('all')}
-            className={`rounded-sm px-2 py-1.5 text-xs font-semibold transition-colors sm:px-4 sm:text-sm ${
-              posyanduFilter === 'all'
-                ? 'bg-green-600 text-white shadow'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Semua Posyandu
-          </button>
+          {isAdmin ? (
+            <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-slate-200 shadow-sm ml-auto">
+              <div className="pl-2 flex items-center text-slate-400">
+                <MapPin className="w-4 h-4 mr-2" />
+                <span className="text-xs font-semibold uppercase tracking-wider hidden sm:inline-block">Fokus Posyandu</span>
+              </div>
+              <Select value={posyanduFilter} onValueChange={(val) => setPosyanduFilter(val as string)}>
+                <SelectTrigger className="w-[180px] sm:w-[220px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-8 text-xs sm:text-sm">
+                  <SelectValue placeholder="Pilih Posyandu" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="font-semibold text-primary">Semua Posyandu</SelectItem>
+                  {posyandus?.map((p: any) => (
+                    <SelectItem key={p.id} value={p.id}>{p.nama}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-1 rounded-md border bg-slate-100 p-1 sm:flex sm:items-center sm:space-x-2 sm:gap-0 sm:shrink-0">
+              <button
+                onClick={() => setPosyanduFilter('my')}
+                className={`rounded-sm px-2 py-1.5 text-xs font-semibold transition-colors sm:px-4 sm:text-sm ${
+                  posyanduFilter === 'my'
+                    ? 'bg-green-600 text-white shadow'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Posyandu Saya
+              </button>
+              <button
+                onClick={() => setPosyanduFilter('all')}
+                className={`rounded-sm px-2 py-1.5 text-xs font-semibold transition-colors sm:px-4 sm:text-sm ${
+                  posyanduFilter === 'all'
+                    ? 'bg-green-600 text-white shadow'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Semua Posyandu
+              </button>
+            </div>
+          )}
         </div>
-      </div>
 
       <CategorySummaryCards
         kategori={kategoriFilter}

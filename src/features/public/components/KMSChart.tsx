@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart } from 'recharts';
+import { Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart } from 'recharts';
 import kmsData from './kmsData.json';
 import { Warga } from '../../warga/services/wargaService';
-import { calculateAgeInMonths } from '@/utils/age';
+
 
 interface KMSChartProps {
   warga: Warga;
@@ -98,13 +98,13 @@ export const KMSChart: React.FC<KMSChartProps> = ({ warga }) => {
           <Area type="monotone" dataKey="sd3neg" fill="#fee2e2" stroke="none" activeDot={false} isAnimationActive={false} />
           
           {/* Kuning Bawah */}
-          <Area type="monotone" dataKey={['sd3neg', 'sd2neg']} fill="#fef9c3" stroke="none" activeDot={false} isAnimationActive={false} />
+          <Area type="monotone" dataKey={['sd3neg', 'sd2neg'] as any} fill="#fef9c3" stroke="none" activeDot={false} isAnimationActive={false} />
           
           {/* Hijau (Normal) */}
-          <Area type="monotone" dataKey={['sd2neg', 'sd2pos']} fill="#dcfce7" stroke="none" activeDot={false} isAnimationActive={false} />
+          <Area type="monotone" dataKey={['sd2neg', 'sd2pos'] as any} fill="#dcfce7" stroke="none" activeDot={false} isAnimationActive={false} />
           
           {/* Kuning Atas */}
-          <Area type="monotone" dataKey={['sd2pos', 'sd3pos']} fill="#fef9c3" stroke="none" activeDot={false} isAnimationActive={false} />
+          <Area type="monotone" dataKey={['sd2pos', 'sd3pos'] as any} fill="#fef9c3" stroke="none" activeDot={false} isAnimationActive={false} />
 
           {/* Lines defining the edges for clarity (optional) */}
           <Line type="monotone" dataKey="sd3neg" stroke="#ef4444" strokeWidth={1} dot={false} isAnimationActive={false} />

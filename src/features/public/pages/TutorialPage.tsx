@@ -1,7 +1,7 @@
 import { ArrowLeft, BookOpen, LogIn, LayoutDashboard, UserPlus, ClipboardList, Printer, CheckSquare } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 export function TutorialPage() {
   return (
@@ -9,11 +9,9 @@ export function TutorialPage() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild className="shrink-0 -ml-2 text-slate-600 hover:text-slate-900">
-            <Link to="/login">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-          </Button>
+          <Link to="/login" className={buttonVariants({ variant: "ghost", size: "icon", className: "shrink-0 -ml-2 text-slate-600 hover:text-slate-900" })}>
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
           <div className="flex flex-col gap-0.5">
             <h1 className="text-xl font-bold text-slate-800 leading-tight">
               Panduan Penggunaan Sistem

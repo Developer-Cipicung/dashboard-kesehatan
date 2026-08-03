@@ -33,7 +33,7 @@ export const BumilChart: React.FC<BumilChartProps> = ({ warga }) => {
     const baseWeight = Math.max(30, bb0 - medianGainAtW0); // Ensure baseWeight is somewhat realistic
 
     // Generate curve from Week 0 to Week 40
-    const data = [];
+    const data: Array<{ week: number; minWeight: number; maxWeight: number; actualWeight?: number | null }> = [];
     for (let w = 0; w <= 40; w++) {
       let minGain = 0;
       let maxGain = 0;
@@ -135,7 +135,7 @@ export const BumilChart: React.FC<BumilChartProps> = ({ warga }) => {
           <Tooltip content={<CustomTooltip />} />
           
           {/* Background Band (Zona Hijau Normal) */}
-          <Area type="monotone" dataKey={['minWeight', 'maxWeight']} fill="#dcfce7" stroke="none" activeDot={false} isAnimationActive={false} />
+          <Area type="monotone" dataKey={['minWeight', 'maxWeight'] as any} fill="#dcfce7" stroke="none" activeDot={false} isAnimationActive={false} />
 
           {/* Defining the edges of the green band */}
           <Line type="monotone" dataKey="minWeight" stroke="#4ade80" strokeWidth={1} strokeDasharray="3 3" dot={false} isAnimationActive={false} />

@@ -1,6 +1,6 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { LayoutDashboard, Users, MapPin, LogOut, ClipboardList, BarChart2, Heart, Baby, ChevronDown, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Users, MapPin, LogOut, ClipboardList, BarChart2, Heart, Baby, ChevronDown, ChevronRight, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { Header } from './Header'
@@ -57,6 +57,7 @@ export default function AdminLayout() {
       ],
     },
     { name: 'ADMINISTRASI', isHeader: true },
+    { name: 'Laporan Lengkap', icon: FileText, path: '/admin/laporan-detail' },
     { name: 'Rekapitulasi Bulanan', icon: BarChart2, path: '/admin/laporan' },
     { name: 'Status Pendataan', icon: ClipboardList, path: '/admin/status-pendataan' },
     { name: 'Data Posyandu', icon: MapPin, path: '/admin/posyandu' },

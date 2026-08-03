@@ -105,12 +105,12 @@ export const wargaService = {
     const response = await api.get<WargaResponse>(`/warga/${id}`, { params: { posyanduId } })
     return response.data.data
   },
-  addWarga: async (payload: AddWargaPayload) => {
-    const response = await api.post<WargaResponse>('/warga', payload)
+  addWarga: async (payload: AddWargaPayload, posyanduId?: string) => {
+    const response = await api.post<WargaResponse>('/warga', payload, { params: { posyanduId } })
     return response.data.data
   },
-  addWargaBulk: async (payloadList: Partial<AddWargaPayload>[]) => {
-    const response = await api.post<{success: boolean; message: string; data: { count: number; message: string }}>('/warga/bulk', payloadList)
+  addWargaBulk: async (payloadList: Partial<AddWargaPayload>[], posyanduId?: string) => {
+    const response = await api.post<{success: boolean; message: string; data: { count: number; message: string }}>('/warga/bulk', payloadList, { params: { posyanduId } })
     return response.data
   },
   updateWarga: async (id: string, payload: Partial<AddWargaPayload>, posyanduId?: string) => {
@@ -121,8 +121,8 @@ export const wargaService = {
     const response = await api.delete<{ success: boolean; message: string }>(`/warga/${id}`, { params: { posyanduId } })
     return response.data
   },
-  tandaiBersalin: async (id: string, payload: { tanggal_persalinan: string; tempat_persalinan?: string; nama_bayi?: string; jenis_kelamin_bayi: 'L' | 'P'; nama_ayah?: string }) => {
-    const response = await api.post<{ success: boolean; message: string; data: any }>(`/warga/${id}/bersalin`, payload)
+  tandaiBersalin: async (id: string, payload: { tanggal_persalinan: string; tempat_persalinan?: string; nama_bayi?: string; jenis_kelamin_bayi: 'L' | 'P'; nama_ayah?: string }, posyanduId?: string) => {
+    const response = await api.post<{ success: boolean; message: string; data: any }>(`/warga/${id}/bersalin`, payload, { params: { posyanduId } })
     return response.data
   }
 }

@@ -966,6 +966,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
           if (!open) setConfirmId(null)
         }} 
         wargaId={confirmId} 
+        wargaPosyanduId={confirmId ? data.find(x => x.id === confirmId)?.posyandu_id : undefined}
         wargaName={confirmId ? data.find(x => x.id === confirmId)?.nama : undefined}
       />
 

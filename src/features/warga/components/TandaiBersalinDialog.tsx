@@ -14,10 +14,11 @@ interface TandaiBersalinDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   wargaId: string | null
+  wargaPosyanduId?: string
   wargaName?: string
 }
 
-export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaName }: TandaiBersalinDialogProps) {
+export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaPosyanduId, wargaName }: TandaiBersalinDialogProps) {
   const { mutateAsync: tandaiBersalin, isPending } = useTandaiBersalin()
   
   const [tanggalPersalinan, setTanggalPersalinan] = useState(new Date().toISOString().split('T')[0])
@@ -48,7 +49,8 @@ export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaName }:
           nama_bayi: hasNamaBayi ? (namaBayi || '-') : `Anak ${wargaName || 'Ibu'}`,
           jenis_kelamin_bayi: jenisKelaminBayi,
           nama_ayah: namaAyah || '-'
-        }
+        },
+        posyanduId: wargaPosyanduId
       })
       onOpenChange(false)
       handleReset()

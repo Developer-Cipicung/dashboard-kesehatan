@@ -318,6 +318,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
         open={showConfirm} 
         onOpenChange={(open) => setShowConfirm(open)} 
         wargaId={data.id} 
+        wargaPosyanduId={data.posyandu_id}
         wargaName={data.nama}
       />
 

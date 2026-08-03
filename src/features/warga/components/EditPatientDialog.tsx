@@ -138,7 +138,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
         }
       })
 
-      await updateWarga({ id: warga.id, payload })
+      await updateWarga({ id: warga.id, payload, posyanduId: warga.posyandu_id })
       toast.success('Data pasien berhasil diperbarui')
       onOpenChange(false)
       if (onSuccess) onSuccess()

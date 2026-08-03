@@ -283,7 +283,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
         submitPayload.posyandu_id = values.posyandu_id
       }
 
-      const created = await addWarga(submitPayload as AddWargaPayload)
+      const created = await addWarga({ payload: submitPayload as AddWargaPayload, posyanduId: values.posyandu_id })
       if (values.kategori === 'pasca_persalinan' && values.tanggal_persalinan && created?.id) {
         try {
           const initialPascaRecord: InitialPascaRecord = {

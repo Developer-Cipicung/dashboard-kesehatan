@@ -24,7 +24,7 @@ export function useAddWarga() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (payload: AddWargaPayload) => wargaService.addWarga(payload),
+    mutationFn: ({ payload, posyanduId }: { payload: AddWargaPayload, posyanduId?: string }) => wargaService.addWarga(payload, posyanduId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
@@ -60,7 +60,7 @@ export function useUpdateWarga() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string, payload: Partial<AddWargaPayload> }) => wargaService.updateWarga(id, payload),
+    mutationFn: ({ id, payload, posyanduId }: { id: string, payload: Partial<AddWargaPayload>, posyanduId?: string }) => wargaService.updateWarga(id, payload, posyanduId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
       queryClient.invalidateQueries({ queryKey: ['history'] })
@@ -79,7 +79,7 @@ export function useTandaiBersalin() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string, payload: { tanggal_persalinan: string; tempat_persalinan?: string; nama_bayi?: string; jenis_kelamin_bayi: 'L' | 'P'; nama_ayah?: string } }) => wargaService.tandaiBersalin(id, payload),
+    mutationFn: ({ id, payload, posyanduId }: { id: string, payload: { tanggal_persalinan: string; tempat_persalinan?: string; nama_bayi?: string; jenis_kelamin_bayi: 'L' | 'P'; nama_ayah?: string }, posyanduId?: string }) => wargaService.tandaiBersalin(id, payload, posyanduId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['warga'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })

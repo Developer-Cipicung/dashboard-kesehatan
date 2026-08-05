@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
@@ -20,23 +20,23 @@ import { WargaCombobox } from './WargaCombobox'
 import { toast } from 'sonner'
 
 const getFormSchema = () => z.object({
-  nik: z.string().max(16, 'NIK maksimal 16 digit').optional(),
-  nomor: z.string().optional(),
-  nama: z.string().min(1, 'Nama wajib diisi'),
-  tanggal_lahir: z.string().optional(),
-  tempat_lahir: z.string().optional(),
+  nik: z.string().trim().max(16, 'NIK maksimal 16 digit').optional(),
+  nomor: z.string().trim().optional(),
+  nama: z.string().trim().min(1, 'Nama wajib diisi'),
+  tanggal_lahir: z.string().trim().optional(),
+  tempat_lahir: z.string().trim().optional(),
   jenis_kelamin: z.enum(['L', 'P']).optional(),
   status_kehamilan: z.enum(['TIDAK_HAMIL', 'HAMIL', 'PASCA_PERSALINAN']).optional(),
-  nama_ayah: z.string().optional(),
-  nama_ibu: z.string().optional(),
-  alamat: z.string().optional(),
-  rt: z.string().max(3, 'Maksimal 3 karakter').optional(),
-  rw: z.string().max(3, 'Maksimal 3 karakter').optional(),
-  tempat_persalinan: z.string().optional(),
-  penggunaan_kontrasepsi: z.string().optional(),
-  hpht: z.string().optional(),
-  htp: z.string().optional(),
-  ibu_id: z.string().optional(),
+  nama_ayah: z.string().trim().optional(),
+  nama_ibu: z.string().trim().optional(),
+  alamat: z.string().trim().optional(),
+  rt: z.string().trim().max(3, 'Maksimal 3 karakter').optional(),
+  rw: z.string().trim().max(3, 'Maksimal 3 karakter').optional(),
+  tempat_persalinan: z.string().trim().optional(),
+  penggunaan_kontrasepsi: z.string().trim().optional(),
+  hpht: z.string().trim().optional(),
+  htp: z.string().trim().optional(),
+  ibu_id: z.string().trim().optional(),
 })
 
 interface EditPatientDialogProps {
@@ -50,7 +50,7 @@ interface EditPatientDialogProps {
 export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSuccess }: EditPatientDialogProps) {
   const { mutateAsync: updateWarga, isPending } = useUpdateWarga()
   const { data: ibuListRes } = useGetWargaList({ jenis_kelamin: 'P', limit: 1000 }, { enabled: open })
-  const ibuList = (ibuListRes?.data || []).filter(w => w.status_kehamilan === 'HAMIL' || w.status_kehamilan === 'PASCA_PERSALINAN')
+  const ibuList = ibuListRes?.data || []
 
   const currentKategori = kategori || warga.kategori
   const isAnak = currentKategori === 'balita' || currentKategori === 'baduta'
@@ -104,7 +104,14 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
   }, [warga, open, methods])
 
   const watchStatusKehamilan = methods.watch('status_kehamilan')
-  const watchHpht = methods.watch('hpht')
+  const watchHpht = useWatch({
+    control: methods.control,
+    name: 'hpht',
+  })
+  const watchIbuId = useWatch({
+    control: methods.control,
+    name: 'ibu_id',
+  })
 
   useEffect(() => {
     if (watchHpht) {
@@ -311,7 +318,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                           name="ibu_id"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Nama Ibu</FormLabel>
+                              <FormLabel>Pilih Ibu dari Database</FormLabel>
                               <WargaCombobox
                                 wargaList={ibuList}
                                 value={field.value || 'none'}
@@ -322,6 +329,15 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                             </FormItem>
                           )}
                         />
+                        {watchIbuId === 'none' && (
+                          <FormField
+                            control={methods.control}
+                            name="nama_ibu"
+                            label={<>Nama Ibu (Manual)</>}
+                            placeholder="Contoh: Siti"
+                            type="text"
+                          />
+                        )}
                       </>
                     )}
                   </div>

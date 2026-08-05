@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Warga } from '../services/wargaService'
 import { TandaiBersalinDialog } from './TandaiBersalinDialog'
 import { formatDateID } from '@/utils/dateFormatter'
+import { calculateAgeInMonths } from '@/utils/age'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
 import { calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus } from './PatientTable'
 
@@ -85,11 +86,22 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
     ? formatDateID(lastDate)
     : null
 
+  const ageMonths = data.tanggal_lahir ? calculateAgeInMonths(data.tanggal_lahir) : null;
+  const ageDisplay = ageMonths !== null 
+    ? (ageMonths < 60 ? `${ageMonths} bln` : `${Math.floor(ageMonths / 12)} thn`)
+    : null;
+    
+  const latestRecord = latestBalita || latestBumil || latestLansia || latestPasca;
+  const catatan = latestRecord?.catatan;
+
   return (
     <div className="bg-white rounded-xl border border-slate-100 shadow-sm mb-3 overflow-hidden transition-all hover:shadow-md">
       <div className="flex flex-col p-4 gap-3">
         <div>
           <div className="font-bold text-slate-800 text-lg">{data.nama}</div>
+          {ageDisplay && (
+            <div className="text-sm font-medium text-slate-600 mb-0.5">{ageDisplay}</div>
+          )}
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-xs text-slate-500 font-mono">NIK: {data.nik}</span>
             {data.posyandu && (
@@ -99,9 +111,19 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
               </>
             )}
           </div>
-          {displayLastDate && (
-            <div className="text-xs font-medium text-emerald-600 bg-emerald-50 inline-block px-2 py-1 rounded-md mt-2 border border-emerald-100">
-              Terakhir diperiksa: {displayLastDate}
+          
+          {(displayLastDate || catatan) && (
+            <div className="flex flex-col items-start mt-2 gap-2">
+              {displayLastDate && (
+                <div className="text-xs font-medium text-emerald-600 bg-emerald-50 inline-block px-2 py-1 rounded-md border border-emerald-100">
+                  Terakhir diperiksa: {displayLastDate}
+                </div>
+              )}
+              {catatan && (
+                <div className="text-[11px] text-slate-600 bg-amber-50 border border-amber-100 rounded-md p-2 w-full leading-relaxed">
+                  <span className="font-semibold text-amber-800">Catatan: </span>{catatan}
+                </div>
+              )}
             </div>
           )}
           

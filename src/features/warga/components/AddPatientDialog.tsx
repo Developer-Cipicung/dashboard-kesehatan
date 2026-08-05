@@ -13,7 +13,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { FormField } from '@/components/forms/FormField'
 import { FormProvider } from 'react-hook-form'
-import { useAddWarga } from '../hooks/useWarga'
+import { useAddWarga, useGetWargaList } from '../hooks/useWarga'
+import { WargaCombobox } from './WargaCombobox'
 import { AddWargaPayload } from '../services/wargaService'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { FormControl, FormItem, FormLabel, FormMessage, FormField as RHFFormField } from '@/components/ui/form'
@@ -26,26 +27,26 @@ import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
 
 const formSchema = z.object({
-  posyandu_id: z.string().optional(),
-  nik: z.string().optional(),
-  nomor: z.string().optional(),
-  nama: z.string().min(1, 'Nama wajib diisi'),
-  tanggal_lahir: z.string().optional(),
-  tempat_lahir: z.string().optional(),
+  posyandu_id: z.string().trim().optional(),
+  nik: z.string().trim().optional(),
+  nomor: z.string().trim().optional(),
+  nama: z.string().trim().min(1, 'Nama wajib diisi'),
+  tanggal_lahir: z.string().trim().optional(),
+  tempat_lahir: z.string().trim().optional(),
   jenis_kelamin: z.enum(['L', 'P']).optional(),
-  kategori: z.string().min(1, 'Kategori wajib diisi'),
-  nama_ayah: z.string().optional(),
-  nama_ibu: z.string().optional(),
-  tanggal_persalinan: z.string().optional(),
-  alamat: z.string().optional(),
-  rt: z.string().max(3, 'Maksimal 3 karakter').optional(),
-  rw: z.string().max(3, 'Maksimal 3 karakter').optional(),
-  tempat_persalinan: z.string().optional(),
-  penggunaan_kontrasepsi: z.string().optional(),
-  jumlah_anak: z.string().optional(),
-  hpht: z.string().optional(),
-  htp: z.string().optional(),
-  ibu_id: z.string().optional(),
+  kategori: z.string().trim().min(1, 'Kategori wajib diisi'),
+  nama_ayah: z.string().trim().optional(),
+  nama_ibu: z.string().trim().optional(),
+  tanggal_persalinan: z.string().trim().optional(),
+  alamat: z.string().trim().optional(),
+  rt: z.string().trim().max(3, 'Maksimal 3 karakter').optional(),
+  rw: z.string().trim().max(3, 'Maksimal 3 karakter').optional(),
+  tempat_persalinan: z.string().trim().optional(),
+  penggunaan_kontrasepsi: z.string().trim().optional(),
+  jumlah_anak: z.string().trim().optional(),
+  hpht: z.string().trim().optional(),
+  htp: z.string().trim().optional(),
+  ibu_id: z.string().trim().optional(),
 })
 
 type PatientCategory = 'balita' | 'baduta' | 'bumil' | 'pasca_persalinan' | 'lansia'
@@ -191,6 +192,8 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
 
   const { mutateAsync: addWarga, isPending } = useAddWarga()
   const queryClient = useQueryClient()
+  const { data: ibuListRes } = useGetWargaList({ jenis_kelamin: 'P', limit: 1000 }, { enabled: open })
+  const ibuList = ibuListRes?.data || []
   const normalizedDefaultCategory = normalizeCategory(defaultCategory)
 
   const methods = useForm<z.infer<typeof formSchema>>({
@@ -209,6 +212,10 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
   const watchHpht = useWatch({
     control: methods.control,
     name: 'hpht',
+  })
+  const watchIbuId = useWatch({
+    control: methods.control,
+    name: 'ibu_id',
   })
   const isIbuIbu = watchKategori === 'bumil' || watchKategori === 'pasca_persalinan' || watchKategori === 'wus_pus'
   const currentCategory = normalizeCategory(watchKategori)
@@ -532,13 +539,31 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                           placeholder="Contoh: Budi"
                           type="text"
                         />
-                        <FormField
+                        <RHFFormField
                           control={methods.control}
-                          name="nama_ibu"
-                          label={<>Nama Ibu</>}
-                          placeholder="Contoh: Siti"
-                          type="text"
+                          name="ibu_id"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Pilih Ibu dari Database</FormLabel>
+                              <WargaCombobox
+                                wargaList={ibuList}
+                                value={field.value || 'none'}
+                                onChange={field.onChange}
+                                placeholder="Pilih Ibu..."
+                              />
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
+                        {watchIbuId === 'none' && (
+                          <FormField
+                            control={methods.control}
+                            name="nama_ibu"
+                            label={<>Nama Ibu (Manual)</>}
+                            placeholder="Contoh: Siti"
+                            type="text"
+                          />
+                        )}
                       </>
                     )}
                     {currentConfig?.showContraception && (

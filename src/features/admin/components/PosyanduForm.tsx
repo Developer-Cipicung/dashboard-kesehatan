@@ -11,8 +11,8 @@ import { toast } from 'sonner'
 import { Posyandu } from '../pages/PosyanduManagementPage'
 
 const posyanduSchema = z.object({
-  nama: z.string().min(1, 'Nama wajib diisi'),
-  rw: z.string().min(1, 'RW wajib diisi'),
+  nama: z.string().trim().min(1, 'Nama wajib diisi'),
+  rw: z.string().trim().min(1, 'RW wajib diisi'),
 })
 
 interface PosyanduFormProps {

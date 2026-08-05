@@ -85,7 +85,7 @@ function TdInput({ name }: { name: string }) {
       <input type="hidden" {...register(name)} />
       <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
         <input
-          type="number"
+          type="number" min={0}
           value={s}
           onChange={e => handleChange(e.target.value, d)}
           placeholder="Contoh: 120"
@@ -93,7 +93,7 @@ function TdInput({ name }: { name: string }) {
         />
         <span className="text-slate-400 font-bold">/</span>
         <input
-          type="number"
+          type="number" min={0}
           value={d}
           onChange={e => handleChange(s, e.target.value)}
           placeholder="Contoh: 80"
@@ -412,10 +412,10 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
             {/* Balita / Baduta */}
             {isBalita && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label={<>Berat Badan Anak (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" placeholder="Contoh: 8.5" /></Field>
-                <Field label={<>Tinggi/Panjang Badan Anak (cm) <span className="text-red-500">*</span></>}><Input register={register} name="tb" type="number" placeholder="Contoh: 72" /></Field>
-                <Field label="Lingkar Kepala (cm)"><Input register={register} name="lingkar_kepala" type="number" placeholder="Contoh: 45" /></Field>
-                <Field label="Lingkar Lengan Atas / LILA (cm)"><Input register={register} name="lingkar_lengan_atas" type="number" placeholder="Contoh: 15" /></Field>
+                <Field label={<>Berat Badan Anak (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" min={0} placeholder="Contoh: 8.5" /></Field>
+                <Field label={<>Tinggi/Panjang Badan Anak (cm) <span className="text-red-500">*</span></>}><Input register={register} name="tb" type="number" min={0} placeholder="Contoh: 72" /></Field>
+                <Field label="Lingkar Kepala (cm)"><Input register={register} name="lingkar_kepala" type="number" min={0} placeholder="Contoh: 45" /></Field>
+                <Field label="Lingkar Lengan Atas / LILA (cm)"><Input register={register} name="lingkar_lengan_atas" type="number" min={0} placeholder="Contoh: 15" /></Field>
                 <Field label="Kondisi Bayi"><Input register={register} name="kondisi" placeholder="Contoh: Sehat" /></Field>
                 <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2 sm:mt-6">
                   <input type="checkbox" id="asi_eksklusif" {...register('asi_eksklusif')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
@@ -571,8 +571,8 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
             {/* Lansia */}
             {isLansia && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field label={<>Berat Badan Lansia (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" placeholder="Contoh: 58" /></Field>
-                <Field label="Tinggi Badan Lansia (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 160" /></Field>
+                <Field label={<>Berat Badan Lansia (kg) <span className="text-red-500">*</span></>}><Input register={register} name="bb" type="number" min={0} placeholder="Contoh: 58" /></Field>
+                <Field label="Tinggi Badan Lansia (cm)"><Input register={register} name="tb" type="number" min={0} placeholder="Contoh: 160" /></Field>
 
                 <Field label="Tekanan Darah (mmHg)">
                   <div>
@@ -591,7 +591,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                 </Field>
                 <Field label="Gula Darah Sewaktu (mg/dL)">
                   <div>
-                    <Input register={register} name="gula_darah_sewaktu" type="number" placeholder="Contoh: 120" />
+                    <Input register={register} name="gula_darah_sewaktu" type="number" min={0} placeholder="Contoh: 120" />
                     {(() => {
                       const gds = watch('gula_darah_sewaktu')
                       if (gds) {
@@ -606,7 +606,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                 </Field>
                 <Field label="Kolesterol (mg/dL)">
                   <div>
-                    <Input register={register} name="kolesterol" type="number" placeholder="Contoh: 150" />
+                    <Input register={register} name="kolesterol" type="number" min={0} placeholder="Contoh: 150" />
                     {(() => {
                       const kol = watch('kolesterol')
                       if (kol) {
@@ -621,7 +621,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                 </Field>
                 <Field label="Asam Urat (mg/dL)">
                   <div>
-                    <Input register={register} name="asam_urat" type="number" placeholder="Contoh: 5.5" step="0.1" />
+                    <Input register={register} name="asam_urat" type="number" min={0} placeholder="Contoh: 5.5" step="0.1" />
                     {(() => {
                       const au = watch('asam_urat')
                       if (au) {
@@ -641,14 +641,14 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
             {isPasca && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label="Tanggal Persalinan"><Input register={register} name="tanggal_persalinan" type="date" /></Field>
-                <Field label="Tinggi Badan Ibu (cm)"><Input register={register} name="tb" type="number" placeholder="Contoh: 155" /></Field>
-                <Field label="Berat Badan Ibu (kg)" required><Input register={register} name="bb" type="number" placeholder="Contoh: 62" required /></Field>
+                <Field label="Tinggi Badan Ibu (cm)"><Input register={register} name="tb" type="number" min={0} placeholder="Contoh: 155" /></Field>
+                <Field label="Berat Badan Ibu (kg)" required><Input register={register} name="bb" type="number" min={0} placeholder="Contoh: 62" required /></Field>
 
                 <div className="sm:col-span-2">
                   <Field label="Kondisi Ibu"><Input register={register} name="kondisi_ibu" placeholder="Contoh: Baik, tidak ada keluhan" /></Field>
                 </div>
-                <Field label="Tinggi Bayi (cm)"><Input register={register} name="tinggi_badan_bayi" type="number" placeholder="Contoh: 50" /></Field>
-                <Field label="Berat Bayi (kg)"><Input register={register} name="berat_badan_bayi" type="number" placeholder="Contoh: 3.2" /></Field>
+                <Field label="Tinggi Bayi (cm)"><Input register={register} name="tinggi_badan_bayi" type="number" min={0} placeholder="Contoh: 50" /></Field>
+                <Field label="Berat Bayi (kg)"><Input register={register} name="berat_badan_bayi" type="number" min={0} placeholder="Contoh: 3.2" /></Field>
                 
                 <div className="grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 sm:gap-3 sm:mt-2">
                   <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">

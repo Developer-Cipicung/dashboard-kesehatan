@@ -12,11 +12,11 @@ import { User } from '../pages/UserManagementPage'
 import { Posyandu } from '../pages/PosyanduManagementPage'
 
 const userSchema = z.object({
-  nama: z.string().min(1, 'Nama wajib diisi'),
-  username: z.string().min(1, 'Username wajib diisi'),
+  nama: z.string().trim().min(1, 'Nama wajib diisi'),
+  username: z.string().trim().min(1, 'Username wajib diisi'),
   password: z.string().optional(),
   role: z.enum(['kader', 'bidan', 'admin']),
-  posyandu_id: z.string().optional(),
+  posyandu_id: z.string().trim().optional(),
   is_active: z.boolean(),
 }).superRefine((data, ctx) => {
   if (data.role !== 'admin' && (!data.posyandu_id || data.posyandu_id.trim() === '')) {

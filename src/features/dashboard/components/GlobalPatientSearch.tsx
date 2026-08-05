@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Search, Plus, User, Baby, HeartPulse, PersonStanding, Activity, Loader2, Upload } from 'lucide-react'
+import { Search, Plus, User, Baby, HeartPulse, PersonStanding, Activity, Loader2, Upload, CheckCircle2, XCircle } from 'lucide-react'
 import { wargaService, Warga } from '@/features/warga/services/wargaService'
 import { calculateAgeInMonths } from '@/utils/age'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
@@ -69,6 +69,25 @@ export function GlobalPatientSearch() {
     return { id: 'lainnya', label: 'Warga Umum', icon: <User className="w-4 h-4 text-slate-500" /> }
   }
 
+  const hasBeenExaminedThisMonth = (warga: Warga) => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const checkDate = (dateStr?: string) => {
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    };
+
+    if (checkDate(warga.pemeriksaan_balita_baduta?.[0]?.tanggal_kunjungan)) return true;
+    if (checkDate(warga.pemeriksaan_bumil?.[0]?.tanggal_kunjungan)) return true;
+    if (checkDate(warga.pemeriksaan_pasca_persalinan?.[0]?.tanggal_kunjungan)) return true;
+    if (checkDate(warga.pemeriksaan_lansia?.[0]?.tanggal_kunjungan)) return true;
+
+    return false;
+  }
+
   const handleSelectWarga = (warga: Warga) => {
     setIsOpen(false)
     const cat = determineCategory(warga)
@@ -108,9 +127,22 @@ export function GlobalPatientSearch() {
                       <div className="font-semibold text-slate-800 text-base">{warga.nama}</div>
                       <div className="text-xs text-slate-500 mt-0.5">NIK: {warga.nik}</div>
                     </div>
-                    <div className="flex items-center gap-2 bg-white shadow-sm border border-slate-100 px-3 py-1.5 rounded-full group-hover:border-primary/20 group-hover:bg-primary/5 transition-colors">
-                      {cat.icon}
-                      <span className="text-xs font-medium text-slate-700">{cat.label}</span>
+                    <div className="flex items-center gap-2">
+                      {hasBeenExaminedThisMonth(warga) ? (
+                        <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-full">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider">Selesai</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-100 px-2.5 py-1 rounded-full">
+                          <XCircle className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider">Belum</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 bg-white shadow-sm border border-slate-100 px-3 py-1.5 rounded-full group-hover:border-primary/20 group-hover:bg-primary/5 transition-colors">
+                        {cat.icon}
+                        <span className="text-xs font-medium text-slate-700">{cat.label}</span>
+                      </div>
                     </div>
                   </button>
                 )

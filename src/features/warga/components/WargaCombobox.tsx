@@ -21,7 +21,7 @@ export function WargaCombobox({ wargaList, value, onChange, placeholder = 'Pilih
     return wargaList.filter(
       (w) =>
         w.nama.toLowerCase().includes(search.toLowerCase()) ||
-        w.nik.includes(search)
+        (w.nik && w.nik.includes(search))
     )
   }, [wargaList, search])
 

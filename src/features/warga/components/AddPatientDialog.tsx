@@ -47,6 +47,7 @@ const formSchema = z.object({
   hpht: z.string().trim().optional(),
   htp: z.string().trim().optional(),
   ibu_id: z.string().trim().optional(),
+  memiliki_bpjs: z.boolean().optional(),
 })
 
 type PatientCategory = 'balita' | 'baduta' | 'bumil' | 'pasca_persalinan' | 'lansia'
@@ -144,6 +145,7 @@ const getDefaultValues = (category: PatientCategory | ''): z.infer<typeof formSc
     htp: '',
     ibu_id: 'none',
     posyandu_id: '',
+    memiliki_bpjs: false,
   }
 }
 
@@ -584,6 +586,25 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                         type="number"
                       />
                     )}
+                    <RHFFormField
+                      control={methods.control}
+                      name="memiliki_bpjs"
+                      render={({ field }) => (
+                        <FormItem className="mt-1">
+                          <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                            <div className="space-y-0.5">
+                              <span className="text-sm font-semibold text-slate-700">Terdaftar BPJS?</span>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={!!field.value}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                              className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                            />
+                          </label>
+                        </FormItem>
+                      )}
+                    />
                     <div className="sm:col-span-2">
                       <div className="grid grid-cols-1 gap-3 sm:gap-4">
                         <FormField

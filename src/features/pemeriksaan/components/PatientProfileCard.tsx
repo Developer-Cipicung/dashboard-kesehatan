@@ -7,7 +7,8 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { formatDateID } from '@/utils/dateFormatter'
 import { Edit2 } from 'lucide-react'
-import { calculateAgeInWeeks, isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
+import { calculateAge } from '../../warga/components/PatientTable'
+import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
 
 interface PatientProfileCardProps {
   warga: Warga
@@ -71,6 +72,16 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
           <div>
             <span className="text-muted-foreground block text-xs">No. HP</span>
             <span className="font-medium">{warga.nomor || 'Tidak ada'}</span>
+          </div>
+          <div>
+            <span className="text-muted-foreground block text-xs">BPJS</span>
+            <span className="font-medium">
+              {warga.memiliki_bpjs ? (
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">Terdaftar</span>
+              ) : (
+                <span className="text-muted-foreground">Tidak Terdaftar</span>
+              )}
+            </span>
           </div>
           <div className="md:col-span-2">
             <span className="text-muted-foreground block text-xs">Alamat</span>
@@ -154,7 +165,7 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
                     <div key={anak.id} className="text-sm border border-slate-100 bg-slate-50 rounded px-3 py-2 flex items-center justify-between">
                       <span className="font-medium">{anak.nama}</span>
                       <span className="text-xs text-slate-500">
-                        {anak.tanggal_lahir ? `${calculateAgeInWeeks(anak.tanggal_lahir)} mgg` : ''}
+                        {anak.tanggal_lahir ? calculateAge(anak.tanggal_lahir, new Date()) : ''}
                       </span>
                     </div>
                   ))

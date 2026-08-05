@@ -16,7 +16,7 @@ interface PatientTableProps {
   isReadOnly?: boolean
 }
 
-export function calculateAge(birthDate: string | Date, checkDate: string | Date, kategori?: string): string {
+export function calculateAge(birthDate: string | Date, checkDate: string | Date, _kategori?: string): string {
   if (!birthDate || !checkDate) return '-'
   const dob = new Date(birthDate)
   const check = new Date(checkDate)
@@ -28,19 +28,12 @@ export function calculateAge(birthDate: string | Date, checkDate: string | Date,
   
   months = Math.max(0, months)
   
-  if (kategori === 'balita' || kategori === 'baduta') {
+  if (months < 60) {
     return `${months} bln`
   }
-
-  if (months < 12) return `${months} bln`
   
   const years = Math.floor(months / 12)
-  const remainingMonths = months % 12
-  
-  if (years >= 5) {
-     return `${years} thn`
-  }
-  return remainingMonths > 0 ? `${years} thn ${remainingMonths} bln` : `${years} thn`
+  return `${years} thn`
 }
 
 export function calculateUsiaKandungan(hphtStr?: string, kunjunganStr?: string): string {

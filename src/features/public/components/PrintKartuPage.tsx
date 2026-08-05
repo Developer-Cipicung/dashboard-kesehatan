@@ -36,7 +36,7 @@ export const PrintKartuPage = () => {
         <Button variant="ghost" onClick={() => navigate(-1)} className="text-slate-500">
           <ArrowLeft className="w-4 h-4 mr-2" /> Kembali
         </Button>
-        <Button onClick={() => window.print()} className="bg-primary">
+        <Button onClick={() => window.print()} className="bg-accent text-white hover:bg-accent/90 font-semibold">
           <Printer className="w-4 h-4 mr-2" /> Cetak Ulang
         </Button>
       </div>

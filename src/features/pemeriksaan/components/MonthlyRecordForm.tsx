@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFormContext } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -274,8 +274,8 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
     try {
       let payload: any = {
         tanggal_kunjungan: values.tanggal_kunjungan,
-        catatan: values.catatan || undefined,
-        tanggal_kunjungan_berikut: values.tanggal_kunjungan_berikut || undefined,
+        catatan: values.catatan ?? undefined,
+        tanggal_kunjungan_berikut: values.tanggal_kunjungan_berikut ?? undefined,
       }
 
       if (isBalita) {
@@ -285,11 +285,11 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
           tb: parseNum(values.tb),
           lingkar_kepala: parseNum(values.lingkar_kepala),
           lingkar_lengan_atas: parseNum(values.lingkar_lengan_atas),
-          kondisi: values.kondisi || undefined,
+          kondisi: values.kondisi ?? undefined,
           asi_eksklusif: values.asi_eksklusif ?? undefined,
           fasilitasi_bantuan_sosial: values.fasilitasi_bantuan_sosial ?? undefined,
-          nama_ibu: values.nama_ibu || undefined,
-          nama_ayah: values.nama_ayah || undefined,
+          nama_ibu: values.nama_ibu ?? undefined,
+          nama_ayah: values.nama_ayah ?? undefined,
         }
       } else if (isBumil) {
         const td = parseTd(values.td)
@@ -304,7 +304,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
           tinggi_fundus: parseNum(values.tinggi_fundus),
           usia_kehamilan_minggu: parseNum(values.usia_kehamilan_minggu, true),
           jumlah_anak: parseNum(values.jumlah_anak, true),
-          riwayat_penyakit: values.riwayat_penyakit || undefined,
+          riwayat_penyakit: values.riwayat_penyakit ?? undefined,
           kadar_hemoglobin: (() => { const v = parseNum(values.kadar_hemoglobin); return (v && v > 0) ? v : undefined; })(),
           berat_janin: parseNum(values.berat_janin),
           terpapar_rokok: values.terpapar_rokok ?? undefined,
@@ -335,7 +335,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
           tekanan_darah_sistolik: td?.s,
           tekanan_darah_diastolik: td?.d,
           suhu_tubuh: parseNum(values.suhu_tubuh),
-          kondisi_ibu: values.kondisi_ibu || undefined,
+          kondisi_ibu: values.kondisi_ibu ?? undefined,
           tinggi_badan_bayi: parseNum(values.tinggi_badan_bayi),
           berat_badan_bayi: parseNum(values.berat_badan_bayi),
           kie: values.kie ?? undefined,
@@ -417,13 +417,19 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                 <Field label="Lingkar Kepala (cm)"><Input register={register} name="lingkar_kepala" type="number" min={0} placeholder="Contoh: 45" /></Field>
                 <Field label="Lingkar Lengan Atas / LILA (cm)"><Input register={register} name="lingkar_lengan_atas" type="number" min={0} placeholder="Contoh: 15" /></Field>
                 <Field label="Kondisi Bayi"><Input register={register} name="kondisi" placeholder="Contoh: Sehat" /></Field>
-                <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2 sm:mt-6">
-                  <input type="checkbox" id="asi_eksklusif" {...register('asi_eksklusif')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                  <label htmlFor="asi_eksklusif" className="text-sm font-medium text-slate-700">ASI Eksklusif</label>
-                </div>
-                <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2 sm:mt-6">
-                  <input type="checkbox" id="fasilitasi_bantuan_sosial" {...register('fasilitasi_bantuan_sosial')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                  <label htmlFor="fasilitasi_bantuan_sosial" className="text-sm font-medium text-slate-700">Bantuan Sosial</label>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">ASI Eksklusif</span>
+                    </div>
+                    <input type="checkbox" id="asi_eksklusif" {...register('asi_eksklusif')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">Bantuan Sosial</span>
+                    </div>
+                    <input type="checkbox" id="fasilitasi_bantuan_sosial" {...register('fasilitasi_bantuan_sosial')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
                 </div>
                 {zscoreData && (
                   <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
@@ -457,23 +463,24 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                       Tambahkan riwayat imunisasi jika ada pada kunjungan ini.
                     </p>
                   </div>
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 bg-white px-3 py-2">
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-xs font-semibold text-slate-700 sm:text-sm">
+                        Tambahkan imunisasi pada kunjungan ini
+                      </span>
+                    </div>
                     <input
                       type="checkbox"
                       id="tambah_imunisasi"
-                      {...register('tambah_imunisasi', {
-                        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-                          if (event.target.checked) {
-                            setValue('imunisasi_tanggal_pemberian', tglWatch || new Date().toISOString().split('T')[0])
-                          }
-                        },
+                      checked={tambahImunisasiWatch}
+                      onChange={(e) => setValue('tambah_imunisasi', e.target.checked, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                        shouldTouch: true
                       })}
-                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
                     />
-                    <label htmlFor="tambah_imunisasi" className="text-xs font-medium text-slate-700 sm:text-sm">
-                      Tambahkan imunisasi pada kunjungan ini
-                    </label>
-                  </div>
+                  </label>
 
                   {tambahImunisasiWatch && (
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
@@ -542,28 +549,36 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                 </Field>
                 <Field label="Berat Janin (kg)"><Input register={register} name="berat_janin" type="number" placeholder="Contoh: 1.5" max={10} min={0} /></Field>
                 <div className="grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 sm:gap-3 sm:mt-2">
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">
-                    <input type="checkbox" id="terpapar_rokok" {...register('terpapar_rokok')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                    <label htmlFor="terpapar_rokok" className="text-sm font-medium text-slate-700">Terpapar Rokok</label>
-                  </div>
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">
-                    <input type="checkbox" id="kie" {...register('kie')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                    <label htmlFor="kie" className="text-sm font-medium text-slate-700">KIE</label>
-                  </div>
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">Terpapar Rokok</span>
+                    </div>
+                    <input type="checkbox" id="terpapar_rokok" {...register('terpapar_rokok')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">KIE</span>
+                    </div>
+                    <input type="checkbox" id="kie" {...register('kie')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:col-span-2 sm:grid-cols-2 sm:mt-2">
                   <Field label="TTD (Tablet)"><Input register={register} name="suplemen_tambah_darah" type="number" placeholder="Contoh: 30" min={0} /></Field>
                   <Field label="MMS (Tablet)"><Input register={register} name="mms" type="number" placeholder="Contoh: 30" min={0} /></Field>
                 </div>
                 <div className="grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 sm:gap-3 sm:mt-2">
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">
-                    <input type="checkbox" id="bumil_rujukan" {...register('fasilitasi_rujukan')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                    <label htmlFor="bumil_rujukan" className="text-sm font-medium text-slate-700">Rujukan</label>
-                  </div>
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">
-                    <input type="checkbox" id="bumil_bansos" {...register('fasilitasi_bantuan_sosial')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                    <label htmlFor="bumil_bansos" className="text-sm font-medium text-slate-700">Bansos</label>
-                  </div>
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">Rujukan</span>
+                    </div>
+                    <input type="checkbox" id="bumil_rujukan" {...register('fasilitasi_rujukan')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">Bansos</span>
+                    </div>
+                    <input type="checkbox" id="bumil_bansos" {...register('fasilitasi_bantuan_sosial')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
                 </div>
               </div>
             )}
@@ -650,19 +665,25 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                 <Field label="Tinggi Bayi (cm)"><Input register={register} name="tinggi_badan_bayi" type="number" min={0} placeholder="Contoh: 50" /></Field>
                 <Field label="Berat Bayi (kg)"><Input register={register} name="berat_badan_bayi" type="number" min={0} placeholder="Contoh: 3.2" /></Field>
                 
-                <div className="grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 sm:gap-3 sm:mt-2">
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">
-                    <input type="checkbox" id="kie_pasca" {...register('kie')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                    <label htmlFor="kie_pasca" className="text-sm font-medium text-slate-700">KIE</label>
-                  </div>
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">
-                    <input type="checkbox" id="fasilitasi_rujukan" {...register('fasilitasi_rujukan')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                    <label htmlFor="fasilitasi_rujukan" className="text-sm font-medium text-slate-700">Fasilitasi Rujukan</label>
-                  </div>
-                  <div className="flex min-h-9 items-center gap-2 rounded-md border border-input/60 px-3 py-2">
-                    <input type="checkbox" id="fasilitasi_bantuan_sosial_pasca" {...register('fasilitasi_bantuan_sosial')} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
-                    <label htmlFor="fasilitasi_bantuan_sosial_pasca" className="text-sm font-medium text-slate-700">Bantuan Sosial</label>
-                  </div>
+                <div className="grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-3 sm:gap-3 sm:mt-2">
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">KIE</span>
+                    </div>
+                    <input type="checkbox" id="kie_pasca" {...register('kie')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">Fasilitasi Rujukan</span>
+                    </div>
+                    <input type="checkbox" id="fasilitasi_rujukan" {...register('fasilitasi_rujukan')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
+                  <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-semibold text-slate-700">Bantuan Sosial</span>
+                    </div>
+                    <input type="checkbox" id="fasilitasi_bantuan_sosial_pasca" {...register('fasilitasi_bantuan_sosial')} className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                  </label>
                 </div>
               </div>
             )}

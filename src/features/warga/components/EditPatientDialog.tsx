@@ -101,6 +101,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
         hpht: warga.hpht ? new Date(warga.hpht).toISOString().split('T')[0] : '',
         htp: warga.htp ? new Date(warga.htp).toISOString().split('T')[0] : '',
         ibu_id: warga.ibu_id || 'none',
+        memiliki_bpjs: !!warga.memiliki_bpjs,
       })
     }
   }, [warga, open, methods])

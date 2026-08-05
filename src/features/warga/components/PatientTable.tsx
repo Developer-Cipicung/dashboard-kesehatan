@@ -21,23 +21,17 @@ export function calculateAge(birthDate: string | Date, checkDate: string | Date,
   const dob = new Date(birthDate)
   const check = new Date(checkDate)
   
-  if (kategori === 'balita' || kategori === 'baduta') {
-    const d = new Date(dob)
-    const c = new Date(check)
-    d.setHours(0,0,0,0)
-    c.setHours(0,0,0,0)
-    const diffTime = c.getTime() - d.getTime()
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-    const weeks = Math.floor(diffDays / 7)
-    return `${Math.max(0, weeks)} mgg`
-  }
-
   let months = (check.getFullYear() - dob.getFullYear()) * 12 + (check.getMonth() - dob.getMonth())
   if (check.getDate() < dob.getDate()) {
     months--
   }
   
-  if (months < 0) return '0 bln'
+  months = Math.max(0, months)
+  
+  if (kategori === 'balita' || kategori === 'baduta') {
+    return `${months} bln`
+  }
+
   if (months < 12) return `${months} bln`
   
   const years = Math.floor(months / 12)

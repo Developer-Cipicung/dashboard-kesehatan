@@ -113,7 +113,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
             {data.memiliki_bpjs && (
               <>
                 <span className="text-slate-300">•</span>
-                <span className="text-[10px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded shadow-sm tracking-wide">BPJS</span>
+                <span className="text-[10px] font-bold text-white bg-emerald-500 px-1.5 py-0.5 rounded shadow-sm tracking-wide">BPJS</span>
               </>
             )}
           </div>
@@ -322,8 +322,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
               <Eye className="w-4 h-4 mr-1.5" /> Lihat Profil
             </Button>
             <Button
-              variant="outline"
-              className="flex-1 h-10 text-sm border-blue-200 text-blue-600 flex items-center justify-center gap-1 hover:bg-blue-50"
+              className="flex-1 h-10 text-sm bg-accent text-white hover:bg-accent/90 flex items-center justify-center gap-1 shadow-sm font-semibold"
               onClick={() => window.open(`/warga/${data.id}/kartu`, '_blank')}
             >
               <Printer className="w-4 h-4" /> Cetak Kartu

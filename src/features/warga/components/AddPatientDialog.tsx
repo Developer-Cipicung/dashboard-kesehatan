@@ -590,16 +590,18 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                       control={methods.control}
                       name="memiliki_bpjs"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 mt-1">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-sm font-semibold text-slate-700">Terdaftar BPJS?</FormLabel>
-                          </div>
-                          <input
-                            type="checkbox"
-                            checked={!!field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                            className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                          />
+                        <FormItem className="mt-1">
+                          <label className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 cursor-pointer hover:bg-slate-100 transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1">
+                            <div className="space-y-0.5">
+                              <span className="text-sm font-semibold text-slate-700">Terdaftar BPJS?</span>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={!!field.value}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                              className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                            />
+                          </label>
                         </FormItem>
                       )}
                     />

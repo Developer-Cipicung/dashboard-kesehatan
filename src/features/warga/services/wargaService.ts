@@ -22,6 +22,7 @@ export interface Warga {
   status_pernikahan: 'Belum Kawin' | 'Kawin' | 'Cerai Hidup' | 'Cerai Mati'
   kategori: string
   status_kehamilan?: 'HAMIL' | 'PASCA_PERSALINAN' | 'TIDAK_HAMIL'
+  memiliki_bpjs?: boolean
   tempat_persalinan?: string
   penggunaan_kontrasepsi?: string
   nama_ayah?: string

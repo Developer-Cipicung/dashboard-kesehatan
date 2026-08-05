@@ -37,6 +37,7 @@ const getFormSchema = () => z.object({
   hpht: z.string().trim().optional(),
   htp: z.string().trim().optional(),
   ibu_id: z.string().trim().optional(),
+  memiliki_bpjs: z.boolean().optional(),
 })
 
 interface EditPatientDialogProps {
@@ -76,6 +77,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
       hpht: warga.hpht ? new Date(warga.hpht).toISOString().split('T')[0] : '',
       htp: warga.htp ? new Date(warga.htp).toISOString().split('T')[0] : '',
       ibu_id: warga.ibu_id || 'none',
+      memiliki_bpjs: !!warga.memiliki_bpjs,
     },
   })
 
@@ -343,6 +345,24 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                   </div>
                 </div>
               )}
+              
+              <RHFFormField
+                control={methods.control}
+                name="memiliki_bpjs"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-xl border border-slate-200 p-3 shadow-sm bg-slate-50/50 mt-1 mb-2">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-sm font-semibold text-slate-700">Terdaftar BPJS?</FormLabel>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                    />
+                  </FormItem>
+                )}
+              />
               
               <div className="grid grid-cols-1 gap-3 sm:gap-4">
                 <FormField

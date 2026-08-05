@@ -102,12 +102,18 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
           {ageDisplay && (
             <div className="text-sm font-medium text-slate-600 mb-0.5">{ageDisplay}</div>
           )}
-          <div className="flex items-center gap-2 mt-0.5">
+          <div className="flex flex-wrap items-center gap-2 mt-0.5">
             <span className="text-xs text-slate-500 font-mono">NIK: {data.nik}</span>
             {data.posyandu && (
               <>
                 <span className="text-slate-300">•</span>
                 <span className="text-xs text-slate-500 font-medium">{data.posyandu.nama}</span>
+              </>
+            )}
+            {data.memiliki_bpjs && (
+              <>
+                <span className="text-slate-300">•</span>
+                <span className="text-[10px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded shadow-sm tracking-wide">BPJS</span>
               </>
             )}
           </div>

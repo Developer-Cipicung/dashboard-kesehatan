@@ -193,6 +193,17 @@ AI wajib mengikuti aturan berikut.
 
 ---
 
+# Phase 10 — UI & UX Refinements (Post-Launch)
+
+- [x] Perbaikan form: nilai string kosong (empty string) agar tidak diabaikan saat disubmit (terutama untuk form catatan).
+- [x] Penyeragaman UI: ubah warna tombol "Cetak Kartu" menjadi aksen kuning dan teks putih.
+- [x] Peningkatan UX: perlebar area klik opsi BPJS menggunakan `label` di Add/Edit Patient dialog.
+- [x] Format Umur: penyesuaian satuan usia pasien di UI (Balita/Baduta < 60 bulan wajib `bulan`, selainnya `tahun`).
+- [x] Perbaikan Bug: memastikan status tercentang BPJS tidak hilang saat form Edit Warga dibuka (sinkronisasi nilai `memiliki_bpjs` ke `reset()`).
+- [x] Code Quality: pembersihan peringatan TypeScript (menghapus unused `ChangeEvent` dan memformat argument).
+
+---
+
 # Definition of Done
 
 Sebuah task dianggap selesai apabila:

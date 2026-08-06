@@ -638,7 +638,7 @@ export function TestDashboardPage() {
                             onClick={() => setInspectPatient(kasus)}
                             className="h-8 px-3 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl"
                           >
-                            Lihat Quick-View
+                            Lihat Profil
                           </Button>
                         </td>
                       </tr>
@@ -705,7 +705,7 @@ export function TestDashboardPage() {
                           setInspectPatient(kasus)
                         }}
                       >
-                        Detail Quick-View
+                        Lihat Profil
                       </Button>
                     </div>
                   </div>
@@ -791,7 +791,7 @@ function PatientQuickInspector({ inspectPatient, selectedPosyanduId, onClose, on
               <Eye className="w-4 h-4" />
             </span>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 leading-tight">Quick-View Rekam Medis</h3>
+              <h3 className="text-sm font-bold text-slate-900 leading-tight">Profil Rekam Medis Pasien</h3>
               <p className="text-[11px] text-slate-400 font-medium">Desa Cipicung Inspection Drawer</p>
             </div>
           </div>
@@ -961,7 +961,7 @@ function PatientQuickInspector({ inspectPatient, selectedPosyanduId, onClose, on
             onClick={onNavigate}
           >
             <ArrowUpRight className="w-4 h-4 mr-1.5" />
-            Buka Halaman Profil Pasien Lengkap
+            Lihat Profil Lengkap
           </Button>
           <Button
             variant="outline"

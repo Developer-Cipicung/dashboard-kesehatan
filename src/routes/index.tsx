@@ -26,6 +26,7 @@ const AdminSharedPatientList = Loadable(lazy(() => import('@/features/admin/page
 
 
 const AdminStatusPendataanPage = Loadable(lazy(() => import('@/features/admin/pages/AdminStatusPendataanPage').then(m => ({ default: m.AdminStatusPendataanPage }))))
+const TestDashboardPage = Loadable(lazy(() => import('@/features/admin/pages/TestDashboardPage').then(m => ({ default: m.TestDashboardPage }))))
 const VerifikasiPendataanPage = Loadable(lazy(() => import('@/features/pendataan/pages/VerifikasiPendataanPage').then(m => ({ default: m.VerifikasiPendataanPage }))))
 const CekKartuPage = Loadable(lazy(() => import('@/features/public/pages/CekKartuPage').then(m => ({ default: m.CekKartuPage }))))
 const PrintKartuPage = Loadable(lazy(() => import('@/features/public/components/PrintKartuPage').then(m => ({ default: m.PrintKartuPage }))))
@@ -146,6 +147,10 @@ const router = createBrowserRouter([
       {
         path: '/laporan/cetak',
         element: <PrintReportPage />,
+      },
+      {
+        path: '/test-dashboard',
+        element: <TestDashboardPage />,
       },
     ],
   },

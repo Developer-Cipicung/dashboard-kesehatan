@@ -744,6 +744,21 @@ export function TestDashboardPage() {
   )
 }
 
+function getUsiaDetailed(tanggalLahirStr?: string) {
+  if (!tanggalLahirStr) return '-'
+  const birth = new Date(tanggalLahirStr)
+  if (isNaN(birth.getTime())) return '-'
+  const now = new Date()
+  let years = now.getFullYear() - birth.getFullYear()
+  let months = now.getMonth() - birth.getMonth()
+  if (months < 0) {
+    years--
+    months += 12
+  }
+  if (years === 0) return `${months} Bulan`
+  return `${years} Thn ${months} Bln`
+}
+
 function PatientQuickInspector({ inspectPatient, selectedPosyanduId, onClose, onNavigate }: {
   inspectPatient: PatientRisti
   selectedPosyanduId: string
@@ -813,27 +828,76 @@ function PatientQuickInspector({ inspectPatient, selectedPosyanduId, onClose, on
             <div className="p-8 text-center text-slate-400 text-sm">Memuat data rekam medis & grafik...</div>
           ) : warga ? (
             <>
-              {/* Patient Basic Profile Grid */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Identitas Pasien</h4>
+              {/* Patient Complete Identity Card */}
+              <div className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80 space-y-3 shadow-xs">
+                <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-indigo-600" /> Identitas Pasien Lengkap
+                  </h4>
+                  {warga.memiliki_bpjs !== undefined && (
+                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${
+                      warga.memiliki_bpjs ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                    }`}>
+                      {warga.memiliki_bpjs ? '✓ BPJS Aktif' : 'Non BPJS'}
+                    </span>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Tanggal Lahir</span>
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">NIK</span>
+                    <span className="font-bold text-slate-900 font-mono tracking-tight">{warga.nik || '-'}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">No. KK</span>
+                    <span className="font-bold text-slate-900 font-mono tracking-tight">{warga.no_kk || '-'}</span>
+                  </div>
+
+                  <div>
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Tempat, Tgl Lahir</span>
                     <span className="font-bold text-slate-800">
+                      {warga.tempat_lahir ? `${warga.tempat_lahir}, ` : ''}
                       {warga.tanggal_lahir ? format(new Date(warga.tanggal_lahir), 'd MMM yyyy', { locale: idLocale }) : '-'}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Jenis Kelamin</span>
-                    <span className="font-bold text-slate-800">{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</span>
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Usia Saat Ini</span>
+                    <span className="font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md inline-block">
+                      {getUsiaDetailed(warga.tanggal_lahir)}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Jenis Kelamin</span>
+                    <span className="font-bold text-slate-800">
+                      {warga.jenis_kelamin === 'L' ? 'Laki-laki (L)' : 'Perempuan (P)'}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Alamat</span>
-                    <span className="font-bold text-slate-800 truncate block">{warga.alamat || '-'}</span>
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Golongan Darah</span>
+                    <span className="font-bold text-slate-800">{warga.golongan_darah || 'Belum didata'}</span>
                   </div>
+
+                  {(warga.nama_ibu || warga.nama_ayah) && (
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-semibold uppercase">Nama Orang Tua</span>
+                      <span className="font-bold text-slate-800">
+                        {warga.nama_ibu ? `Ibu: ${warga.nama_ibu}` : `Ayah: ${warga.nama_ayah}`}
+                      </span>
+                    </div>
+                  )}
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Posyandu</span>
-                    <span className="font-bold text-slate-800 truncate block">{inspectPatient.posyandu}</span>
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">No. HP / WhatsApp</span>
+                    <span className="font-bold text-slate-800">{warga.nomor || '-'}</span>
+                  </div>
+
+                  <div className="col-span-2">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Alamat Lengkap</span>
+                    <span className="font-bold text-slate-800 block leading-snug">
+                      {warga.rt ? `RT ${warga.rt} / RW ${warga.rw || '-'}, ` : ''}
+                      {warga.alamat || '-'}
+                      {inspectPatient.posyandu ? ` (${inspectPatient.posyandu})` : ''}
+                    </span>
                   </div>
                 </div>
               </div>

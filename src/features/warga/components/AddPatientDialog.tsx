@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -13,9 +13,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { FormField } from '@/components/forms/FormField'
 import { FormProvider } from 'react-hook-form'
-import { useAddWarga, useGetWargaList } from '../hooks/useWarga'
+import { useAddWarga, useGetWargaList, useHamilKembali } from '../hooks/useWarga'
 import { WargaCombobox } from './WargaCombobox'
 import { AddWargaPayload } from '../services/wargaService'
+import { UserPlus, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { FormControl, FormItem, FormLabel, FormMessage, FormField as RHFFormField } from '@/components/ui/form'
 import { pemeriksaanService } from '../../pemeriksaan/services/pemeriksaanService'
@@ -193,10 +194,61 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
   })
 
   const { mutateAsync: addWarga, isPending } = useAddWarga()
+  const { mutateAsync: hamilKembali, isPending: isHamilKembaliPending } = useHamilKembali()
   const queryClient = useQueryClient()
   const { data: ibuListRes } = useGetWargaList({ jenis_kelamin: 'P', limit: 1000 }, { enabled: open })
   const ibuList = ibuListRes?.data || []
   const normalizedDefaultCategory = normalizeCategory(defaultCategory)
+
+  const [addMode, setAddMode] = useState<'new' | 'existing'>('new')
+  const [selectedWargaHamilKembali, setSelectedWargaHamilKembali] = useState<string>('')
+  const [hphtHamilKembali, setHphtHamilKembali] = useState<string>('')
+  const [htpHamilKembali, setHtpHamilKembali] = useState<string>('')
+  const [jumlahAnakHamilKembali, setJumlahAnakHamilKembali] = useState<string>('')
+
+  const selectedPatientObj = ibuList.find((w: any) => w.id === selectedWargaHamilKembali)
+
+  useEffect(() => {
+    if (selectedPatientObj) {
+      setJumlahAnakHamilKembali(String((selectedPatientObj.jumlah_anak || 0) + 1))
+    }
+  }, [selectedPatientObj])
+
+  useEffect(() => {
+    if (hphtHamilKembali) {
+      try {
+        const hphtDate = new Date(hphtHamilKembali)
+        hphtDate.setDate(hphtDate.getDate() + 280)
+        setHtpHamilKembali(hphtDate.toISOString().split('T')[0])
+      } catch (e) {}
+    }
+  }, [hphtHamilKembali])
+
+  const handleHamilKembaliSubmit = async () => {
+    if (!selectedWargaHamilKembali) {
+      toast.error('Silakan pilih pasien lama terlebih dahulu.')
+      return
+    }
+    try {
+      await hamilKembali({
+        id: selectedWargaHamilKembali,
+        payload: {
+          hpht: hphtHamilKembali || undefined,
+          htp: htpHamilKembali || undefined,
+          jumlah_anak: jumlahAnakHamilKembali ? parseInt(jumlahAnakHamilKembali, 10) : undefined,
+        },
+      })
+      setSelectedWargaHamilKembali('')
+      setHphtHamilKembali('')
+      setHtpHamilKembali('')
+      setJumlahAnakHamilKembali('')
+      setAddMode('new')
+      onOpenChange(false)
+      if (onSuccess) onSuccess()
+    } catch (err: any) {
+      console.error('Error Hamil Kembali:', err)
+    }
+  }
 
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -338,7 +390,111 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
           </DialogDescription>
         </DialogHeader>
 
-        <FormProvider {...methods}>
+        {watchKategori === 'bumil' && (
+          <div className="flex rounded-xl bg-slate-100 p-1 mb-2 gap-1">
+            <button
+              type="button"
+              onClick={() => setAddMode('new')}
+              className={`flex-1 py-2 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                addMode === 'new'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <UserPlus className="w-4 h-4 text-slate-700" />
+              Daftar Ibu Baru
+            </button>
+            <button
+              type="button"
+              onClick={() => setAddMode('existing')}
+              className={`flex-1 py-2 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                addMode === 'existing'
+                  ? 'bg-white text-pink-600 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <RefreshCw className="w-4 h-4 text-pink-500" />
+              Pasien Lama (Hamil Kembali)
+            </button>
+          </div>
+        )}
+
+        {watchKategori === 'bumil' && addMode === 'existing' ? (
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none">
+                Cari Pasien Lama (Ibu) <span className="text-red-500">*</span>
+              </label>
+              <WargaCombobox
+                wargaList={ibuList.filter((w: any) => w.status_kehamilan !== 'HAMIL')}
+                value={selectedWargaHamilKembali}
+                onChange={setSelectedWargaHamilKembali}
+                placeholder="Ketik nama atau NIK ibu..."
+              />
+            </div>
+
+            {selectedPatientObj && (
+              <div className="rounded-xl border border-pink-200 bg-pink-50/50 p-3 text-sm space-y-1">
+                <p className="font-semibold text-slate-800">{selectedPatientObj.nama}</p>
+                <p className="text-xs text-slate-500">NIK: {selectedPatientObj.nik || '-'}</p>
+                <p className="text-xs text-slate-500">Status Saat Ini: <span className="font-semibold text-pink-600">{selectedPatientObj.status_kehamilan}</span></p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none">
+                HPHT (Hari Pertama Haid Terakhir)
+              </label>
+              <input
+                type="date"
+                value={hphtHamilKembali}
+                onChange={(e) => setHphtHamilKembali(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none">
+                HPL (Hari Perkiraan Lahir)
+              </label>
+              <input
+                type="date"
+                value={htpHamilKembali}
+                onChange={(e) => setHtpHamilKembali(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none">
+                Kehamilan Ke- / Anak Ke-
+              </label>
+              <input
+                type="number"
+                min={1}
+                value={jumlahAnakHamilKembali}
+                onChange={(e) => setJumlahAnakHamilKembali(e.target.value)}
+                placeholder="Contoh: 2"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+
+            <div className="pt-2 flex justify-end gap-2 border-t border-slate-100 mt-4">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Batal
+              </Button>
+              <Button
+                type="button"
+                onClick={handleHamilKembaliSubmit}
+                disabled={!selectedWargaHamilKembali || isHamilKembaliPending}
+                className="bg-pink-600 hover:bg-pink-700 text-white font-semibold"
+              >
+                {isHamilKembaliPending ? 'Menyimpan...' : 'Simpan & Aktifkan Hamil Kembali'}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
             <div className="space-y-5 sm:space-y-6">
               {/* Grup Data Diri */}
@@ -675,6 +831,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
             </div>
           </form>
         </FormProvider>
+        )}
       </DialogContent>
     </Dialog>
   )

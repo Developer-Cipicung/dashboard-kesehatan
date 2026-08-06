@@ -102,7 +102,7 @@ export function TandaiBersalinDialog({ open, onOpenChange, wargaId, wargaPosyand
       onOpenChange(val)
       if (!val) handleReset()
     }}>
-      <DialogContent className="max-w-[420px] sm:max-w-md">
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-[420px] sm:max-w-md">
         {mode === 'select' && (
           <>
             <DialogHeader>

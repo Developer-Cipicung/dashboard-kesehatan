@@ -106,3 +106,20 @@ export function useTandaiAbortus() {
     },
   })
 }
+
+export function useHamilKembali() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, payload, posyanduId }: { id: string, payload: { hpht?: string; htp?: string; jumlah_anak?: number }, posyanduId?: string }) => wargaService.hamilKembali(id, payload, posyanduId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warga'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['pendataan'] })
+      toast.success('Status pasien berhasil diubah menjadi Ibu Hamil kembali.')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Gagal mengubah status kehamilan pasien.')
+    },
+  })
+}

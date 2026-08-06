@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { Search, Plus, User, Baby, HeartPulse, PersonStanding, Activity, Loader2, Upload, CheckCircle2, XCircle } from 'lucide-react'
+import { Search, Plus, User, Baby, HeartPulse, PersonStanding, Activity, Loader2, Upload, CheckCircle2, XCircle, RefreshCw } from 'lucide-react'
 import { wargaService, Warga } from '@/features/warga/services/wargaService'
+import { useHamilKembali } from '@/features/warga/hooks/useWarga'
 import { calculateAgeInMonths } from '@/utils/age'
 import { MonthlyRecordForm } from '@/features/pemeriksaan/components/MonthlyRecordForm'
 import { AddPatientDialog } from '@/features/warga/components/AddPatientDialog'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { ImportWargaModal } from '@/features/warga/components/ImportWargaModal'
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -23,7 +25,43 @@ export function GlobalPatientSearch() {
   const [showCategorySelect, setShowCategorySelect] = useState(false)
   const [selectedNewCategory, setSelectedNewCategory] = useState<string>('')
   const [detectedCategory, setDetectedCategory] = useState<string>('')
-  
+
+  const [showHamilKembaliModal, setShowHamilKembaliModal] = useState(false)
+  const [wargaHamilKembali, setWargaHamilKembali] = useState<Warga | null>(null)
+  const [hphtHamilKembali, setHphtHamilKembali] = useState('')
+  const [htpHamilKembali, setHtpHamilKembali] = useState('')
+  const [jumlahAnakHamilKembali, setJumlahAnakHamilKembali] = useState('')
+
+  const { mutateAsync: hamilKembali, isPending: isHamilKembaliPending } = useHamilKembali()
+
+  useEffect(() => {
+    if (hphtHamilKembali) {
+      try {
+        const d = new Date(hphtHamilKembali)
+        d.setDate(d.getDate() + 280)
+        setHtpHamilKembali(d.toISOString().split('T')[0])
+      } catch (e) {}
+    }
+  }, [hphtHamilKembali])
+
+  const handleSaveHamilKembali = async () => {
+    if (!wargaHamilKembali) return
+    try {
+      await hamilKembali({
+        id: wargaHamilKembali.id,
+        payload: {
+          hpht: hphtHamilKembali || undefined,
+          htp: htpHamilKembali || undefined,
+          jumlah_anak: jumlahAnakHamilKembali ? parseInt(jumlahAnakHamilKembali, 10) : undefined,
+        },
+      })
+      setShowHamilKembaliModal(false)
+      setWargaHamilKembali(null)
+    } catch (err: any) {
+      console.error('Error saving Hamil Kembali:', err)
+    }
+  }
+
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -91,6 +129,15 @@ export function GlobalPatientSearch() {
   const handleSelectWarga = (warga: Warga) => {
     setIsOpen(false)
     const cat = determineCategory(warga)
+
+    if (cat.id === 'lainnya' && warga.jenis_kelamin === 'P') {
+      setWargaHamilKembali(warga)
+      setJumlahAnakHamilKembali(String((warga.jumlah_anak || 0) + 1))
+      setHphtHamilKembali('')
+      setHtpHamilKembali('')
+      setShowHamilKembaliModal(true)
+      return
+    }
 
     setDetectedCategory(cat.id)
     setSelectedWarga(warga)
@@ -252,6 +299,82 @@ export function GlobalPatientSearch() {
           }, 65000)
         }}
       />
+
+      <Dialog open={showHamilKembaliModal} onOpenChange={setShowHamilKembaliModal}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto max-w-[420px] sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-pink-600">
+              <RefreshCw className="w-5 h-5 text-pink-500" />
+              Aktifkan Status Hamil Kembali
+            </DialogTitle>
+            <DialogDescription>
+              Pasien ini berjenis kelamin perempuan dan saat ini berstatus Warga Umum. Daftarkan kembali sebagai Ibu Hamil.
+            </DialogDescription>
+          </DialogHeader>
+
+          {wargaHamilKembali && (
+            <div className="space-y-4 py-2">
+              <div className="rounded-xl border border-pink-200 bg-pink-50/50 p-3 text-sm space-y-1">
+                <p className="font-semibold text-slate-800">{wargaHamilKembali.nama}</p>
+                <p className="text-xs text-slate-500">NIK: {wargaHamilKembali.nik || '-'}</p>
+                <p className="text-xs text-slate-500">Status Saat Ini: <span className="font-semibold text-pink-600">{wargaHamilKembali.status_kehamilan || 'TIDAK_HAMIL'}</span></p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none">
+                  HPHT (Hari Pertama Haid Terakhir)
+                </label>
+                <input
+                  type="date"
+                  value={hphtHamilKembali}
+                  onChange={(e) => setHphtHamilKembali(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none">
+                  HPL (Hari Perkiraan Lahir)
+                </label>
+                <input
+                  type="date"
+                  value={htpHamilKembali}
+                  onChange={(e) => setHtpHamilKembali(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none">
+                  Kehamilan Ke- / Anak Ke-
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  value={jumlahAnakHamilKembali}
+                  onChange={(e) => setJumlahAnakHamilKembali(e.target.value)}
+                  placeholder="Contoh: 2"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2 border-t border-slate-100 mt-4">
+                <Button type="button" variant="outline" onClick={() => setShowHamilKembaliModal(false)}>
+                  Batal
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleSaveHamilKembali}
+                  disabled={isHamilKembaliPending}
+                  className="bg-pink-600 hover:bg-pink-700 text-white font-semibold"
+                >
+                  {isHamilKembaliPending ? 'Menyimpan...' : 'Simpan & Aktifkan Hamil'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 <div align="center">
   <img src="public/logo-cipicung.webp" alt="Logo Posyandu Digital Cipicung" width="130" />
-  <h1>🏥 Posyandu Digital Dashboard (Frontend)</h1>
+  <h1>🏥 Sehati Dashboard (Frontend)</h1>
   <p><b>Sistem Informasi Kesehatan Digital Posyandu Cipicung</b></p>
   <p>Dashboard interaktif berbasis React 18, TypeScript, Vite & Tailwind CSS dengan pendekatan <i>Mobile-First UX</i> untuk kader kesehatan di lapangan.</p>
 </div>

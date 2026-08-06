@@ -250,7 +250,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
     }
   }
 
-  const methods = useForm<z.infer<typeof formSchema>>({
+  const methods = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: getDefaultValues(normalizedDefaultCategory),
   })

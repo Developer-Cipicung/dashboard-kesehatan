@@ -57,7 +57,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
   const isAnak = currentKategori === 'balita' || currentKategori === 'baduta'
   const isIbuIbu = currentKategori === 'bumil' || currentKategori === 'pasca_persalinan' || currentKategori === 'wus_pus'
 
-  const methods = useForm<z.infer<ReturnType<typeof getFormSchema>>>({
+  const methods = useForm<any>({
     resolver: zodResolver(getFormSchema()),
     defaultValues: {
       nik: warga.nik || '',

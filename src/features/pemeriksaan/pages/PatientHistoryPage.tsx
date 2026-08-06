@@ -18,7 +18,8 @@ import { ConfirmDialog } from '@/components/dialogs/ConfirmDialog'
 import { Pemeriksaan } from '../services/pemeriksaanService'
 
 export function PatientHistoryPage() {
-  const { kategori, id } = useParams<{ kategori: string; id: string }>()
+  const { kategori: rawKategori, id } = useParams<{ kategori: string; id: string }>()
+  const kategori = rawKategori === 'ibu-hamil' ? 'bumil' : (rawKategori === 'pasca-persalinan' ? 'pasca_persalinan' : rawKategori)
   const navigate = useNavigate()
   
   const [isFormOpen, setIsFormOpen] = useState(false)

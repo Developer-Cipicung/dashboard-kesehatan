@@ -37,37 +37,36 @@ export interface PemeriksaanResponse {
   data: Pemeriksaan
 }
 
+const getActualEndpoint = (kategori: string) => {
+  const endpoint = kategori.replace('_', '-')
+  if (endpoint === 'baduta' || endpoint === 'balita') return 'balita'
+  if (endpoint === 'ibu-hamil' || endpoint === 'bumil') return 'bumil'
+  return endpoint
+}
+
 export const pemeriksaanService = {
   getAll: async (kategori: string, params: { bulan?: number; tahun?: number; startDate?: string; endDate?: string; limit?: number; page?: number; posyanduId?: string }) => {
-    // API uses dash-case for endpoints (e.g. pasca-persalinan)
-    const endpoint = kategori.replace('_', '-')
-    // For baduta and balita, the endpoint is /balita
-    const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
+    const actualEndpoint = getActualEndpoint(kategori)
     const response = await api.get<ListResponse>(`/${actualEndpoint}`, { params })
     return response.data.data
   },
   getHistory: async (kategori: string, wargaId: string, posyanduId?: string) => {
-    // API uses dash-case for endpoints (e.g. pasca-persalinan)
-    const endpoint = kategori.replace('_', '-')
-    const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
+    const actualEndpoint = getActualEndpoint(kategori)
     const response = await api.get<HistoryResponse>(`/${actualEndpoint}/${wargaId}/history`, { params: { posyanduId } })
     return response.data.data
   },
   getById: async (kategori: string, id: string, posyanduId?: string) => {
-    const endpoint = kategori.replace('_', '-')
-    const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
+    const actualEndpoint = getActualEndpoint(kategori)
     const response = await api.get<PemeriksaanResponse>(`/${actualEndpoint}/${id}`, { params: { posyanduId } })
     return response.data.data
   },
   create: async (kategori: string, payload: Partial<Pemeriksaan>, posyanduId?: string) => {
-    const endpoint = kategori.replace('_', '-')
-    const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
+    const actualEndpoint = getActualEndpoint(kategori)
     const response = await api.post<PemeriksaanResponse>(`/${actualEndpoint}`, payload, { params: { posyanduId } })
     return response.data.data
   },
   bulkCreate: async (kategori: string, payload: Partial<Pemeriksaan>[], posyanduId?: string) => {
-    const endpoint = kategori.replace('_', '-')
-    const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
+    const actualEndpoint = getActualEndpoint(kategori)
     const response = await api.post(`/${actualEndpoint}/bulk-pemeriksaan`, payload, { params: { posyanduId } })
     return response.data
   },
@@ -76,14 +75,12 @@ export const pemeriksaanService = {
     return response.data.data
   },
   update: async (kategori: string, id: string, payload: Partial<Pemeriksaan>, posyanduId?: string) => {
-    const endpoint = kategori.replace('_', '-')
-    const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
+    const actualEndpoint = getActualEndpoint(kategori)
     const response = await api.put<PemeriksaanResponse>(`/${actualEndpoint}/${id}`, payload, { params: { posyanduId } })
     return response.data.data
   },
   delete: async (kategori: string, id: string, posyanduId?: string) => {
-    const endpoint = kategori.replace('_', '-')
-    const actualEndpoint = (endpoint === 'baduta' || endpoint === 'balita') ? 'balita' : endpoint
+    const actualEndpoint = getActualEndpoint(kategori)
     const response = await api.delete(`/${actualEndpoint}/${id}`, { params: { posyanduId } })
     return response.data
   },

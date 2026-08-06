@@ -21,6 +21,7 @@ export interface CreateBumilPayload {
   suplemen_tambah_darah?: boolean
   tanggal_kunjungan_berikut?: string
   catatan?: string
+  status_risiko_pe?: string
 }
 
 // ---- Lansia ----

@@ -103,6 +103,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableHead>Tinggi Badan (cm)</TableHead>
             <TableHead>Tekanan Darah</TableHead>
             <TableHead>Status TD</TableHead>
+            <TableHead>Risiko PE</TableHead>
             <TableHead>LILA (cm)</TableHead>
             <TableHead>Lingkar Perut (cm)</TableHead>
             <TableHead>Tinggi Fundus (cm)</TableHead>
@@ -268,6 +269,11 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         else if (tdStatusB.toLowerCase().includes('pra')) tdColorB = 'orange';
         if (!item.tekanan_darah_sistolik) tdStatusB = '-';
 
+        const risikoPE = item.status_risiko_pe || 'Risiko Rendah';
+        let peColorB = 'green' as 'green' | 'orange' | 'red';
+        if (risikoPE.toLowerCase().includes('tinggi')) peColorB = 'red';
+        else if (risikoPE.toLowerCase().includes('sedang')) peColorB = 'orange';
+
         return (
           <>
             {visitCell}
@@ -280,6 +286,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
             <TableCell>{item.tb || '-'}</TableCell>
             <TableCell>{(item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-'}</TableCell>
             <TableCell>{renderBadge(tdStatusB, tdColorB)}</TableCell>
+            <TableCell>{isUnexaminedBumil ? '-' : renderBadge(risikoPE, peColorB)}</TableCell>
             <TableCell>{item.lingkar_lengan_atas || '-'}</TableCell>
             <TableCell>{item.lingkar_perut || '-'}</TableCell>
             <TableCell>{(item as any).tinggi_fundus || '-'}</TableCell>

@@ -107,6 +107,13 @@ export const calculateTDStatus = (tdStr?: string) => {
   return { status: 'Normal', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' };
 }
 
+export const getRisikoPEBadge = (status?: string) => {
+  if (!status || status === 'Belum Diperiksa') return { label: 'Belum Diperiksa', color: 'text-slate-600 bg-slate-100 border-slate-200' };
+  if (status.toLowerCase().includes('tinggi')) return { label: 'Risiko Tinggi', color: 'text-red-700 bg-red-100 border-red-200' };
+  if (status.toLowerCase().includes('sedang')) return { label: 'Risiko Sedang', color: 'text-amber-700 bg-amber-100 border-amber-200' };
+  return { label: 'Risiko Rendah', color: 'text-emerald-700 bg-emerald-100 border-emerald-200' };
+}
+
 export const calculateKolesterolStatus = (valStr?: string | number) => {
   if (!valStr) return null;
   const val = typeof valStr === 'string' ? parseFloat(valStr) : valStr;
@@ -176,10 +183,12 @@ interface RowState {
   tanggal_kunjungan_berikut: string
   kolesterol: string
   asam_urat: string
+  status_risiko_pe?: string
 }
 
 const emptyRow = (): RowState => ({
   tanggal: new Date().toISOString().split('T')[0],
+  status_risiko_pe: '',
   usia: '',
   bb: '',
   td: '',
@@ -382,7 +391,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-[160px] z-20 bg-white min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-200 shadow-[1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Nama</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[140px] max-w-[180px]" rowSpan={2}>Posyandu</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[90px]" rowSpan={2}>BPJS</th>
-            <th colSpan={isBalita ? 12 : isBumil ? 23 : isPasca ? 15 : 9} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
+            <th colSpan={isBalita ? 12 : isBumil ? 24 : isPasca ? 15 : 9} className="px-4 py-3 border-l border-slate-100 bg-primary/5">
               <div className="flex items-center text-primary font-bold text-xs uppercase tracking-wider">
                 <ActivitySquare className="w-4 h-4 mr-2" />
                 Record Pemeriksaan Terakhir
@@ -422,6 +431,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Ibu (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Ibu (kg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tekanan Darah (mmHg)</th>
+                <th className="px-3 py-3 font-semibold text-primary text-xs min-w-[100px]">Risiko PE</th>
 
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Lingkar Perut (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi<br/>Fundus (cm)</th>
@@ -525,6 +535,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
             let lastKondisiIbu = ''
             let lastTinggiBayi = ''
             let lastBeratBayi = ''
+            let lastRisikoPE = ''
 
             if (latestBumil) {
               lastTgl = latestBumil.tanggal_kunjungan ? new Date(latestBumil.tanggal_kunjungan).toISOString().split('T')[0] : ''
@@ -535,6 +546,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
               lastJmlAnak = latestBumil.jumlah_anak?.toString() || ''
               lastRiwPen = latestBumil.riwayat_penyakit || ''
               lastTd = (latestBumil.tekanan_darah_sistolik && latestBumil.tekanan_darah_diastolik) ? `${latestBumil.tekanan_darah_sistolik}/${latestBumil.tekanan_darah_diastolik}` : ''
+              lastRisikoPE = latestBumil.status_risiko_pe || 'Risiko Rendah'
               lastTinggiFundus = latestBumil.tinggi_fundus?.toString() || ''
               lastKadarHb = (latestBumil.kadar_hemoglobin && Number(latestBumil.kadar_hemoglobin) > 0) ? latestBumil.kadar_hemoglobin.toString() : ''
               lastBeratJanin = latestBumil.berat_janin?.toString() || ''
@@ -719,6 +731,17 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
                       </td>
                       <td className="px-3 py-3">
                         <Cell type="text" value={row.td} onChange={(v) => set(warga.id, 'td', v)} placeholder={lastTd || '-'} width="w-[90px]" disabled={true} />
+                      </td>
+                      <td className="px-3 py-3 text-center">
+                        {(() => {
+                          const val = row.status_risiko_pe || lastRisikoPE || 'Risiko Rendah'
+                          const b = getRisikoPEBadge(val)
+                          return (
+                            <span className={`text-[10px] font-bold px-2 py-1 rounded-md border whitespace-nowrap inline-block ${b.color}`}>
+                              {b.label}
+                            </span>
+                          )
+                        })()}
                       </td>
 
                       <td className="px-3 py-3">

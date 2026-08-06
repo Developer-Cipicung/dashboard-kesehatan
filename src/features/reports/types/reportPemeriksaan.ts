@@ -45,5 +45,6 @@ export interface ReportPemeriksaanItem {
     kategori_bb_u?: string
     kategori_tb_u?: string
   }
+  status_risiko_pe?: string
   is_belum_diperiksa?: boolean
 }

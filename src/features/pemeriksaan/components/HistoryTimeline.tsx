@@ -1,7 +1,7 @@
 import { Pemeriksaan } from '../services/pemeriksaanService'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash2 } from 'lucide-react'
-import { calculateHpl, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus, calculateAge } from '../../warga/components/PatientTable'
+import { calculateHpl, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus, calculateAge, getRisikoPEBadge } from '../../warga/components/PatientTable'
 import { formatDateID } from '@/utils/dateFormatter'
 
 interface HistoryTimelineProps {
@@ -272,6 +272,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">TB (cm)</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">BB (kg)</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Tekanan Darah</th>
+            <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">Risiko PE</th>
 
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">L. Perut</th>
             <th className="px-3 py-4 font-bold text-slate-500 uppercase tracking-wider text-[10px] whitespace-nowrap">T. Fundus</th>
@@ -308,6 +309,16 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.bb ?? '-'}</td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">
                   {(record.tekanan_darah_sistolik && record.tekanan_darah_diastolik) ? <span className="font-medium">{`${record.tekanan_darah_sistolik}/${record.tekanan_darah_diastolik}`}</span> : <span className="text-slate-400">-</span>}
+                </td>
+                <td className="px-3 py-3 text-slate-600 text-xs text-center">
+                  {(() => {
+                    const b = getRisikoPEBadge(record.status_risiko_pe || 'Risiko Rendah')
+                    return (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border whitespace-nowrap inline-block ${b.color}`}>
+                        {b.label}
+                      </span>
+                    )
+                  })()}
                 </td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.lingkar_perut ?? '-'}</td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">{record.tinggi_fundus ?? '-'}</td>

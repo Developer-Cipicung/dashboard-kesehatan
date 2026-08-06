@@ -60,6 +60,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         <TableHead>Tempat, Tgl Lahir</TableHead>
         <TableHead>Alamat</TableHead>
         <TableHead>Jenis Kelamin</TableHead>
+        <TableHead>BPJS</TableHead>
       </>
     )
 
@@ -196,6 +197,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
           {(warga.rt || warga.rw) ? `, RT ${warga.rt || '-'} RW ${warga.rw || '-'}` : ''}
         </TableCell>
         <TableCell>{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</TableCell>
+        <TableCell>{warga.memiliki_bpjs ? 'Ya' : 'Tidak'}</TableCell>
       </>
     )
 

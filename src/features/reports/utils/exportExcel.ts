@@ -30,6 +30,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
         'Tempat Lahir': warga.tempat_lahir,
         'Tanggal Lahir': formatDateID(warga.tanggal_lahir),
         Alamat: `${warga.alamat} RT ${warga.rt} RW ${warga.rw}`,
+        BPJS: warga.memiliki_bpjs ? 'Ya' : 'Tidak',
         Kategori: warga.kategori,
         'Status Pernikahan': warga.status_pernikahan,
       }
@@ -69,7 +70,8 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
       'Tempat Lahir': warga.tempat_lahir || '-',
       'Tanggal Lahir': formatDateID(warga.tanggal_lahir),
       Alamat: warga.alamat || '-',
-      'Jenis Kelamin': warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'
+      'Jenis Kelamin': warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
+      BPJS: warga.memiliki_bpjs ? 'Ya' : 'Tidak',
     }
     
     const formatBool = (val: any) => isUnexamined ? '-' : (val ? 'Ya' : 'Tidak')

@@ -1,3 +1,7 @@
+import { useGetWargaById } from '@/features/warga/hooks/useWarga'
+import { KMSChart } from '@/features/public/components/KMSChart'
+import { BumilChart } from '@/features/public/components/BumilChart'
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts'
 import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/services/api'
@@ -723,95 +727,183 @@ export function TestDashboardPage() {
 
       </div>
 
-      {/* SLIDE-OVER DRAWER (QUICK PATIENT INSPECTOR) */}
+      {/* SLIDE-OVER DRAWER (QUICK PATIENT INSPECTOR WITH LIVE CHARTS) */}
       {inspectPatient && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-xs transition-opacity animate-fade-in">
-          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col border-l border-slate-200 overflow-y-auto">
-            {/* Drawer Header */}
-            <div className="p-6 bg-slate-900 text-white flex items-center justify-between sticky top-0 z-10">
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-400 bg-indigo-500/20 px-2 py-0.5 rounded border border-indigo-500/30">
-                  Quick Patient Inspector
-                </span>
-                <h3 className="text-xl font-bold mt-1 text-white">{inspectPatient.nama}</h3>
-                <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                  <MapPin className="w-3 h-3 text-emerald-400" /> {inspectPatient.posyandu}
-                </p>
-              </div>
-              <button
-                onClick={() => setInspectPatient(null)}
-                className="w-8 h-8 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Drawer Body */}
-            <div className="p-6 space-y-6 flex-1">
-              
-              <div className="bg-rose-50 p-4 rounded-xl border border-rose-200/80 space-y-2">
-                <div className="text-xs font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4" /> Indikasi Risiko Terdeteksi
-                </div>
-                <div className="text-sm font-extrabold text-slate-800">
-                  {inspectPatient.risiko}
-                </div>
-                <div className="text-[11px] text-slate-500 pt-1">
-                  Tanggal Pemeriksaan terakhir: {format(new Date(inspectPatient.tanggal_periksa), 'd MMMM yyyy', { locale: idLocale })}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Informasi Kategori Pasien</h4>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Kategori:</span>
-                    <span className="font-bold text-slate-800">{inspectPatient.kategori}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Posyandu Naungan:</span>
-                    <span className="font-bold text-slate-800">{inspectPatient.posyandu}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Panduan Intervensi Medis</h4>
-                <ul className="text-xs text-slate-600 space-y-2 list-disc pl-4 font-medium">
-                  <li>Lakukan kunjungan rumah (*home visit*) oleh Kader Posyandu.</li>
-                  <li>Koordinasikan pemberian makanan tambahan (PMT) / tablet tambah darah.</li>
-                  <li>Rujuk ke Puskesmas Desa jika indikator tidak membaik dalam 30 hari.</li>
-                </ul>
-              </div>
-
-            </div>
-
-            {/* Drawer Footer Actions */}
-            <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-2 sticky bottom-0">
-              <Button
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs h-10 rounded-xl shadow-sm"
-                onClick={() => {
-                  setInspectPatient(null)
-                  navigate(`/admin/warga/${inspectPatient.kategori.toLowerCase().replace(' ', '-')}/${inspectPatient.warga_id}`)
-                }}
-              >
-                <ArrowUpRight className="w-4 h-4 mr-1.5" />
-                Buka Halaman Profil Pasien Lengkap
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full border-slate-300 text-slate-700 text-xs font-semibold h-9 rounded-xl"
-                onClick={() => {
-                  toast.success(`Kontak Kader Posyandu ${inspectPatient.posyandu} telah disalin!`)
-                }}
-              >
-                <PhoneCall className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
-                Hubungi Kader Posyandu
-              </Button>
-            </div>
-          </div>
-        </div>
+        <PatientQuickInspector
+          inspectPatient={inspectPatient}
+          selectedPosyanduId={selectedPosyanduId}
+          onClose={() => setInspectPatient(null)}
+          onNavigate={() => {
+            const pathCat = inspectPatient.kategori === 'Ibu Hamil' ? 'bumil' : inspectPatient.kategori.toLowerCase().replace(' ', '-')
+            setInspectPatient(null)
+            navigate(`/admin/warga/${pathCat}/${inspectPatient.warga_id}`)
+          }}
+        />
       )}
+    </div>
+  )
+}
+
+function PatientQuickInspector({ inspectPatient, selectedPosyanduId, onClose, onNavigate }: {
+  inspectPatient: PatientRisti
+  selectedPosyanduId: string
+  onClose: () => void
+  onNavigate: () => void
+}) {
+  const activePosyanduId = selectedPosyanduId !== 'ALL' ? selectedPosyanduId : undefined
+  const { data: warga, isLoading } = useGetWargaById(inspectPatient.warga_id, activePosyanduId)
+
+  // Lansia Tensi History Chart Data
+  const lansiaChartData = useMemo(() => {
+    if (!warga?.pemeriksaan_lansia) return []
+    return [...warga.pemeriksaan_lansia]
+      .sort((a: any, b: any) => new Date(a.tanggal_pemeriksaan).getTime() - new Date(b.tanggal_pemeriksaan).getTime())
+      .map((p: any) => ({
+        date: format(new Date(p.tanggal_pemeriksaan), 'd MMM yyyy', { locale: idLocale }),
+        sistolik: p.tensi_sistolik ? Number(p.tensi_sistolik) : null,
+        diastolik: p.tensi_diastolik ? Number(p.tensi_diastolik) : null,
+        bb: p.bb ? Number(p.bb) : null,
+      }))
+  }, [warga])
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-xs transition-opacity animate-fade-in">
+      <div className="w-full sm:w-[500px] md:w-[600px] bg-white h-full shadow-2xl flex flex-col border-l border-slate-200 overflow-y-auto">
+        {/* Drawer Header */}
+        <div className="p-5 sm:p-6 bg-slate-900 text-white flex items-center justify-between sticky top-0 z-10">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-400 bg-indigo-500/20 px-2 py-0.5 rounded border border-indigo-500/30">
+                Quick-View Rekam Medis
+              </span>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">
+                {inspectPatient.kategori}
+              </span>
+            </div>
+            <h3 className="text-xl font-bold mt-1 text-white">{inspectPatient.nama}</h3>
+            <p className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+              <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-emerald-400" /> {inspectPatient.posyandu}</span>
+              {warga?.nik && <span>• NIK: {warga.nik}</span>}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors shrink-0"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Drawer Content Body */}
+        <div className="p-5 sm:p-6 space-y-6 flex-1">
+          {/* Risk Alert */}
+          <div className="bg-rose-50 p-4 rounded-2xl border border-rose-200 space-y-1">
+            <div className="text-xs font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4" /> Indikasi Risiko Terdeteksi
+            </div>
+            <div className="text-sm font-extrabold text-slate-800">
+              {inspectPatient.risiko}
+            </div>
+            <p className="text-[11px] text-slate-500 pt-0.5">
+              Pemeriksaan Terakhir: {format(new Date(inspectPatient.tanggal_periksa), 'd MMMM yyyy', { locale: idLocale })}
+            </p>
+          </div>
+
+          {isLoading ? (
+            <div className="p-8 text-center text-slate-400 text-sm">Memuat data rekam medis & grafik...</div>
+          ) : warga ? (
+            <>
+              {/* Patient Basic Profile Grid */}
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Identitas Pasien</h4>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">Tanggal Lahir</span>
+                    <span className="font-bold text-slate-800">
+                      {warga.tanggal_lahir ? format(new Date(warga.tanggal_lahir), 'd MMM yyyy', { locale: idLocale }) : '-'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">Jenis Kelamin</span>
+                    <span className="font-bold text-slate-800">{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">Alamat</span>
+                    <span className="font-bold text-slate-800 truncate block">{warga.alamat || '-'}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">Posyandu</span>
+                    <span className="font-bold text-slate-800 truncate block">{inspectPatient.posyandu}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Patient Growth / Health Chart */}
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Grafik Perkembangan Kesehatan Pasien</h4>
+                
+                {(inspectPatient.kategori === 'Balita' || inspectPatient.kategori === 'Baduta') && (
+                  <KMSChart warga={warga} />
+                )}
+
+                {inspectPatient.kategori === 'Ibu Hamil' && (
+                  <BumilChart warga={warga} />
+                )}
+
+                {inspectPatient.kategori === 'Lansia' && (
+                  lansiaChartData.length > 0 ? (
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                      <div className="text-center">
+                        <h5 className="text-xs font-bold text-slate-800">Grafik Tekanan Darah (Tensi Lansia)</h5>
+                        <p className="text-[10px] text-slate-400">Tekanan Sistolik & Diastolik seiring waktu (mmHg)</p>
+                      </div>
+                      <div className="h-64 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={lansiaChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                            <XAxis dataKey="date" tick={{ fontSize: 10 }} stroke="#94a3b8" />
+                            <YAxis domain={[50, 200]} tick={{ fontSize: 10 }} stroke="#94a3b8" />
+                            <Tooltip />
+                            <Line type="monotone" dataKey="sistolik" stroke="#ef4444" strokeWidth={2.5} name="Sistolik" dot={{ r: 4 }} />
+                            <Line type="monotone" dataKey="diastolik" stroke="#3b82f6" strokeWidth={2.5} name="Diastolik" dot={{ r: 4 }} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center text-xs text-slate-400">
+                      Riwayat grafik tensi lansia belum tersedia.
+                    </div>
+                  )
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="p-6 text-center text-slate-400 text-xs">Detail rekam medis tidak dapat ditemukan.</div>
+          )}
+        </div>
+
+        {/* Drawer Footer Actions */}
+        <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-2 sticky bottom-0">
+          <Button
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs h-10 rounded-xl shadow-sm"
+            onClick={onNavigate}
+          >
+            <ArrowUpRight className="w-4 h-4 mr-1.5" />
+            Buka Halaman Profil Pasien Lengkap
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full border-slate-300 text-slate-700 text-xs font-semibold h-9 rounded-xl"
+            onClick={() => {
+              toast.success(`Kontak Kader Posyandu ${inspectPatient.posyandu} telah disalin!`)
+            }}
+          >
+            <PhoneCall className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+            Hubungi Kader Posyandu
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

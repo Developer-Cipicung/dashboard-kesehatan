@@ -14,19 +14,14 @@ import {
   CheckCircle2,
   X,
   Search,
-  Filter,
   Eye,
   PhoneCall,
   Sparkles,
   ArrowUpRight,
   RefreshCw,
-  HelpCircle,
   FileSpreadsheet,
-  Layers,
   Heart,
-  Baby,
-  ChevronRight,
-  Check
+  Baby
 } from 'lucide-react'
 import {
   Select,
@@ -219,7 +214,7 @@ export function TestDashboardPage() {
                 <MapPin className="w-4 h-4 text-emerald-400" />
                 <span className="hidden sm:inline">Posyandu:</span>
               </div>
-              <Select value={selectedPosyanduId} onValueChange={setSelectedPosyanduId}>
+              <Select value={selectedPosyanduId} onValueChange={(val) => { if (val) setSelectedPosyanduId(val) }}>
                 <SelectTrigger className="w-[180px] sm:w-[210px] bg-slate-900/80 border-slate-700 text-white font-semibold h-9 rounded-xl text-xs">
                   <SelectValue placeholder="Pilih Posyandu">{selectedPosyanduName}</SelectValue>
                 </SelectTrigger>
@@ -231,7 +226,7 @@ export function TestDashboardPage() {
                 </SelectContent>
               </Select>
 
-              <Select value={dateFilterType} onValueChange={handleDateFilterChange}>
+              <Select value={dateFilterType} onValueChange={(val) => { if (val) handleDateFilterChange(val) }}>
                 <SelectTrigger className="w-[130px] sm:w-[150px] bg-slate-900/80 border-slate-700 text-white font-semibold h-9 rounded-xl text-xs">
                   <Calendar className="w-3.5 h-3.5 mr-1.5 text-indigo-400" />
                   <SelectValue placeholder="Periode" />

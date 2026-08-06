@@ -10,7 +10,10 @@ import {
   AlertCircle,
   Calendar,
   TrendingUp,
-  Activity
+  Activity,
+  Baby,
+  Heart,
+  BarChart2
 } from 'lucide-react'
 import {
   AreaChart,
@@ -41,23 +44,6 @@ const COLORS = {
   other: '#94a3b8'
 }
 
-const IndicatorCard = ({ title, colorClass, items }: { title: string, colorClass: string, items: { label: string, value: number, warning?: boolean, danger?: boolean }[] }) => (
-  <div className={`bg-white rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden border-l-4 ${colorClass} flex flex-col h-full`}>
-    <div className="px-3 py-3 border-b border-slate-50 bg-slate-50/30 shrink-0">
-      <h4 className="font-bold text-slate-800 text-sm leading-tight">{title}</h4>
-    </div>
-    <div className="flex divide-x divide-slate-50 p-1 grow">
-      {items.map((item, idx) => (
-        <div key={idx} className="flex-1 px-1 py-2 flex flex-col items-center justify-start text-center">
-          <span className={`text-xl sm:text-2xl font-black mb-1 leading-none ${item.danger ? 'text-rose-600' : item.warning ? 'text-amber-500' : 'text-emerald-600'}`}>
-            {item.value}
-          </span>
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-tight break-words">{item.label}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-)
 
 export function AdminDashboardPage() {
   const currentYear = new Date().getFullYear()
@@ -397,14 +383,14 @@ export function AdminDashboardPage() {
       </div>
 
       {/* Indikator Medis Utama Section */}
-      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
             <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-indigo-500" />
-              Distribusi Status Medis Keseluruhan
+              <BarChart2 className="w-5 h-5 text-indigo-600" />
+              Distribusi Indikator Medis Keseluruhan
             </h3>
-            <p className="text-xs text-slate-400 font-medium">Berdasarkan filter tanggal yang dipilih</p>
+            <p className="text-xs text-slate-400 font-medium">Gambaran status gizi, stunting, HB, KEK, & hipertensi warga desa</p>
           </div>
           
           {/* Date Filter */}
@@ -444,76 +430,143 @@ export function AdminDashboardPage() {
         </div>
 
         {isIndikatorLoading ? (
-          <div className="w-full h-[150px] animate-pulse bg-slate-50 rounded-xl" />
-        ) : indikatorData ? (
-          <div className="flex flex-col xl:flex-row gap-6">
-            {/* Anak Group */}
-            <div className="flex-[2] flex flex-col">
-              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 pb-2 border-b border-slate-200">Kategori Anak</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-                <IndicatorCard 
-                  title="Status Stunting" 
-                  colorClass="border-l-sky-500" 
-                  items={[
-                    { label: 'Normal', value: indikatorData.balita_stunting.normal },
-                    { label: 'Pendek', value: indikatorData.balita_stunting.pendek, warning: true },
-                    { label: 'Sangat Pendek', value: indikatorData.balita_stunting.sangat_pendek, danger: true },
-                  ]} 
-                />
-                <IndicatorCard 
-                  title="Status Gizi" 
-                  colorClass="border-l-indigo-500" 
-                  items={[
-                    { label: 'Normal', value: indikatorData.balita_gizi.normal },
-                    { label: 'Kurang', value: indikatorData.balita_gizi.kurang, warning: true },
-                    { label: 'Buruk', value: indikatorData.balita_gizi.buruk, danger: true },
-                    { label: 'Berlebih', value: indikatorData.balita_gizi.berlebih, warning: true },
-                  ]} 
-                />
+          <div className="h-32 animate-pulse bg-slate-50 rounded-xl" />
+        ) : indikatorData && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {/* Kategori Anak */}
+            <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/60 space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-200/60">
+                <Baby className="w-4 h-4 text-sky-600" />
+                <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Kategori Anak</span>
+              </div>
+              
+              {/* Stunting Progress */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-600">Stunting (TB/U)</span>
+                  <span className="text-rose-600 font-bold">
+                    {indikatorData.balita_stunting.pendek + indikatorData.balita_stunting.sangat_pendek} Terindikasi
+                  </span>
+                </div>
+                <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden flex">
+                  <div style={{ width: `${(indikatorData.balita_stunting.normal / (indikatorData.balita_stunting.normal + indikatorData.balita_stunting.pendek + indikatorData.balita_stunting.sangat_pendek || 1)) * 100}%` }} className="bg-emerald-500" title="Normal" />
+                  <div style={{ width: `${(indikatorData.balita_stunting.pendek / (indikatorData.balita_stunting.normal + indikatorData.balita_stunting.pendek + indikatorData.balita_stunting.sangat_pendek || 1)) * 100}%` }} className="bg-amber-400" title="Pendek" />
+                  <div style={{ width: `${(indikatorData.balita_stunting.sangat_pendek / (indikatorData.balita_stunting.normal + indikatorData.balita_stunting.pendek + indikatorData.balita_stunting.sangat_pendek || 1)) * 100}%` }} className="bg-rose-600" title="Sangat Pendek" />
+                </div>
+                <div className="flex justify-between text-[10px] text-slate-500 pt-0.5">
+                  <span className="text-emerald-700 font-semibold">Normal: {indikatorData.balita_stunting.normal}</span>
+                  <span className="text-amber-700 font-semibold">Pendek: {indikatorData.balita_stunting.pendek}</span>
+                  <span className="text-rose-700 font-bold">Sangat Pendek: {indikatorData.balita_stunting.sangat_pendek}</span>
+                </div>
+              </div>
+
+              {/* Gizi Progress */}
+              <div className="space-y-1.5 pt-2">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-600">Status Gizi (BB/TB)</span>
+                  <span className="text-slate-700">Total: {indikatorData.balita_gizi.normal + indikatorData.balita_gizi.kurang + indikatorData.balita_gizi.buruk}</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1.5 text-center">
+                  <div className="bg-emerald-100 text-emerald-800 p-1.5 rounded-lg">
+                    <div className="text-xs font-bold">{indikatorData.balita_gizi.normal}</div>
+                    <div className="text-[9px] font-semibold">Normal</div>
+                  </div>
+                  <div className="bg-amber-100 text-amber-800 p-1.5 rounded-lg">
+                    <div className="text-xs font-bold">{indikatorData.balita_gizi.kurang}</div>
+                    <div className="text-[9px] font-semibold">Kurang</div>
+                  </div>
+                  <div className="bg-rose-100 text-rose-800 p-1.5 rounded-lg">
+                    <div className="text-xs font-bold">{indikatorData.balita_gizi.buruk}</div>
+                    <div className="text-[9px] font-semibold">Buruk</div>
+                  </div>
+                  <div className="bg-indigo-100 text-indigo-800 p-1.5 rounded-lg">
+                    <div className="text-xs font-bold">{indikatorData.balita_gizi.berlebih}</div>
+                    <div className="text-[9px] font-semibold">Berlebih</div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Bumil Group */}
-            <div className="flex-[2] flex flex-col">
-              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 pb-2 border-b border-slate-200">Kategori Ibu Hamil</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-                <IndicatorCard 
-                  title="Kadar Hemoglobin" 
-                  colorClass="border-l-fuchsia-500" 
-                  items={[
-                    { label: 'Normal', value: indikatorData.bumil_hb.normal },
-                    { label: 'Anemia Ringan', value: indikatorData.bumil_hb.anemia_ringan, warning: true },
-                    { label: 'Anemia Berat', value: indikatorData.bumil_hb.anemia_berat, danger: true },
-                  ]} 
-                />
-                <IndicatorCard 
-                  title="Risiko KEK (LILA)" 
-                  colorClass="border-l-rose-500" 
-                  items={[
-                    { label: 'Normal', value: indikatorData.bumil_lila.normal },
-                    { label: 'Kekurangan Energi', value: indikatorData.bumil_lila.kek, danger: true },
-                  ]} 
-                />
+            {/* Kategori Ibu Hamil */}
+            <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/60 space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-200/60">
+                <Heart className="w-4 h-4 text-fuchsia-600" />
+                <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Kategori Ibu Hamil</span>
+              </div>
+              
+              {/* Hemoglobin */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-600">Kadar Hemoglobin (Hb)</span>
+                  <span className="text-fuchsia-600 font-bold">
+                    {indikatorData.bumil_hb.anemia_ringan + indikatorData.bumil_hb.anemia_berat} Anemia
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5 text-center">
+                  <div className="bg-emerald-100 text-emerald-800 p-2 rounded-lg">
+                    <div className="text-sm font-black">{indikatorData.bumil_hb.normal}</div>
+                    <div className="text-[9px] font-bold uppercase">Normal</div>
+                  </div>
+                  <div className="bg-amber-100 text-amber-800 p-2 rounded-lg">
+                    <div className="text-sm font-black">{indikatorData.bumil_hb.anemia_ringan}</div>
+                    <div className="text-[9px] font-bold uppercase">Ringan</div>
+                  </div>
+                  <div className="bg-rose-100 text-rose-800 p-2 rounded-lg">
+                    <div className="text-sm font-black">{indikatorData.bumil_hb.anemia_berat}</div>
+                    <div className="text-[9px] font-bold uppercase">Berat</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* KEK LILA */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-600">Risiko KEK (LILA &lt; 23.5 cm)</span>
+                </div>
+                <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200 text-xs">
+                  <span className="font-medium text-slate-600">Kurang Energi Kronis</span>
+                  <span className="font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded text-sm">
+                    {indikatorData.bumil_lila.kek} Bumil
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Lansia Group */}
-            <div className="flex-[1] flex flex-col">
-              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 pb-2 border-b border-slate-200">Kategori Lansia</h4>
-              <div className="grid grid-cols-1 gap-4 flex-1">
-                <IndicatorCard 
-                  title="Tekanan Darah" 
-                  colorClass="border-l-emerald-500" 
-                  items={[
-                    { label: 'Normal', value: indikatorData.lansia_tensi.normal },
-                    { label: 'Pre-Hipertensi', value: indikatorData.lansia_tensi.waspada, warning: true },
-                    { label: 'Hipertensi', value: indikatorData.lansia_tensi.tinggi, danger: true },
-                  ]} 
-                />
+            {/* Kategori Lansia */}
+            <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/60 space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-200/60">
+                <Users className="w-4 h-4 text-emerald-600" />
+                <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Kategori Lansia</span>
+              </div>
+              
+              {/* Tensi */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-slate-600">Tekanan Darah (Tensi)</span>
+                  <span className="text-emerald-700 font-bold">
+                    {indikatorData.lansia_tensi.tinggi} Hipertensi
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5 text-center">
+                  <div className="bg-emerald-100 text-emerald-800 p-2 rounded-lg">
+                    <div className="text-sm font-black">{indikatorData.lansia_tensi.normal}</div>
+                    <div className="text-[9px] font-bold uppercase">Normal</div>
+                  </div>
+                  <div className="bg-amber-100 text-amber-800 p-2 rounded-lg">
+                    <div className="text-sm font-black">{indikatorData.lansia_tensi.waspada}</div>
+                    <div className="text-[9px] font-bold uppercase">Waspada</div>
+                  </div>
+                  <div className="bg-rose-100 text-rose-800 p-2 rounded-lg">
+                    <div className="text-sm font-black">{indikatorData.lansia_tensi.tinggi}</div>
+                    <div className="text-[9px] font-bold uppercase">Tinggi</div>
+                  </div>
+                </div>
               </div>
             </div>
+
           </div>
-        ) : null}
+        )}
       </div>
 
     </div>

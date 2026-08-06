@@ -23,7 +23,6 @@ import {
   Sparkles,
   ArrowUpRight,
   RefreshCw,
-  FileSpreadsheet,
   Heart,
   Baby
 } from 'lucide-react'
@@ -261,7 +260,7 @@ export function TestDashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 -mt-10 space-y-8">
 
         {/* 1. EXECUTIVE KPI SUMMARY CARDS (Reading Flow Step 1) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 hover:shadow-md transition-all group">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Warga Didata</span>
@@ -315,25 +314,6 @@ export function TestDashboardPage() {
               <span className="text-xs font-semibold text-emerald-600">Posyandu Aktif</span>
             </div>
             <p className="text-[11px] text-slate-400 mt-1">Terverifikasi sistem kesehatan desa</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-5 text-white shadow-md shadow-indigo-500/10 flex flex-col justify-between">
-            <div>
-              <span className="text-xs font-bold text-indigo-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Executive Action
-              </span>
-              <p className="text-xs text-indigo-100 mt-1 font-medium leading-relaxed">
-                Cetak laporan ringkas untuk rapat koordinasi desa atau puskesmas.
-              </p>
-            </div>
-            <Button
-              size="sm"
-              onClick={() => navigate('/admin/laporan')}
-              className="mt-3 w-full bg-white text-indigo-950 hover:bg-indigo-50 font-bold text-xs shadow-sm h-8 rounded-xl"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 mr-1.5 text-indigo-600" />
-              Buka Rekap Lengkap
-            </Button>
           </div>
         </div>
 

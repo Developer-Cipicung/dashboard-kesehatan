@@ -90,3 +90,19 @@ export function useTandaiBersalin() {
     },
   })
 }
+
+export function useTandaiAbortus() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, payload, posyanduId }: { id: string, payload: { tanggal_abortus: string; tempat_penanganan?: string; catatan?: string }, posyanduId?: string }) => wargaService.tandaiAbortus(id, payload, posyanduId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['warga'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      toast.success('Status abortus berhasil disimpan.')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Gagal menyimpan status abortus.')
+    },
+  })
+}

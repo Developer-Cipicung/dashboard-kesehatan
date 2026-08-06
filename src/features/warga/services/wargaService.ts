@@ -125,5 +125,9 @@ export const wargaService = {
   tandaiBersalin: async (id: string, payload: { tanggal_persalinan: string; tempat_persalinan?: string; nama_bayi?: string; jenis_kelamin_bayi: 'L' | 'P'; nama_ayah?: string }, posyanduId?: string) => {
     const response = await api.post<{ success: boolean; message: string; data: any }>(`/warga/${id}/bersalin`, payload, { params: { posyanduId } })
     return response.data
+  },
+  tandaiAbortus: async (id: string, payload: { tanggal_abortus: string; tempat_penanganan?: string; catatan?: string }, posyanduId?: string) => {
+    const response = await api.post<{ success: boolean; message: string; data: any }>(`/warga/${id}/abortus`, payload, { params: { posyanduId } })
+    return response.data
   }
 }

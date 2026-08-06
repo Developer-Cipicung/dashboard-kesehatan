@@ -929,7 +929,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
                         className="h-8 px-3 text-xs border-pink-200 text-pink-600 hover:bg-pink-50 hover:text-pink-700 font-semibold w-full mt-1"
                         onClick={() => setConfirmId(warga.id)}
                       >
-                        Telah Bersalin
+                        Selesai Kehamilan
                       </Button>
                     )}
                   </div>

@@ -335,7 +335,7 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
               className="w-full h-10 text-sm border-pink-200 text-pink-600 hover:bg-pink-50 font-semibold mt-1"
               onClick={() => setShowConfirm(true)}
             >
-              Tandai Telah Bersalin
+              Selesai Kehamilan
             </Button>
           )}
         </div>

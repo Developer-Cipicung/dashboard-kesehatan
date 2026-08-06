@@ -20,7 +20,6 @@ import {
   Search,
   Eye,
   PhoneCall,
-  Sparkles,
   ArrowUpRight,
   RefreshCw,
   Heart,
@@ -194,35 +193,31 @@ export function TestDashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/60 pb-20 font-sans antialiased">
-      {/* Top Banner & Control Bar */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white pt-8 pb-16 px-4 sm:px-8 border-b border-slate-800 shadow-lg">
-        <div className="max-w-7xl mx-auto space-y-6">
+      {/* Top Banner & Control Bar (Clean Light Theme) */}
+      <div className="bg-white pt-6 pb-12 px-4 sm:px-8 border-b border-slate-200/80 shadow-xs">
+        <div className="max-w-7xl mx-auto space-y-4">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-500/30 mb-3">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                Preview UX Best-Practice Mode (Standalone Test)
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-                Monitoring Executiv Kesehatan Desa
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
+                Monitoring Eksekutif Kesehatan Desa
               </h1>
-              <p className="text-slate-400 text-sm mt-1 max-w-2xl">
+              <p className="text-slate-500 text-sm mt-1 max-w-2xl font-medium">
                 Pantau statistik indikator medis, deteksi anomali data otomatis, dan tangani kasus pasien risiko tinggi secara cepat & tepat.
               </p>
             </div>
 
             {/* Controls: Focus Area & Date Picker */}
-            <div className="flex flex-wrap items-center gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/10 shadow-inner">
-              <div className="flex items-center gap-2 pl-2 text-slate-300 text-xs font-medium">
-                <MapPin className="w-4 h-4 text-emerald-400" />
+            <div className="flex flex-wrap items-center gap-2.5 bg-slate-100/80 p-2 rounded-2xl border border-slate-200">
+              <div className="flex items-center gap-1.5 pl-2 text-slate-600 text-xs font-semibold">
+                <MapPin className="w-4 h-4 text-emerald-600" />
                 <span className="hidden sm:inline">Posyandu:</span>
               </div>
               <Select value={selectedPosyanduId} onValueChange={(val) => { if (val) setSelectedPosyanduId(val) }}>
-                <SelectTrigger className="w-[180px] sm:w-[210px] bg-slate-900/80 border-slate-700 text-white font-semibold h-9 rounded-xl text-xs">
+                <SelectTrigger className="w-[180px] sm:w-[210px] bg-white border-slate-200 text-slate-900 font-semibold h-9 rounded-xl text-xs shadow-xs">
                   <SelectValue placeholder="Pilih Posyandu">{selectedPosyanduName}</SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-slate-900 text-white border-slate-800">
-                  <SelectItem value="ALL" className="font-semibold text-emerald-400">Seluruh Posyandu Desa</SelectItem>
+                <SelectContent className="bg-white text-slate-900 border-slate-200">
+                  <SelectItem value="ALL" className="font-semibold text-emerald-600">Seluruh Posyandu Desa</SelectItem>
                   {posyandus?.map((p: any) => (
                     <SelectItem key={p.id} value={p.id}>{p.nama}</SelectItem>
                   ))}
@@ -230,11 +225,11 @@ export function TestDashboardPage() {
               </Select>
 
               <Select value={dateFilterType} onValueChange={(val) => { if (val) handleDateFilterChange(val) }}>
-                <SelectTrigger className="w-[130px] sm:w-[150px] bg-slate-900/80 border-slate-700 text-white font-semibold h-9 rounded-xl text-xs">
-                  <Calendar className="w-3.5 h-3.5 mr-1.5 text-indigo-400" />
+                <SelectTrigger className="w-[130px] sm:w-[150px] bg-white border-slate-200 text-slate-900 font-semibold h-9 rounded-xl text-xs shadow-xs">
+                  <Calendar className="w-3.5 h-3.5 mr-1.5 text-indigo-600" />
                   <SelectValue placeholder="Periode" />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-900 text-white border-slate-800">
+                <SelectContent className="bg-white text-slate-900 border-slate-200">
                   <SelectItem value="Bulan Ini">Bulan Ini</SelectItem>
                   <SelectItem value="3 Bulan">3 Bulan Terakhir</SelectItem>
                   <SelectItem value="Tahun Ini">Tahun Ini</SelectItem>
@@ -246,7 +241,7 @@ export function TestDashboardPage() {
                 size="sm"
                 variant="ghost"
                 onClick={() => refetchRisti()}
-                className="h-9 px-2.5 text-xs text-slate-300 hover:text-white hover:bg-white/10 rounded-xl"
+                className="h-9 px-2.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 rounded-xl"
                 title="Refresh Data"
               >
                 <RefreshCw className="w-4 h-4" />
@@ -257,7 +252,7 @@ export function TestDashboardPage() {
       </div>
 
       {/* Main Floating Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 -mt-10 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 -mt-6 space-y-8">
 
         {/* 1. EXECUTIVE KPI SUMMARY CARDS (Reading Flow Step 1) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -11,7 +11,8 @@ import {
   PersonStanding,
   X,
   MapPin,
-  Users
+  Users,
+  FileText
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +23,7 @@ const quickMenuItems = [
   { name: 'Ibu Hamil', icon: HeartPulse, path: '/admin/warga/bumil', color: 'text-pink-700', bg: 'bg-pink-50' },
   { name: 'Pasca Salin', icon: Activity, path: '/admin/warga/pasca-persalinan', color: 'text-rose-700', bg: 'bg-rose-50' },
   { name: 'Lansia', icon: PersonStanding, path: '/admin/warga/lansia', color: 'text-amber-700', bg: 'bg-amber-50' },
+  { name: 'Laporan Lengkap', icon: FileText, path: '/admin/laporan-detail', color: 'text-violet-700', bg: 'bg-violet-50' },
   { name: 'Rekap Bulanan', icon: BarChart2, path: '/admin/laporan', color: 'text-indigo-700', bg: 'bg-indigo-50' },
   { name: 'Status Pendataan', icon: ClipboardList, path: '/admin/status-pendataan', color: 'text-emerald-700', bg: 'bg-emerald-50' },
 ]

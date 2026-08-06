@@ -193,74 +193,60 @@ export function TestDashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/60 pb-20 font-sans antialiased">
-      {/* Top Banner & Control Bar (Elegant Light Theme) */}
-      <div className="bg-gradient-to-r from-indigo-50/90 via-slate-50 to-emerald-50/50 pt-7 pb-14 px-4 sm:px-8 border-b border-indigo-100/80 shadow-xs">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs">
-                  <Activity className="w-4.5 h-4.5" />
-                </span>
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-full border border-indigo-200/60">
-                  Desa Cipicung
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 pt-1">
-                Dashboard Kesehatan Desa
-              </h1>
-              <p className="text-slate-600 text-xs sm:text-sm font-medium leading-relaxed max-w-2xl">
-                Pusat pemantauan status gizi balita, kesehatan ibu hamil, dan layanan lansia di seluruh Posyandu.
-              </p>
+      {/* Top Header Bar (Matching Rekapitulasi Bulanan Admin) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2 tracking-tight">
+              <BarChart2 className="w-6 h-6 text-emerald-600" />
+              Rekapitulasi Bulanan
+            </h1>
+            <p className="text-sm text-slate-500 mt-1">
+              Indikator kesehatan dan peringatan dini warga desa
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 bg-white p-1.5 rounded-xl shadow-xs border border-slate-200">
+            <div className="pl-2 flex items-center text-slate-400">
+              <MapPin className="w-4 h-4 mr-1.5 text-emerald-600" />
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-500">Fokus Area</span>
             </div>
+            <Select value={selectedPosyanduId} onValueChange={(val) => { if (val) setSelectedPosyanduId(val) }}>
+              <SelectTrigger className="w-[180px] sm:w-[200px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-9 rounded-lg text-xs">
+                <SelectValue placeholder="Pilih Posyandu">{selectedPosyanduName}</SelectValue>
+              </SelectTrigger>
+              <SelectContent className="bg-white text-slate-900 border-slate-200">
+                <SelectItem value="ALL" className="font-semibold text-emerald-600">Semua Posyandu</SelectItem>
+                {posyandus?.map((p: any) => (
+                  <SelectItem key={p.id} value={p.id}>{p.nama}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-            {/* Controls: Focus Area & Date Picker */}
-            <div className="flex flex-wrap items-center gap-2.5 bg-white/90 backdrop-blur-xs p-2 rounded-2xl border border-slate-200/80 shadow-sm">
-              <div className="flex items-center gap-1.5 pl-2 text-slate-600 text-xs font-bold">
-                <MapPin className="w-4 h-4 text-emerald-600" />
-                <span className="hidden sm:inline">Posyandu:</span>
-              </div>
-              <Select value={selectedPosyanduId} onValueChange={(val) => { if (val) setSelectedPosyanduId(val) }}>
-                <SelectTrigger className="w-[180px] sm:w-[210px] bg-slate-50 border-slate-200 text-slate-900 font-bold h-9 rounded-xl text-xs">
-                  <SelectValue placeholder="Pilih Posyandu">{selectedPosyanduName}</SelectValue>
-                </SelectTrigger>
-                <SelectContent className="bg-white text-slate-900 border-slate-200">
-                  <SelectItem value="ALL" className="font-semibold text-emerald-600">Seluruh Posyandu Desa</SelectItem>
-                  {posyandus?.map((p: any) => (
-                    <SelectItem key={p.id} value={p.id}>{p.nama}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <Select value={dateFilterType} onValueChange={(val) => { if (val) handleDateFilterChange(val) }}>
+              <SelectTrigger className="w-[130px] sm:w-[140px] border-none shadow-none focus:ring-0 bg-slate-50 font-semibold text-slate-700 h-9 rounded-lg text-xs">
+                <Calendar className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
+                <SelectValue placeholder="Periode" />
+              </SelectTrigger>
+              <SelectContent className="bg-white text-slate-900 border-slate-200">
+                <SelectItem value="Bulan Ini">Bulan Ini</SelectItem>
+                <SelectItem value="3 Bulan">3 Bulan Terakhir</SelectItem>
+                <SelectItem value="Tahun Ini">Tahun Ini</SelectItem>
+                <SelectItem value="Semua Waktu">Semua Waktu</SelectItem>
+              </SelectContent>
+            </Select>
 
-              <Select value={dateFilterType} onValueChange={(val) => { if (val) handleDateFilterChange(val) }}>
-                <SelectTrigger className="w-[130px] sm:w-[150px] bg-slate-50 border-slate-200 text-slate-900 font-bold h-9 rounded-xl text-xs">
-                  <Calendar className="w-3.5 h-3.5 mr-1.5 text-indigo-600" />
-                  <SelectValue placeholder="Periode" />
-                </SelectTrigger>
-                <SelectContent className="bg-white text-slate-900 border-slate-200">
-                  <SelectItem value="Bulan Ini">Bulan Ini</SelectItem>
-                  <SelectItem value="3 Bulan">3 Bulan Terakhir</SelectItem>
-                  <SelectItem value="Tahun Ini">Tahun Ini</SelectItem>
-                  <SelectItem value="Semua Waktu">Semua Waktu</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => refetchRisti()}
-                className="h-9 px-2.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl"
-                title="Refresh Data"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => refetchRisti()}
+              className="h-9 px-2 text-xs text-slate-500 hover:text-slate-900 rounded-lg"
+              title="Refresh Data"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </Button>
           </div>
         </div>
-      </div>
-
-      {/* Main Floating Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 -mt-8 space-y-8">
 
         {/* 1. EXECUTIVE KPI SUMMARY CARDS (Reading Flow Step 1) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

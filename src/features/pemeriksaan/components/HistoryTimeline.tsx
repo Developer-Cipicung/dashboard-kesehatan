@@ -312,7 +312,7 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
                 </td>
                 <td className="px-3 py-3 text-slate-600 text-xs text-center">
                   {(() => {
-                    const b = getRisikoPEBadge(record.status_risiko_pe || 'Risiko Rendah')
+                    const b = getRisikoPEBadge(record.status_risiko_pe || 'Belum Diperiksa')
                     return (
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded border whitespace-nowrap inline-block ${b.color}`}>
                         {b.label}

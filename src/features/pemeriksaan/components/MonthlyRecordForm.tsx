@@ -160,7 +160,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
         suhu_tubuh: rec.suhu_tubuh ?? '',
         kondisi_ibu: rec.kondisi_ibu ?? '',
         catatan: rec.catatan ?? '',
-        status_risiko_pe: rec.status_risiko_pe ?? (isNew ? (prev.status_risiko_pe ?? 'Risiko Rendah') : 'Risiko Rendah'),
+        status_risiko_pe: rec.status_risiko_pe ?? (isNew ? (prev.status_risiko_pe ?? 'Belum Diperiksa') : 'Belum Diperiksa'),
         kondisi: rec.kondisi ?? '',
         asi_eksklusif: rec.asi_eksklusif ?? false,
         fasilitasi_bantuan_sosial: rec.fasilitasi_bantuan_sosial ?? false,
@@ -312,7 +312,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
           kie: values.kie ?? undefined,
           suplemen_tambah_darah: parseNum(values.suplemen_tambah_darah, true),
           mms: parseNum(values.mms, true),
-          status_risiko_pe: values.status_risiko_pe || 'Risiko Rendah',
+          status_risiko_pe: values.status_risiko_pe || 'Belum Diperiksa',
           fasilitasi_rujukan: values.fasilitasi_rujukan ?? undefined,
           fasilitasi_bantuan_sosial: values.fasilitasi_bantuan_sosial ?? undefined,
         }
@@ -540,10 +540,10 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                       {...register('status_risiko_pe')}
                       className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base font-semibold"
                     >
+                      <option value="Belum Diperiksa">Belum Diperiksa</option>
                       <option value="Risiko Rendah">Risiko Rendah</option>
                       <option value="Risiko Sedang">Risiko Sedang</option>
                       <option value="Risiko Tinggi">Risiko Tinggi</option>
-                      <option value="Belum Diperiksa">Belum Diperiksa</option>
                     </select>
                     {(() => {
                       const td = watch('td')

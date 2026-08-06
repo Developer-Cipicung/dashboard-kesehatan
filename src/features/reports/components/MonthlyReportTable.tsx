@@ -269,7 +269,7 @@ export function MonthlyReportTable({ kategori, data, isLoading }: MonthlyReportT
         else if (tdStatusB.toLowerCase().includes('pra')) tdColorB = 'orange';
         if (!item.tekanan_darah_sistolik) tdStatusB = '-';
 
-        const risikoPE = item.status_risiko_pe || 'Risiko Rendah';
+        const risikoPE = item.status_risiko_pe || 'Belum Diperiksa';
         let peColorB = 'green' as 'green' | 'orange' | 'red';
         if (risikoPE.toLowerCase().includes('tinggi')) peColorB = 'red';
         else if (risikoPE.toLowerCase().includes('sedang')) peColorB = 'orange';

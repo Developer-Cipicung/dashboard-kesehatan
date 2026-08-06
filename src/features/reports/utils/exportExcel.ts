@@ -121,7 +121,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
           'Berat Badan (kg)': item.bb || '-',
           'Tinggi Badan (cm)': item.tb || '-',
           'Tekanan Darah': (item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-',
-          'Risiko PE': isUnexamined ? '-' : (item.status_risiko_pe || 'Risiko Rendah'),
+          'Risiko PE': isUnexamined ? '-' : (item.status_risiko_pe || 'Belum Diperiksa'),
           'LILA (cm)': item.lingkar_lengan_atas || '-',
           'Lingkar Perut (cm)': item.lingkar_perut || '-',
           'Tinggi Fundus (cm)': (item as any).tinggi_fundus || '-',

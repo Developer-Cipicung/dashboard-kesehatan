@@ -546,7 +546,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
               lastJmlAnak = latestBumil.jumlah_anak?.toString() || ''
               lastRiwPen = latestBumil.riwayat_penyakit || ''
               lastTd = (latestBumil.tekanan_darah_sistolik && latestBumil.tekanan_darah_diastolik) ? `${latestBumil.tekanan_darah_sistolik}/${latestBumil.tekanan_darah_diastolik}` : ''
-              lastRisikoPE = latestBumil.status_risiko_pe || 'Risiko Rendah'
+              lastRisikoPE = latestBumil.status_risiko_pe || 'Belum Diperiksa'
               lastTinggiFundus = latestBumil.tinggi_fundus?.toString() || ''
               lastKadarHb = (latestBumil.kadar_hemoglobin && Number(latestBumil.kadar_hemoglobin) > 0) ? latestBumil.kadar_hemoglobin.toString() : ''
               lastBeratJanin = latestBumil.berat_janin?.toString() || ''
@@ -734,7 +734,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
                       </td>
                       <td className="px-3 py-3 text-center">
                         {(() => {
-                          const val = row.status_risiko_pe || lastRisikoPE || 'Risiko Rendah'
+                          const val = row.status_risiko_pe || lastRisikoPE || 'Belum Diperiksa'
                           const b = getRisikoPEBadge(val)
                           return (
                             <span className={`text-[10px] font-bold px-2 py-1 rounded-md border whitespace-nowrap inline-block ${b.color}`}>

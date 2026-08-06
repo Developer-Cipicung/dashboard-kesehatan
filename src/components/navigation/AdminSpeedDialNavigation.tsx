@@ -26,21 +26,8 @@ const quickMenuItems = [
   { name: 'Laporan Lengkap', icon: FileText, path: '/admin/laporan-detail', color: 'text-violet-700', bg: 'bg-violet-50' },
   { name: 'Rekap Bulanan', icon: BarChart2, path: '/admin/laporan', color: 'text-indigo-700', bg: 'bg-indigo-50' },
   { name: 'Status Pendataan', icon: ClipboardList, path: '/admin/status-pendataan', color: 'text-emerald-700', bg: 'bg-emerald-50' },
-]
-
-const adminItems = [
-  {
-    name: 'Data Posyandu',
-    subtitle: 'Manajemen informasi posyandu',
-    icon: MapPin,
-    path: '/admin/posyandu',
-  },
-  {
-    name: 'Manajemen User',
-    subtitle: 'Atur akses akun kader & bidan',
-    icon: Users,
-    path: '/admin/users',
-  }
+  { name: 'Data Posyandu', icon: MapPin, path: '/admin/posyandu', color: 'text-purple-700', bg: 'bg-purple-50' },
+  { name: 'Manajemen User', icon: Users, path: '/admin/users', color: 'text-teal-700', bg: 'bg-teal-50' },
 ]
 
 export function AdminSpeedDialNavigation() {
@@ -133,28 +120,6 @@ export function AdminSpeedDialNavigation() {
                   </button>
                 )
               })}
-            </div>
-
-            <div className="mt-3 flex flex-col gap-3">
-              {adminItems.map((item) => (
-                <button
-                  type="button"
-                  key={item.name}
-                  onClick={() => handleNavigate(item.path)}
-                  className={cn(
-                    'flex w-full items-center gap-3 rounded-2xl bg-primary p-4 text-left text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark',
-                    location.pathname === item.path && 'ring-2 ring-primary/50'
-                  )}
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20">
-                    <item.icon className="h-5 w-5 text-white" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-sm font-bold leading-tight">{item.name}</span>
-                    <span className="mt-1 block text-xs text-white/70">{item.subtitle}</span>
-                  </span>
-                </button>
-              ))}
             </div>
 
             <button

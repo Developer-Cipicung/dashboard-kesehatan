@@ -3,7 +3,7 @@ import { saveAs } from 'file-saver'
 import { Warga } from '@/features/warga/services/wargaService'
 import { formatTimeWib } from '@/utils/dateTime'
 import { formatDateID } from '@/utils/dateFormatter'
-import { calculateHplRange } from '../../warga/components/PatientTable'
+import { calculateHpl } from '../../warga/components/PatientTable'
 import type { ReportImmunisasi, ReportPemeriksaanItem } from '../types/reportPemeriksaan'
 
 export async function exportWargaToExcel(wargaList: Warga[], filename: string = 'Laporan_Warga.xlsx', pemeriksaanList: ReportPemeriksaanItem[] = [], kategoriFilter: string = '') {
@@ -115,7 +115,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
           ...baseData,
           'Usia Kehamilan (Minggu)': item.usia_kehamilan_minggu || '-',
           'HPHT': formatDateID(warga.hpht),
-          'HPL': calculateHplRange(warga.hpht),
+          'HPL': formatDateID(warga.htp || calculateHpl(warga.hpht)),
           'Berat Badan (kg)': item.bb || '-',
           'Tinggi Badan (cm)': item.tb || '-',
           'Tekanan Darah': (item.tekanan_darah_sistolik && item.tekanan_darah_diastolik) ? `${item.tekanan_darah_sistolik}/${item.tekanan_darah_diastolik}` : '-',

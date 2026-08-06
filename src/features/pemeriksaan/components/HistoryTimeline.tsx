@@ -1,7 +1,7 @@
 import { Pemeriksaan } from '../services/pemeriksaanService'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash2 } from 'lucide-react'
-import { calculateHplRange, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus, calculateAge } from '../../warga/components/PatientTable'
+import { calculateHpl, calculateTDStatus, calculateKolesterolStatus, calculateAsamUratStatus, calculateGdsStatus, calculateAge } from '../../warga/components/PatientTable'
 import { formatDateID } from '@/utils/dateFormatter'
 
 interface HistoryTimelineProps {
@@ -85,7 +85,7 @@ export function HistoryTimeline({ history, warga, kategori, isLocked, onEdit, on
               return (
                 <div className="text-xs whitespace-nowrap">
                   <div><span className="text-muted-foreground">HPHT:</span> {formatDateID(warga.hpht)}</div>
-                  <div className="mt-0.5"><span className="text-muted-foreground">HPL:</span> {calculateHplRange(warga.hpht)}</div>
+                  <div className="mt-0.5"><span className="text-muted-foreground">HPL:</span> {formatDateID(warga.htp || calculateHpl(warga.hpht))}</div>
                 </div>
               )
             }
@@ -253,13 +253,9 @@ function BumilTimelineTable({ history, warga, isLocked, onEdit, onDelete }: { hi
   }
 
   const getHplRange = (hphtStr?: string) => {
+    if (warga?.htp) return formatDateID(warga.htp)
     if (!hphtStr) return '-'
-    const hpht = new Date(hphtStr)
-    const start = new Date(hpht)
-    start.setDate(start.getDate() + 259)
-    const end = new Date(hpht)
-    end.setDate(end.getDate() + 294)
-    return `${formatDateID(start.toISOString())} - ${formatDateID(end.toISOString())}`
+    return formatDateID(calculateHpl(hphtStr))
   }
 
 

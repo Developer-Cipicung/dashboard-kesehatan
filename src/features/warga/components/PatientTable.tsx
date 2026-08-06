@@ -416,7 +416,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
               <>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Jumlah<br/>Anak</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">HPHT</th>
-                <th className="px-3 py-3 font-semibold text-primary text-xs">Rentang HPL</th>
+                <th className="px-3 py-3 font-semibold text-primary text-xs">HPL</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Usia Kandungan (mgg)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Tinggi Badan Ibu (cm)</th>
                 <th className="px-3 py-3 font-semibold text-primary text-xs">Berat Badan Ibu (kg)</th>
@@ -686,7 +686,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
                       </td>
                       <td className="px-3 py-3">
                         <div className="text-xs font-medium text-slate-700 min-w-[120px] px-2 py-1.5 bg-slate-50 rounded-md border border-slate-100 text-center whitespace-nowrap">
-                          {calculateHplRange(warga.hpht)}
+                          {formatDateID(warga.htp || calculateHpl(warga.hpht))}
                         </div>
                       </td>
                       <td className="px-3 py-3">

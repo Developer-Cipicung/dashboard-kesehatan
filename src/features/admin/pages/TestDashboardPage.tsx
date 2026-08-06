@@ -530,14 +530,14 @@ export function TestDashboardPage() {
               <p className="text-xs text-slate-500 font-medium">Klik nama pasien untuk melihat detail rekam medis tanpa keluar halaman</p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Category Filter Tabs (Targeting TABLE specifically) */}
-              <div className="flex items-center bg-slate-200/60 p-1 rounded-xl">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
+              {/* Category Filter Tabs (Scrollable on mobile) */}
+              <div className="flex items-center bg-slate-200/60 p-1 rounded-xl w-full sm:w-auto overflow-x-auto custom-scrollbar">
                 {['Semua', 'Anak', 'Ibu Hamil', 'Lansia'].map(tab => (
                   <button
                     key={tab}
                     onClick={() => setTableCategoryFilter(tab)}
-                    className={`px-3 py-1.5 text-xs font-extrabold rounded-lg transition-all ${
+                    className={`px-3 py-1.5 text-xs font-extrabold rounded-lg transition-all shrink-0 ${
                       tableCategoryFilter === tab
                         ? 'bg-white text-slate-900 shadow-sm'
                         : 'text-slate-600 hover:text-slate-900'
@@ -549,97 +549,165 @@ export function TestDashboardPage() {
               </div>
 
               {/* Search input */}
-              <div className="relative">
+              <div className="relative w-full sm:w-auto">
                 <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <Input
                   placeholder="Cari pasien..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-8 h-9 text-xs w-[160px] sm:w-[200px] rounded-xl bg-white border-slate-200"
+                  className="pl-8 h-9 text-xs w-full sm:w-[200px] rounded-xl bg-white border-slate-200"
                 />
               </div>
             </div>
           </div>
 
-          {/* Table Data */}
+          {/* Table Data (Desktop View) & Mobile Cards (Mobile View) */}
           {isRistiLoading ? (
             <div className="p-12 text-center text-slate-400 text-sm">Memuat data pasien risti...</div>
           ) : filteredRisti && filteredRisti.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-200/70">
-                  <tr>
-                    <th className="px-6 py-4">Nama Pasien</th>
-                    <th className="px-6 py-4">Tanggal Periksa</th>
-                    <th className="px-6 py-4">Kategori</th>
-                    <th className="px-6 py-4">Indikasi Risiko Spesifik</th>
-                    <th className="px-6 py-4 text-center">Aksi Cepat</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {filteredRisti.map((kasus) => (
-                    <tr 
-                      key={kasus.id}
-                      className="hover:bg-indigo-50/30 transition-colors group cursor-pointer"
-                      onClick={() => setInspectPatient(kasus)}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors flex items-center gap-1.5">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-slate-50 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-200/70">
+                    <tr>
+                      <th className="px-6 py-4">Nama Pasien</th>
+                      <th className="px-6 py-4">Tanggal Periksa</th>
+                      <th className="px-6 py-4">Kategori</th>
+                      <th className="px-6 py-4">Indikasi Risiko Spesifik</th>
+                      <th className="px-6 py-4 text-center">Aksi Cepat</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {filteredRisti.map((kasus) => (
+                      <tr 
+                        key={kasus.id}
+                        className="hover:bg-indigo-50/30 transition-colors group cursor-pointer"
+                        onClick={() => setInspectPatient(kasus)}
+                      >
+                        <td className="px-6 py-4">
+                          <div className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors flex items-center gap-1.5">
+                            {kasus.nama}
+                            <Eye className="w-3.5 h-3.5 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                          <div className="text-xs font-medium text-slate-500 mt-0.5 flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-slate-400" /> {kasus.posyandu}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-slate-600 font-semibold text-xs">
+                          {format(new Date(kasus.tanggal_periksa), 'd MMM yyyy', { locale: idLocale })}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide border ${
+                            kasus.kategori === 'Ibu Hamil' ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' :
+                            kasus.kategori === 'Lansia' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            'bg-sky-50 text-sky-700 border-sky-200'
+                          }`}>
+                            {kasus.kategori}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-wrap gap-1.5">
+                            {kasus.risiko ? kasus.risiko.split(', ').map((item, idx) => {
+                              const isExtreme = item.includes('8.') || item.includes('-4.') || item.includes('-3.7')
+                              return (
+                                <span 
+                                  key={idx} 
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border ${
+                                    isExtreme ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-rose-50 text-rose-700 border-rose-200'
+                                  }`}
+                                >
+                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isExtreme ? 'bg-amber-600' : 'bg-rose-500'}`}></span>
+                                  {item}
+                                  {isExtreme && (
+                                    <span className="text-[9px] bg-amber-200 px-1 rounded ml-1" title="Potensi salah input">Cek</span>
+                                  )}
+                                </span>
+                              )
+                            }) : '-'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setInspectPatient(kasus)}
+                            className="h-8 px-3 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl"
+                          >
+                            Lihat Quick-View
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards Stream View (< md) */}
+              <div className="block md:hidden divide-y divide-slate-100">
+                {filteredRisti.map((kasus) => (
+                  <div 
+                    key={kasus.id} 
+                    className="p-4 space-y-3 hover:bg-slate-50 transition-colors cursor-pointer"
+                    onClick={() => setInspectPatient(kasus)}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
                           {kasus.nama}
-                          <Eye className="w-3.5 h-3.5 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
+                          <Eye className="w-3.5 h-3.5 text-indigo-500" />
+                        </h4>
                         <div className="text-xs font-medium text-slate-500 mt-0.5 flex items-center gap-1">
                           <MapPin className="w-3 h-3 text-slate-400" /> {kasus.posyandu}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-600 font-semibold text-xs">
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase border shrink-0 ${
+                        kasus.kategori === 'Ibu Hamil' ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' :
+                        kasus.kategori === 'Lansia' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                        'bg-sky-50 text-sky-700 border-sky-200'
+                      }`}>
+                        {kasus.kategori}
+                      </span>
+                    </div>
+
+                    {/* Risk Tags */}
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {kasus.risiko ? kasus.risiko.split(', ').map((item, idx) => {
+                        const isExtreme = item.includes('8.') || item.includes('-4.') || item.includes('-3.7')
+                        return (
+                          <span 
+                            key={idx} 
+                            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold border ${
+                              isExtreme ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-rose-50 text-rose-700 border-rose-200'
+                            }`}
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isExtreme ? 'bg-amber-600' : 'bg-rose-500'}`}></span>
+                            {item}
+                          </span>
+                        )
+                      }) : '-'}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                      <span className="text-slate-400 text-[11px]">
                         {format(new Date(kasus.tanggal_periksa), 'd MMM yyyy', { locale: idLocale })}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide border ${
-                          kasus.kategori === 'Ibu Hamil' ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' :
-                          kasus.kategori === 'Lansia' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                          'bg-sky-50 text-sky-700 border-sky-200'
-                        }`}>
-                          {kasus.kategori}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-wrap gap-1.5">
-                          {kasus.risiko ? kasus.risiko.split(', ').map((item, idx) => {
-                            const isExtreme = item.includes('8.') || item.includes('-4.') || item.includes('-3.7')
-                            return (
-                              <span 
-                                key={idx} 
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border ${
-                                  isExtreme ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-rose-50 text-rose-700 border-rose-200'
-                                }`}
-                              >
-                                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isExtreme ? 'bg-amber-600' : 'bg-rose-500'}`}></span>
-                                {item}
-                                {isExtreme && (
-                                  <span className="text-[9px] bg-amber-200 px-1 rounded ml-1" title="Potensi salah input">Cek</span>
-                                )}
-                              </span>
-                            )
-                          }) : '-'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center whitespace-nowrap" onClick={e => e.stopPropagation()}>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => setInspectPatient(kasus)}
-                          className="h-8 px-3 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl"
-                        >
-                          Lihat Quick-View
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 px-2.5 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setInspectPatient(kasus)
+                        }}
+                      >
+                        Detail Quick-View
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             <div className="p-16 flex flex-col items-center justify-center text-center">
               <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-4">

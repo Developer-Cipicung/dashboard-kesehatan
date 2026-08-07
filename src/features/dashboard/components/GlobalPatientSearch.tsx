@@ -97,13 +97,22 @@ export function GlobalPatientSearch() {
   }, [search])
 
   const determineCategory = (warga: Warga) => {
-    const ageMonths = calculateAgeInMonths(warga.tanggal_lahir)
-    if (ageMonths < 24) return { id: 'baduta', label: 'Baduta', icon: <Baby className="w-4 h-4 text-sky-500" /> }
-    if (ageMonths < 60) return { id: 'balita', label: 'Balita', icon: <Baby className="w-4 h-4 text-blue-500" /> }
     if (warga.status_kehamilan === 'HAMIL') return { id: 'bumil', label: 'Ibu Hamil', icon: <HeartPulse className="w-4 h-4 text-pink-500" /> }
     if (warga.status_kehamilan === 'PASCA_PERSALINAN') return { id: 'pasca_persalinan', label: 'Pasca Salin', icon: <Activity className="w-4 h-4 text-rose-500" /> }
-    if (ageMonths >= 720) return { id: 'lansia', label: 'Lansia', icon: <PersonStanding className="w-4 h-4 text-amber-500" /> }
-    
+
+    if (warga.tanggal_lahir) {
+      const ageMonths = calculateAgeInMonths(warga.tanggal_lahir)
+      if (ageMonths > 0 && ageMonths < 24) return { id: 'baduta', label: 'Baduta', icon: <Baby className="w-4 h-4 text-sky-500" /> }
+      if (ageMonths >= 24 && ageMonths < 60) return { id: 'balita', label: 'Balita', icon: <Baby className="w-4 h-4 text-blue-500" /> }
+      if (ageMonths >= 720) return { id: 'lansia', label: 'Lansia', icon: <PersonStanding className="w-4 h-4 text-amber-500" /> }
+    }
+
+    if (warga.kategori_terdaftar === 'baduta') return { id: 'baduta', label: 'Baduta', icon: <Baby className="w-4 h-4 text-sky-500" /> }
+    if (warga.kategori_terdaftar === 'balita') return { id: 'balita', label: 'Balita', icon: <Baby className="w-4 h-4 text-blue-500" /> }
+    if (warga.kategori_terdaftar === 'bumil') return { id: 'bumil', label: 'Ibu Hamil', icon: <HeartPulse className="w-4 h-4 text-pink-500" /> }
+    if (warga.kategori_terdaftar === 'pasca_persalinan') return { id: 'pasca_persalinan', label: 'Pasca Salin', icon: <Activity className="w-4 h-4 text-rose-500" /> }
+    if (warga.kategori_terdaftar === 'lansia') return { id: 'lansia', label: 'Lansia', icon: <PersonStanding className="w-4 h-4 text-amber-500" /> }
+
     return { id: 'lainnya', label: 'Warga Umum', icon: <User className="w-4 h-4 text-slate-500" /> }
   }
 
@@ -251,7 +260,7 @@ export function GlobalPatientSearch() {
           </DialogHeader>
           <div className="mt-2 grid grid-cols-1 gap-2 sm:mt-4 sm:gap-3">
             {[
-              { id: 'balita', label: 'Balita (0 - 59 Bulan)', icon: <Activity className="w-5 h-5 text-orange-500" /> },
+              { id: 'balita', label: 'Balita (24 - 59 Bulan)', icon: <Activity className="w-5 h-5 text-orange-500" /> },
               { id: 'baduta', label: 'Baduta (0 - 23 Bulan)', icon: <Baby className="w-5 h-5 text-amber-500" /> },
               { id: 'bumil', label: 'Ibu Hamil', icon: <User className="w-5 h-5 text-pink-500" /> },
               { id: 'pasca_persalinan', label: 'Ibu Pasca Persalinan', icon: <Baby className="w-5 h-5 text-purple-500" /> },

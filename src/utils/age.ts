@@ -1,5 +1,7 @@
-export function calculateAgeInMonths(birthDate: string | Date, referenceDate: string | Date = new Date()) {
+export function calculateAgeInMonths(birthDate?: string | Date | null, referenceDate: string | Date = new Date()) {
+  if (!birthDate) return 0
   const birth = new Date(birthDate)
+  if (isNaN(birth.getTime())) return 0
   const reference = new Date(referenceDate)
   let months = (reference.getFullYear() - birth.getFullYear()) * 12
   months += reference.getMonth() - birth.getMonth()
@@ -11,8 +13,10 @@ export function calculateAgeInMonths(birthDate: string | Date, referenceDate: st
   return Math.max(0, months)
 }
 
-export function calculateAgeInWeeks(birthDate: string | Date, referenceDate: string | Date = new Date()) {
+export function calculateAgeInWeeks(birthDate?: string | Date | null, referenceDate: string | Date = new Date()) {
+  if (!birthDate) return 0
   const birth = new Date(birthDate)
+  if (isNaN(birth.getTime())) return 0
   const reference = new Date(referenceDate)
   
   birth.setHours(0, 0, 0, 0)

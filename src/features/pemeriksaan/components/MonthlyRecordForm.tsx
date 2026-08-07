@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Pemeriksaan, pemeriksaanService } from '../services/pemeriksaanService'
-import { useCreatePemeriksaan, useUpdatePemeriksaan } from '../hooks/usePemeriksaan'
+import { useCreatePemeriksaan, useUpdatePemeriksaan, useGetHistory } from '../hooks/usePemeriksaan'
 import { useGetWargaById } from '@/features/warga/hooks/useWarga'
 import { imunisasiService, VAKSIN_OPTIONS } from '@/features/warga/services/imunisasiService'
 import { calculateTDStatus, calculateGdsStatus, calculateKolesterolStatus, calculateAsamUratStatus } from '@/features/warga/components/PatientTable'
@@ -135,46 +135,58 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
   const { register, handleSubmit, watch, setValue, reset } = methods
   const isPending = mutationPending || methods.formState.isSubmitting
   const [pemeriksaanAlreadySaved, setPemeriksaanAlreadySaved] = useState(false)
+  const [hasReset, setHasReset] = useState(false)
+
+  // Fetch history only when the dialog is open
+  const { data: historyRes, isFetching: isFetchingHistory } = useGetHistory(kategori, open ? wargaId : '', wargaPosyanduId)
 
   useEffect(() => {
-    if (open) {
+    if (!open) {
+      setHasReset(false)
+    }
+  }, [open])
+
+  useEffect(() => {
+    // Wait until fetching is done to ensure we get the absolute latest from database
+    if (open && !isFetchingHistory && !hasReset) {
       const isNew = !initialData;
       const rec: any = initialData || {}
-      const prev: any = previousRecord || {}
+      const fetchedPrevious = historyRes?.[0]
+      const prev: any = previousRecord || fetchedPrevious || {}
       const tanggalKunjungan = rec.tanggal_kunjungan ? toDateInputValue(rec.tanggal_kunjungan) : new Date().toISOString().split('T')[0]
 
       reset({
         tanggal_kunjungan: tanggalKunjungan,
         tanggal_persalinan: toDateInputValue(rec.tanggal_persalinan || defaultTanggalPersalinan) || new Date().toISOString().split('T')[0],
-        bb: rec.bb ?? '',
+        bb: rec.bb ?? (isNew ? (prev.bb ?? '') : ''),
         tb: rec.tb ?? (isNew ? (prev.tb ?? '') : ''),
-        lingkar_kepala: rec.lingkar_kepala ?? '',
-        lingkar_lengan_atas: rec.lingkar_lengan_atas ?? '',
-        lingkar_perut: rec.lingkar_perut ?? '',
-        tinggi_fundus: rec.tinggi_fundus ?? '',
-        usia_kehamilan_minggu: rec.usia_kehamilan_minggu ?? '',
-        td: (rec.tekanan_darah_sistolik && rec.tekanan_darah_diastolik) ? `${rec.tekanan_darah_sistolik}/${rec.tekanan_darah_diastolik}` : '',
-        gula_darah_sewaktu: rec.gula_darah_sewaktu ?? '',
-        kolesterol: rec.kolesterol ?? '',
-        asam_urat: rec.asam_urat ?? '',
-        suhu_tubuh: rec.suhu_tubuh ?? '',
-        kondisi_ibu: rec.kondisi_ibu ?? '',
-        catatan: rec.catatan ?? '',
+        lingkar_kepala: rec.lingkar_kepala ?? (isNew ? (prev.lingkar_kepala ?? '') : ''),
+        lingkar_lengan_atas: rec.lingkar_lengan_atas ?? (isNew ? (prev.lingkar_lengan_atas ?? '') : ''),
+        lingkar_perut: rec.lingkar_perut ?? (isNew ? (prev.lingkar_perut ?? '') : ''),
+        tinggi_fundus: rec.tinggi_fundus ?? (isNew ? (prev.tinggi_fundus ?? '') : ''),
+        usia_kehamilan_minggu: rec.usia_kehamilan_minggu ?? (isNew ? (prev.usia_kehamilan_minggu ?? '') : ''),
+        td: (rec.tekanan_darah_sistolik && rec.tekanan_darah_diastolik) ? `${rec.tekanan_darah_sistolik}/${rec.tekanan_darah_diastolik}` : (isNew ? ((prev.tekanan_darah_sistolik && prev.tekanan_darah_diastolik) ? `${prev.tekanan_darah_sistolik}/${prev.tekanan_darah_diastolik}` : '') : ''),
+        gula_darah_sewaktu: rec.gula_darah_sewaktu ?? (isNew ? (prev.gula_darah_sewaktu ?? '') : ''),
+        kolesterol: rec.kolesterol ?? (isNew ? (prev.kolesterol ?? '') : ''),
+        asam_urat: rec.asam_urat ?? (isNew ? (prev.asam_urat ?? '') : ''),
+        suhu_tubuh: rec.suhu_tubuh ?? (isNew ? (prev.suhu_tubuh ?? '') : ''),
+        kondisi_ibu: rec.kondisi_ibu ?? (isNew ? (prev.kondisi_ibu ?? '') : ''),
+        catatan: rec.catatan ?? (isNew ? (prev.catatan ?? '') : ''),
         status_risiko_pe: rec.status_risiko_pe ?? (isNew ? (prev.status_risiko_pe ?? 'Belum Diperiksa') : 'Belum Diperiksa'),
-        kondisi: rec.kondisi ?? '',
-        asi_eksklusif: rec.asi_eksklusif ?? false,
-        fasilitasi_bantuan_sosial: rec.fasilitasi_bantuan_sosial ?? false,
+        kondisi: rec.kondisi ?? (isNew ? (prev.kondisi ?? '') : ''),
+        asi_eksklusif: rec.asi_eksklusif ?? (isNew ? (prev.asi_eksklusif ?? false) : false),
+        fasilitasi_bantuan_sosial: rec.fasilitasi_bantuan_sosial ?? (isNew ? (prev.fasilitasi_bantuan_sosial ?? false) : false),
         jumlah_anak: rec.jumlah_anak ?? (isNew ? (prev.jumlah_anak ?? '') : ''),
         riwayat_penyakit: rec.riwayat_penyakit ?? (isNew ? (prev.riwayat_penyakit ?? '') : ''),
         kadar_hemoglobin: rec.kadar_hemoglobin ?? (isNew ? (prev.kadar_hemoglobin ?? '') : ''),
-        berat_janin: rec.berat_janin ?? '',
+        berat_janin: rec.berat_janin ?? (isNew ? (prev.berat_janin ?? '') : ''),
         terpapar_rokok: rec.terpapar_rokok ?? (isNew ? (prev.terpapar_rokok ?? false) : false),
-        kie: rec.kie ?? false,
-        suplemen_tambah_darah: rec.suplemen_tambah_darah ?? '',
-        mms: rec.mms ?? '',
-        tinggi_badan_bayi: rec.tinggi_badan_bayi ?? '',
-        berat_badan_bayi: rec.berat_badan_bayi ?? '',
-        fasilitasi_rujukan: rec.fasilitasi_rujukan ?? false,
+        kie: rec.kie ?? (isNew ? (prev.kie ?? false) : false),
+        suplemen_tambah_darah: rec.suplemen_tambah_darah ?? (isNew ? (prev.suplemen_tambah_darah ?? '') : ''),
+        mms: rec.mms ?? (isNew ? (prev.mms ?? '') : ''),
+        tinggi_badan_bayi: rec.tinggi_badan_bayi ?? (isNew ? (prev.tinggi_badan_bayi ?? '') : ''),
+        berat_badan_bayi: rec.berat_badan_bayi ?? (isNew ? (prev.berat_badan_bayi ?? '') : ''),
+        fasilitasi_rujukan: rec.fasilitasi_rujukan ?? (isNew ? (prev.fasilitasi_rujukan ?? false) : false),
         nama_ibu: rec.nama_ibu ?? (isNew ? (prev.nama_ibu ?? warga?.nama_ibu ?? '') : ''),
         nama_ayah: rec.nama_ayah ?? (isNew ? (prev.nama_ayah ?? warga?.nama_ayah ?? '') : ''),
         penggunaan_kontrasepsi: rec.penggunaan_kontrasepsi ?? (isNew ? (prev.penggunaan_kontrasepsi ?? warga?.penggunaan_kontrasepsi ?? '') : ''),
@@ -187,9 +199,10 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
           return d.toISOString().split('T')[0]
         })() : ''),
       })
+      setHasReset(true)
       setPemeriksaanAlreadySaved(false)
     }
-  }, [open, initialData, previousRecord, defaultTanggalPersalinan, reset, isBumil])
+  }, [open, isFetchingHistory, hasReset, initialData, previousRecord, historyRes, defaultTanggalPersalinan, reset, isBumil])
 
   const tglWatch = watch('tanggal_kunjungan')
   const bbWatch = watch('bb')

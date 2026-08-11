@@ -554,6 +554,7 @@ export function MonthlyRecordForm({ open, onOpenChange, kategori, wargaId, warga
                       className="flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:text-base font-semibold"
                     >
                       <option value="Belum Diperiksa">Belum Diperiksa</option>
+                      <option value="Tidak">Tidak</option>
                       <option value="Risiko Rendah">Risiko Rendah</option>
                       <option value="Risiko Sedang">Risiko Sedang</option>
                       <option value="Risiko Tinggi">Risiko Tinggi</option>

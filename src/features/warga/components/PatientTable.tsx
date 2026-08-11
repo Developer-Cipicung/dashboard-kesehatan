@@ -22,14 +22,22 @@ export function calculateAge(birthDate: string | Date, checkDate: string | Date,
   const check = new Date(checkDate)
   
   let months = (check.getFullYear() - dob.getFullYear()) * 12 + (check.getMonth() - dob.getMonth())
-  if (check.getDate() < dob.getDate()) {
+  let days = check.getDate() - dob.getDate()
+  
+  if (days < 0) {
     months--
+    const prevMonth = new Date(check.getFullYear(), check.getMonth(), 0)
+    days += prevMonth.getDate()
+    if (days < 0) days = 0 // edge case for end of month differences
   }
   
-  months = Math.max(0, months)
+  if (months < 0) {
+    months = 0
+    days = Math.max(0, days)
+  }
   
   if (months < 60) {
-    return `${months} bln`
+    return `${months} bln ${days} hari`
   }
   
   const years = Math.floor(months / 12)
@@ -51,21 +59,17 @@ export function calculateUsiaKandungan(hphtStr?: string, kunjunganStr?: string):
 export function calculateHpl(hphtStr?: string): string {
   if (!hphtStr) return ''
   const hpht = new Date(hphtStr)
-  hpht.setDate(hpht.getDate() + 280)
+  const month = hpht.getMonth() // 0-based index: 0 = Jan, 2 = Mar
+  
+  if (month >= 0 && month <= 2) {
+    hpht.setDate(hpht.getDate() + 7)
+    hpht.setMonth(hpht.getMonth() + 9)
+  } else {
+    hpht.setDate(hpht.getDate() + 7)
+    hpht.setMonth(hpht.getMonth() - 3)
+    hpht.setFullYear(hpht.getFullYear() + 1)
+  }
   return hpht.toISOString().split('T')[0]
-}
-
-export function calculateHplRange(hphtStr?: string): string {
-  if (!hphtStr) return '-'
-  const hpht = new Date(hphtStr)
-  
-  const start = new Date(hpht)
-  start.setDate(start.getDate() + 259) // 37 weeks
-  
-  const end = new Date(hpht)
-  end.setDate(end.getDate() + 294) // 42 weeks
-  
-  return `${formatDateID(start.toISOString())} - ${formatDateID(end.toISOString())}`
 }
 
 export const calculateBMI = (bbStr?: string | number, tbStr?: string | number) => {
@@ -111,6 +115,7 @@ export const getRisikoPEBadge = (status?: string) => {
   if (!status || status === 'Belum Diperiksa') return { label: 'Belum Diperiksa', color: 'text-slate-600 bg-slate-100 border-slate-200' };
   if (status.toLowerCase().includes('tinggi')) return { label: 'Risiko Tinggi', color: 'text-red-700 bg-red-100 border-red-200' };
   if (status.toLowerCase().includes('sedang')) return { label: 'Risiko Sedang', color: 'text-amber-700 bg-amber-100 border-amber-200' };
+  if (status.toLowerCase().includes('tidak')) return { label: 'Tidak', color: 'text-emerald-700 bg-emerald-100 border-emerald-200' };
   return { label: 'Risiko Rendah', color: 'text-emerald-700 bg-emerald-100 border-emerald-200' };
 }
 

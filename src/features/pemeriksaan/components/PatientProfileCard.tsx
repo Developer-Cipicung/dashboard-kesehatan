@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { formatDateID } from '@/utils/dateFormatter'
 import { Edit2 } from 'lucide-react'
-import { calculateAge } from '../../warga/components/PatientTable'
+import { calculateAge, calculateHpl } from '../../warga/components/PatientTable'
 import { isBadutaByBirthDate, isBalitaByBirthDate } from '@/utils/age'
 
 interface PatientProfileCardProps {
@@ -120,13 +120,7 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
                 <span className="font-medium">
                   {(() => {
                     if (!warga.hpht) return '-'
-                    const hpht = new Date(warga.hpht)
-                    const start = new Date(hpht)
-                    start.setDate(start.getDate() + 280 - 7)
-                    const end = new Date(hpht)
-                    end.setDate(end.getDate() + 280 + 7)
-                    const fmt = (d: Date) => formatDateID(d.toISOString())
-                    return `${fmt(start)} - ${fmt(end)}`
+                    return formatDateID(warga.htp || calculateHpl(warga.hpht))
                   })()}
                 </span>
               </div>

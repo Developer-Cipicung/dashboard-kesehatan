@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/forms/FormField'
 import { FormProvider } from 'react-hook-form'
+import { calculateHpl } from './PatientTable'
 import { useUpdateWarga, useGetWargaList } from '../hooks/useWarga'
 import { Warga, AddWargaPayload } from '../services/wargaService'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -119,9 +120,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
   useEffect(() => {
     if (watchHpht) {
       try {
-        const hphtDate = new Date(watchHpht)
-        hphtDate.setDate(hphtDate.getDate() + 280)
-        methods.setValue('htp', hphtDate.toISOString().split('T')[0])
+        methods.setValue('htp', calculateHpl(watchHpht))
       } catch (e) {}
     }
   }, [watchHpht, methods])

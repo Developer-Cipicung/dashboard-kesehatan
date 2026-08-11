@@ -23,6 +23,7 @@ import { pemeriksaanService } from '../../pemeriksaan/services/pemeriksaanServic
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { calculateAgeInMonths } from '@/utils/age'
+import { calculateHpl } from './PatientTable'
 import { useAuthStore } from '@/stores/authStore'
 import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
@@ -217,9 +218,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
   useEffect(() => {
     if (hphtHamilKembali) {
       try {
-        const hphtDate = new Date(hphtHamilKembali)
-        hphtDate.setDate(hphtDate.getDate() + 280)
-        setHtpHamilKembali(hphtDate.toISOString().split('T')[0])
+        setHtpHamilKembali(calculateHpl(hphtHamilKembali))
       } catch (e) {}
     }
   }, [hphtHamilKembali])
@@ -289,9 +288,7 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
   useEffect(() => {
     if (watchHpht) {
       try {
-        const hphtDate = new Date(watchHpht)
-        hphtDate.setDate(hphtDate.getDate() + 280)
-        methods.setValue('htp', hphtDate.toISOString().split('T')[0])
+        methods.setValue('htp', calculateHpl(watchHpht))
       } catch (e) {}
     }
   }, [watchHpht, methods])

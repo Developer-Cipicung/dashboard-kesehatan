@@ -102,6 +102,12 @@ export function PatientCard({ data, kategori, onView, isReadOnly }: PatientCardP
           {ageDisplay && (
             <div className="text-sm font-medium text-slate-600 mb-0.5">{ageDisplay}</div>
           )}
+          {((kategori === 'balita' || kategori === 'baduta') && (data.ibu?.nama || data.nama_ibu)) && (
+            <div className="text-sm font-medium text-slate-600 mb-0.5">Nama Ibu: {data.ibu?.nama || data.nama_ibu}</div>
+          )}
+          {((kategori === 'bumil' || kategori === 'pasca_persalinan') && data.nama_suami) && (
+            <div className="text-sm font-medium text-slate-600 mb-0.5">Nama Suami: {data.nama_suami}</div>
+          )}
           <div className="flex flex-wrap items-center gap-2 mt-0.5">
             <span className="text-xs text-slate-500 font-mono">NIK: {data.nik}</span>
             {data.posyandu && (

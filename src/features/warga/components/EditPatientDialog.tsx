@@ -143,12 +143,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
         (payload as any).kategori_terdaftar = kategori
       }
 
-      // Cleanup empty strings for optional fields
-      Object.keys(payload).forEach(key => {
-        if (payload[key as keyof AddWargaPayload] === '') {
-          delete payload[key as keyof AddWargaPayload]
-        }
-      })
+      // Do not clean up empty strings; send them so the API can nullify the fields
 
       await updateWarga({ id: warga.id, payload, posyanduId: warga.posyandu_id })
       toast.success('Data pasien berhasil diperbarui')

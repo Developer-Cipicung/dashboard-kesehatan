@@ -115,6 +115,7 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
 
         return {
           ...baseData,
+          'Nama Suami': warga.nama_suami || '-',
           'Usia Kehamilan (Minggu)': item.usia_kehamilan_minggu || '-',
           'HPHT': formatDateID(warga.hpht),
           'HPL': formatDateID(warga.htp || calculateHpl(warga.hpht)),

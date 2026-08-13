@@ -30,6 +30,7 @@ const getFormSchema = () => z.object({
   status_kehamilan: z.enum(['TIDAK_HAMIL', 'HAMIL', 'PASCA_PERSALINAN']).optional(),
   nama_ayah: z.string().trim().optional(),
   nama_ibu: z.string().trim().optional(),
+  nama_suami: z.string().trim().optional(),
   alamat: z.string().trim().optional(),
   rt: z.string().trim().max(3, 'Maksimal 3 karakter').optional(),
   rw: z.string().trim().max(3, 'Maksimal 3 karakter').optional(),
@@ -69,6 +70,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
       status_kehamilan: warga.status_kehamilan || 'TIDAK_HAMIL',
       nama_ayah: warga.nama_ayah || '',
       nama_ibu: warga.nama_ibu || '',
+      nama_suami: warga.nama_suami || '',
       tempat_lahir: warga.tempat_lahir || '',
       alamat: warga.alamat || '',
       rt: warga.rt || '',
@@ -93,6 +95,7 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
         status_kehamilan: warga.status_kehamilan || 'TIDAK_HAMIL',
         nama_ayah: warga.nama_ayah || '',
         nama_ibu: warga.nama_ibu || '',
+        nama_suami: warga.nama_suami || '',
         tempat_lahir: warga.tempat_lahir || '',
         alamat: warga.alamat || '',
         rt: warga.rt || '',
@@ -305,6 +308,15 @@ export function EditPatientDialog({ warga, kategori, open, onOpenChange, onSucce
                           type="date"
                         />
                       </>
+                    )}
+                    {isIbuIbu && (
+                      <FormField
+                        control={methods.control}
+                        name="nama_suami"
+                        label={<>Nama Suami</>}
+                        placeholder="Contoh: Budi"
+                        type="text"
+                      />
                     )}
                     {isAnak && (
                       <>

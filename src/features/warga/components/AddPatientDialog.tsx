@@ -39,6 +39,7 @@ const formSchema = z.object({
   kategori: z.string().trim().min(1, 'Kategori wajib diisi'),
   nama_ayah: z.string().trim().optional(),
   nama_ibu: z.string().trim().optional(),
+  nama_suami: z.string().trim().optional(),
   tanggal_persalinan: z.string().trim().optional(),
   alamat: z.string().trim().optional(),
   rt: z.string().trim().max(3, 'Maksimal 3 karakter').optional(),
@@ -65,6 +66,7 @@ interface PatientFormConfig {
   showDelivery?: boolean
   showContraception?: boolean
   showAnakKe?: boolean
+  showSpouse?: boolean
 }
 
 const patientFormConfig: Record<PatientCategory, PatientFormConfig> = {
@@ -91,6 +93,7 @@ const patientFormConfig: Record<PatientCategory, PatientFormConfig> = {
     showHpht: true,
     showContraception: true,
     showAnakKe: true,
+    showSpouse: true,
   },
   pasca_persalinan: {
     categoryLabel: 'Ibu Pasca Persalinan',
@@ -643,12 +646,12 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                 </div>
               </div>
 
-              {(currentConfig?.showDelivery || currentConfig?.showHpht || currentConfig?.showParents || currentConfig?.showContraception) && (
+              {(currentConfig?.showDelivery || currentConfig?.showHpht || currentConfig?.showParents || currentConfig?.showContraception || currentConfig?.showSpouse) && (
                 <hr className="border-slate-200" />
               )}
 
               {/* Detail Kategori Tambahan */}
-              {(currentConfig?.showDelivery || currentConfig?.showHpht || currentConfig?.showParents || currentConfig?.showContraception) && (
+              {(currentConfig?.showDelivery || currentConfig?.showHpht || currentConfig?.showParents || currentConfig?.showContraception || currentConfig?.showSpouse) && (
                 <div>
                   <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-800 sm:text-sm">Detail Tambahan</h4>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
@@ -684,6 +687,15 @@ export function AddPatientDialog({ open, onOpenChange, defaultCategory, onSucces
                           type="date"
                         />
                       </>
+                    )}
+                    {currentConfig?.showSpouse && (
+                      <FormField
+                        control={methods.control}
+                        name="nama_suami"
+                        label={<>Nama Suami</>}
+                        placeholder="Contoh: Budi"
+                        type="text"
+                      />
                     )}
                     {currentConfig?.showParents && (
                       <>

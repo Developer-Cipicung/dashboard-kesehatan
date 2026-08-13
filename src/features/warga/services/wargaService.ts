@@ -28,6 +28,7 @@ export interface Warga {
   penggunaan_kontrasepsi?: string
   nama_ayah?: string
   nama_ibu?: string
+  nama_suami?: string
   ibu_id?: string
   ibu?: Partial<Warga>
   hpht?: string
@@ -91,6 +92,7 @@ export interface AddWargaPayload {
   penggunaan_kontrasepsi?: string
   nama_ayah?: string
   nama_ibu?: string
+  nama_suami?: string
   ibu_id?: string
   jumlah_anak?: number
   hpht?: string

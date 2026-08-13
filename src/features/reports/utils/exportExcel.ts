@@ -66,6 +66,8 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
       Posyandu: (warga as any).posyandu?.nama || '-',
       Nama: warga.nama || '-',
       NIK: warga.nik || '-',
+      ...(kategoriFilter === 'bumil' || kategoriFilter === 'pasca_persalinan' ? { 'Nama Suami': warga.nama_suami || '-' } : {}),
+      ...(kategoriFilter === 'balita' || kategoriFilter === 'baduta' ? { 'Nama Ibu': item.nama_ibu || warga.ibu?.nama || '-' } : {}),
       'No. HP': warga.nomor || '-',
       'Tempat Lahir': warga.tempat_lahir || '-',
       'Tanggal Lahir': formatDateID(warga.tanggal_lahir),
@@ -79,11 +81,9 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
     switch (kategoriFilter) {
       case 'baduta':
       case 'balita': {
-        const namaIbu = item.nama_ibu || '-'
         return {
           ...baseData,
           'Umur (Bulan)': ageText,
-          'Nama Ibu': namaIbu,
           'Kontrasepsi Ibu': warga.penggunaan_kontrasepsi || '-',
           'Berat Badan (kg)': item.bb || '-',
           'Tinggi Badan (cm)': item.tb || '-',
@@ -115,7 +115,6 @@ export async function exportWargaToExcel(wargaList: Warga[], filename: string = 
 
         return {
           ...baseData,
-          'Nama Suami': warga.nama_suami || '-',
           'Usia Kehamilan (Minggu)': item.usia_kehamilan_minggu || '-',
           'HPHT': formatDateID(warga.hpht),
           'HPL': formatDateID(warga.htp || calculateHpl(warga.hpht)),

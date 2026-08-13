@@ -394,7 +394,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
           <tr className="border-b border-slate-200">
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-0 z-20 bg-white min-w-[160px] max-w-[160px] w-[160px]" rowSpan={2}>NIK</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle sticky left-[160px] z-20 bg-white min-w-[190px] max-w-[190px] w-[190px] border-r border-slate-200 shadow-[1px_0_3px_rgba(0,0,0,0.05)]" rowSpan={2}>Nama</th>
-            {isBumil && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[160px] max-w-[190px] w-[160px]" rowSpan={2}>Nama Suami</th>}
+            {(isBumil || isPasca) && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[160px] max-w-[190px] w-[160px]" rowSpan={2}>Nama Suami</th>}
             {isBalita && <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[160px] max-w-[190px] w-[160px]" rowSpan={2}>Nama Ibu</th>}
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[140px] max-w-[180px]" rowSpan={2}>Posyandu</th>
             <th className="px-4 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs align-middle bg-white min-w-[90px]" rowSpan={2}>BPJS</th>
@@ -614,7 +614,7 @@ export function PatientTable({ data, kategori, onView, isReadOnly }: PatientTabl
                   <div className="font-semibold text-slate-800 text-sm truncate" title={warga.nama}>{warga.nama}</div>
                   <div className="text-xs text-slate-400 mt-0.5">{warga.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</div>
                 </td>
-                {isBumil && (
+                {(isBumil || isPasca) && (
                   <td className="px-4 py-3 min-w-[160px] max-w-[190px] w-[160px]">
                     <div className="text-xs font-medium text-slate-700 truncate" title={warga.nama_suami || '-'}>
                       {warga.nama_suami || '-'}

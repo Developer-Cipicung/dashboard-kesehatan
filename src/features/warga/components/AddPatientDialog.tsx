@@ -102,6 +102,7 @@ const patientFormConfig: Record<PatientCategory, PatientFormConfig> = {
     genderDefault: 'P',
     lockGender: true,
     showDelivery: true,
+    showSpouse: true,
   },
   lansia: {
     categoryLabel: 'Lansia',

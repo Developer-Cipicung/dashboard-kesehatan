@@ -124,6 +124,10 @@ export function PatientProfileCard({ warga, kategori }: PatientProfileCardProps)
                   })()}
                 </span>
               </div>
+              <div>
+                <span className="text-muted-foreground block text-xs">Nama Suami</span>
+                <span className="font-medium">{warga.nama_suami || '-'}</span>
+              </div>
             </>
           )}
 

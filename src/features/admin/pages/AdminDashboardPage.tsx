@@ -107,10 +107,15 @@ export function AdminDashboardPage() {
 
   // 4. Fetch Dashboard Stats
   const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
-    queryKey: ['dashboard', selectedPosyanduId],
+    queryKey: ['dashboard', selectedPosyanduId, startDate, endDate],
     queryFn: async () => {
-      const url = `/dashboard?posyanduId=${selectedPosyanduId.toLowerCase()}`
-      const response = await api.get(url)
+      const response = await api.get('/dashboard', {
+        params: {
+          posyanduId: selectedPosyanduId.toLowerCase(),
+          startDate,
+          endDate,
+        },
+      })
       return response.data.data
     }
   })
@@ -146,13 +151,18 @@ export function AdminDashboardPage() {
   ).length : 0
   const pendingThisMonth = totalPosyandu - submittedThisMonth
 
-  const totalWarga = dashboardData?.total_warga || 0
+  const totalWarga = dashboardData?.total_warga ?? 0
   const br = dashboardData?.kategori_breakdown || {}
+  const totalBalitaBaduta = (br.balita ?? 0) + (br.baduta ?? 0)
+  const totalBumilPasca = (br.ibu_hamil ?? 0) + (br.pasca_persalinan ?? 0)
+  const totalLansia = br.lansia ?? 0
+  const wargaBaruBulanIni = dashboardData?.warga_baru_bulan_ini ?? 0
+  const jumlahPemeriksaan = dashboardData?.jumlah_pemeriksaan ?? 0
 
   const pieData = [
-    { name: 'Balita & Baduta', value: (br.balita || 0) + (br.baduta || 0), color: COLORS.balita },
-    { name: 'Ibu Hamil', value: (br.ibu_hamil || 0) + (br.pasca_persalinan || 0), color: COLORS.bumil },
-    { name: 'Lansia', value: br.lansia || 0, color: COLORS.lansia },
+    { name: 'Balita & Baduta', value: totalBalitaBaduta, color: COLORS.balita },
+    { name: 'Ibu Hamil', value: totalBumilPasca, color: COLORS.bumil },
+    { name: 'Lansia', value: totalLansia, color: COLORS.lansia },
   ].filter(d => d.value > 0)
 
   const selectedPosyanduName = selectedPosyanduId === 'ALL' 
@@ -205,21 +215,21 @@ export function AdminDashboardPage() {
           <div className="flex items-baseline gap-3 mb-6">
             <span className="text-4xl font-bold text-slate-800">{totalWarga}</span>
             <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> +{dashboardData?.warga_baru_bulan_ini || 24} warga bulan ini
+              <TrendingUp className="w-3 h-3" /> +{wargaBaruBulanIni} warga bulan ini
             </span>
           </div>
           <div className="flex justify-between border-t border-slate-100 pt-4">
             <div>
               <div className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Balita</div>
-              <div className="font-semibold text-slate-700">{(br.balita || 0) + (br.baduta || 0)}</div>
+              <div className="font-semibold text-slate-700">{totalBalitaBaduta}</div>
             </div>
             <div>
               <div className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Bumil</div>
-              <div className="font-semibold text-slate-700">{br.ibu_hamil || 0}</div>
+              <div className="font-semibold text-slate-700">{totalBumilPasca}</div>
             </div>
             <div>
               <div className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Lansia</div>
-              <div className="font-semibold text-slate-700">{br.lansia || 0}</div>
+              <div className="font-semibold text-slate-700">{totalLansia}</div>
             </div>
           </div>
         </div>
@@ -426,6 +436,21 @@ export function AdminDashboardPage() {
                 />
               </div>
             )}
+          </div>
+        </div>
+
+        <div className="bg-slate-900 text-white rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/10 rounded-lg">
+              <Activity className="w-5 h-5 text-emerald-300" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-200">Jumlah Pemeriksaan</p>
+              <p className="text-xs text-slate-400">Status sudah diperiksa pada rentang terpilih</p>
+            </div>
+          </div>
+          <div className="text-3xl font-black tracking-normal">
+            {isDashboardLoading ? '-' : jumlahPemeriksaan}
           </div>
         </div>
 

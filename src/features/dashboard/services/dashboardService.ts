@@ -8,6 +8,8 @@ export interface DashboardStatsResponse {
     total_balita: number
     total_bumil: number
     total_lansia: number
+    warga_baru_bulan_ini: number
+    jumlah_pemeriksaan: number
     pendataan: {
       balita: 'draft' | 'selesai'
       imunisasi: 'draft' | 'selesai'

@@ -159,9 +159,10 @@ export function AdminDashboardPage() {
   const wargaBaruBulanIni = dashboardData?.warga_baru_bulan_ini ?? 0
   const jumlahPemeriksaan = dashboardData?.jumlah_pemeriksaan ?? 0
 
+  const totalTargetWarga = totalBalitaBaduta + totalBumilPasca + totalLansia
   const pieData = [
     { name: 'Balita & Baduta', value: totalBalitaBaduta, color: COLORS.balita },
-    { name: 'Ibu Hamil', value: totalBumilPasca, color: COLORS.bumil },
+    { name: 'Ibu Hamil & Pasca', value: totalBumilPasca, color: COLORS.bumil },
     { name: 'Lansia', value: totalLansia, color: COLORS.lansia },
   ].filter(d => d.value > 0)
 
@@ -311,8 +312,8 @@ export function AdminDashboardPage() {
 
             {/* Center Text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-xs font-medium text-slate-400 mb-1">Total</span>
-              <span className="text-2xl font-bold text-slate-800">{totalWarga}</span>
+              <span className="text-xs font-medium text-slate-400 mb-1">Total Target</span>
+              <span className="text-2xl font-bold text-slate-800">{totalTargetWarga}</span>
             </div>
           </div>
 
@@ -321,9 +322,9 @@ export function AdminDashboardPage() {
               <div key={i} className="flex flex-col items-center text-center">
                 <div className="flex items-center gap-1.5 mb-1">
                   <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }}></span>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase leading-none">{d.name.split(' ')[0]}</span>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase leading-none truncate max-w-[60px]" title={d.name}>{d.name.split(' ')[0]}</span>
                 </div>
-                <span className="font-semibold text-slate-800">{Math.round((d.value / totalWarga) * 100) || 0}%</span>
+                <span className="font-semibold text-slate-800">{Math.round((d.value / (totalTargetWarga || 1)) * 100)}%</span>
               </div>
             ))}
           </div>
